@@ -42,11 +42,24 @@ jobs:
           nostro=$(leggi commit)
           percorso=$(leggi percorso_sorgente)
 
+          # L'ultimo commit che ha toccato il percorso vendorato. Non basta
+          # confrontarlo per uguaglianza col nostro: il nostro e' un commit
+          # qualunque del repository, e puo' benissimo essere piu' recente di
+          # quello senza che il percorso sia cambiato. La domanda vera e' se
+          # quel commit e' gia' nella nostra storia.
           loro=$(gh api "repos/$upstream/commits?path=$percorso&per_page=1" --jq '.[0].sha')
-          echo "vendorato: $nostro"
-          echo "a monte:   $loro"
+          echo "vendorato:        $nostro"
+          echo "ultimo su $percorso: $loro"
 
           if [ "$nostro" = "$loro" ]; then
+            avanti=0
+          else
+            avanti=$(gh api "repos/$upstream/compare/$nostro...$loro" --jq '.ahead_by' 2>/dev/null || echo 0)
+          fi
+          echo "commit avanti a noi: $avanti"
+
+          if [ "$avanti" -eq 0 ]; then
+            echo "Il percorso vendorato non si e' mosso da quando l'abbiamo preso."
             echo "spostato=no" >> "$GITHUB_OUTPUT"
           else
             echo "spostato=si" >> "$GITHUB_OUTPUT"
