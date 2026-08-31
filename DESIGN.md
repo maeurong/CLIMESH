@@ -89,6 +89,31 @@ nessuna parallasse, nessun autoplay. Ammessi solo micro-stati in hover — sfond
 di riga, filetto che vira al segnale, trasformazioni che atterrano su incrementi
 di griglia — a 180 ms. `prefers-reduced-motion: reduce` azzera tutto.
 
+## La stampa
+
+**La relazione non è una seconda interfaccia: è questa pagina stampata.** Non
+esiste una vista "documento" accanto alla vista "strumento", e non deve
+esistere: due superfici che mostrano lo stesso risultato divergono, e quella
+stampata diverge per prima perché la si guarda di meno.
+
+Il foglio è un `@media print` sulla stessa pagina, e traduce invece di
+reimpaginare:
+
+- **I controlli spariscono, i loro valori restano.** Periodo, ora, grandezza e
+  scala diventano una riga di testo sotto la testata. Su carta non si può
+  interagire, ma sapere con quali parametri è stata prodotta la figura è
+  esattamente ciò che rende citabile il foglio.
+- **Le figure prendono una didascalia.** A schermo sarebbe rumore, perché i
+  pannelli sono già etichettati e l'ora è nel cursore. Su carta è l'unica cosa
+  che spiega cosa si sta guardando.
+- **La lastra non si allaga.** L'inchiostro pieno a piena larghezza in stampa
+  spesso non arriva — molte impostazioni scartano i fondi — e quando arriva
+  costa. Diventa un blocco chiuso fra due righi, che dice la stessa cosa.
+- **I filetti a 12 colonne non si stampano.** Sono un dispositivo da schermo; sul
+  foglio la griglia la fanno le celle rigate, che sono già lì.
+- **Il Giornale comincia in una pagina nuova.** È l'appendice metodologica, e va
+  potuta staccare.
+
 ## Note
 
 **Mondo singolo chiaro, deliberato.** Il tema vieta la pagina scura, quindi non
