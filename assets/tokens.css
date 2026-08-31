@@ -1,0 +1,107 @@
+/* Hallmark · macrostructure: Map / Diagram · tone: technical · anchor hue: ultramarine
+ * theme: Grid · paper light · display grotesk-heavy lowercase · accent ultramarine
+ *
+ * CLIMESH design tokens — the source of truth. The reasoning lives in DESIGN.md.
+ * Single-world light sheet: Grid forbids a dark page, so every colour is painted
+ * explicitly and nothing is inherited from the host.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap");
+
+:root {
+  /* ── surfaces and ink ─────────────────────────────────────────────────── */
+  --color-paper:      oklch(99%   0.003 255);  /* the sheet, cool, never #fff */
+  --color-paper-2:    oklch(97.2% 0.005 255);  /* row hover, quiet cell       */
+  --color-paper-3:    oklch(94.5% 0.006 255);  /* empty field ground          */
+  --color-ink:        oklch(16%   0.010 255);  /* text, rules, baseline serie */
+  --color-ink-2:      oklch(52%   0.012 255);  /* labels, axes, secondary     */
+  --color-rule:       oklch(88%   0.004 255);  /* the 1px hairline            */
+  --color-rule-2:     oklch(94%   0.003 255);  /* inner hairline, quieter     */
+
+  /* ── the one signal ink ───────────────────────────────────────────────── */
+  --color-accent:     oklch(45%   0.190 264);  /* ultramarine                 */
+  --color-accent-ink: oklch(99%   0.003 255);  /* text on the plate           */
+  --color-focus:      oklch(45%   0.190 264);
+
+  /* ── type ─────────────────────────────────────────────────────────────── */
+  --font-display: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body:    "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display-weight:   800;
+  --tracking-display: -0.045em;
+  --tracking-label:   0.09em;
+
+  --text-xs:      11px;
+  --text-sm:      12px;   /* label voice: uppercase, 600, tracked           */
+  --text-base:    16px;
+  --text-lg:      20px;
+  --text-xl:      25px;
+  --text-2xl:     31px;
+  --text-3xl:     39px;
+  --text-display:   clamp(46px, 9vw, 112px);
+  --text-display-s: clamp(30px, 4.4vw, 54px);
+  --text-numeral:   clamp(96px, 17vw, 240px);  /* the cropped section numeral */
+
+  /* ── space · 4-pt scale ───────────────────────────────────────────────── */
+  --space-3xs:  4px;
+  --space-2xs:  8px;
+  --space-xs:  16px;
+  --space-sm:  24px;
+  --space-md:  40px;
+  --space-lg:  64px;
+  --space-xl:  96px;
+  --space-2xl:128px;
+
+  /* ── structure ────────────────────────────────────────────────────────── */
+  --shell:        1280px;
+  --grid-columns: 12;
+  --rule-hair:    1px;
+  --rule-solid:   2px;
+  --radius-card:  0;
+  --radius-input: 0;
+  --radius-pill:  0;
+  --shadow-card:  none;
+
+  /* ── motion ───────────────────────────────────────────────────────────── */
+  --ease-out:    cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-in:     cubic-bezier(0.55, 0.06, 0.68, 0.19);
+  --ease-in-out: cubic-bezier(0.65, 0.05, 0.36, 1);
+  --dur-fast:    180ms;
+  --dur-base:    240ms;
+  --dur-slow:    320ms;
+}
+
+/* ── the data layer ─────────────────────────────────────────────────────────
+ * The only polychrome thing in a CLIMESH interface. Everything above is the
+ * chrome; everything here is a measurement. See DESIGN.md § Il colore dei dati.
+ */
+:root {
+  /* Sequential ramp for any scalar field: mean radiant temperature, comfort
+   * index, radiation. Monotonic in lightness, no hue reversal, never a rainbow. */
+  --ramp-0: rgb( 12,  10,  42);
+  --ramp-1: rgb( 62,  17,  92);
+  --ramp-2: rgb(117,  30, 102);
+  --ramp-3: rgb(173,  45,  86);
+  --ramp-4: rgb(219,  79,  57);
+  --ramp-5: rgb(245, 133,  36);
+  --ramp-6: rgb(251, 190,  72);
+  --ramp-7: rgb(252, 238, 182);
+
+  /* Shadow is not a temperature: greys, no hue. */
+  --shade-lit:   oklch(94.5% 0.006 255);
+  --shade-dark:  oklch(16%   0.010 255);
+
+  /* Scenario comparison is baseline versus signal, never two categorical hues. */
+  --series-base:   var(--color-ink);
+  --series-signal: var(--color-accent);
+
+  /* Provenance: measured carries the signal, estimated carries the grey.
+   * Never red — an estimated height is not an error. */
+  --prov-measured:  var(--color-accent);
+  --prov-estimated: var(--color-ink-2);
+}
+
+::selection { background: var(--color-accent); color: var(--color-accent-ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0.01ms; --dur-base: 0.01ms; --dur-slow: 0.01ms; }
+}
