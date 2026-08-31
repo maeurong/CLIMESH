@@ -1,0 +1,9 @@
+nome = "inverno"
+meteo = "materiale università/ITA_Perugia.161810_IGDG.epw"
+ore = 48
+direzione_vento_gradi = 180.0
+
+[inizio]
+anno = 2021
+mese = 1
+giorno = 15

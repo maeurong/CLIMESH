@@ -29,7 +29,13 @@ jobs:
         run: cargo clippy --all-targets --all-features
 
       # The reference case lives in `materiale università/`, which is not
-      # redistributable and therefore not in the repository. The tests that read
-      # it skip themselves and say so; everything else runs here.
+      # redistributable and therefore not in the repository. The handful of tests
+      # that need the real file carry `#[ignore]` and are reported as ignored
+      # here — never as passed. Everything else, the synthetic models included,
+      # runs for real.
       - name: Tests
         run: cargo test --all-features -- --nocapture
+
+      # Where the material is on disk — a developer machine, not this runner —
+      # the same suite runs the ignored checks too:
+      #   cargo test -- --include-ignored

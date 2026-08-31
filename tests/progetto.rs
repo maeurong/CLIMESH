@@ -21,12 +21,16 @@ fn progetto_di_prova() -> Progetto {
             nome: "stato-di-fatto".into(),
             derivato_da: None,
             terreno_m: vec![0.0; 2500],
+            provenienza: Provenienza {
+                origine: "LAB1.INX".into(),
+                altezza: FonteAltezza::Predefinito,
+            },
             edifici: vec![Edificio {
                 altezza_m: 6.0,
-                provenienza: Provenienza {
+                provenienza: Some(Provenienza {
                     origine: "rilievo di laboratorio".into(),
                     altezza: FonteAltezza::Rilievo,
-                },
+                }),
                 impronta: vec![
                     Rettangolo {
                         x_min_m: 10.0,
@@ -47,10 +51,7 @@ fn progetto_di_prova() -> Progetto {
                 specie: "020027".into(),
                 altezza_m: 12.0,
                 frazione_tronco: 0.25,
-                provenienza: Provenienza {
-                    origine: "LAB1.INX".into(),
-                    altezza: FonteAltezza::Predefinito,
-                },
+                provenienza: None,
             }],
             superfici: vec![Superficie {
                 tipo: TipoSuperficie::Erba,

@@ -6,6 +6,43 @@
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
+/// A terrain written as runs of equal values: `[[0.0, 2500]]` instead of 2500
+/// zeros. Reading expands the runs, so the field stays one value per cell.
+mod terreno {
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+    /// The longest terrain a run list may expand to. A run count is a number in a
+    /// file a user may edit, and eleven characters of it would otherwise ask for
+    /// any amount of memory at all; `progetto::valida` only gets to compare the
+    /// length once it exists.
+    const CELLE_MASSIME: usize = 10_000_000;
+
+    pub fn serialize<S: Serializer>(valori: &[f32], s: S) -> Result<S::Ok, S::Error> {
+        let mut tratti: Vec<(f32, usize)> = Vec::new();
+        for &valore in valori {
+            match tratti.last_mut() {
+                Some((corrente, quante)) if corrente.to_bits() == valore.to_bits() => *quante += 1,
+                _ => tratti.push((valore, 1)),
+            }
+        }
+        tratti.serialize(s)
+    }
+
+    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<Vec<f32>, D::Error> {
+        let tratti = Vec::<(f32, usize)>::deserialize(d)?;
+        let mut valori: Vec<f32> = Vec::new();
+        for (valore, quante) in tratti {
+            if quante > CELLE_MASSIME - valori.len().min(CELLE_MASSIME) {
+                return Err(serde::de::Error::custom(format!(
+                    "il terreno supera {CELLE_MASSIME} celle"
+                )));
+            }
+            valori.resize(valori.len() + quante, valore);
+        }
+        Ok(valori)
+    }
+}
+
 /// Extent, step and coordinate system, shared by every raster of the Progetto.
 ///
 /// It lives on the Progetto and not on the Scenario: two Scenari with different
@@ -78,25 +115,33 @@ pub struct Rettangolo {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Edificio {
     pub altezza_m: f32,
-    pub provenienza: Provenienza,
+    /// `None` when the object has nothing to add to `Scenario::provenienza`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provenienza: Option<Provenienza>,
     pub impronta: Vec<Rettangolo>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Albero {
     pub posizione_m: Posizione,
-    /// ENVI-met plant id where the object came from an `.INX`, otherwise a
-    /// species name from `specie.rs`.
+    /// ENVI-met plant id: the key of the table in `specie.rs`, and the same six
+    /// characters the `.INX` writes. A plant id the table does not know takes the
+    /// default estimates; it never becomes a catalogue name.
     pub specie: String,
     pub altezza_m: f32,
     /// Trunk-zone top as a fraction of canopy height.
-    pub frazione_tronco: f32,
-    pub provenienza: Provenienza,
+    ///
+    /// `f64` and not `f32`: the fractions are short decimal literals, and a `f32`
+    /// widened on the way to a file writes `0.44999998807907104` for `0.45`.
+    pub frazione_tronco: f64,
+    /// `None` when the object has nothing to add to `Scenario::provenienza`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provenienza: Option<Provenienza>,
 }
 
-/// `Ord` perché la Derivazione raggruppa le celle per tipo in una `BTreeMap`:
-/// un ordine stabile tiene stabile anche l'ordine in cui le Superfici finiscono
-/// nel file, che il contratto di riproducibilità classifica come esito discreto.
+/// `Ord` so that a caller may key a map by surface type and get one fixed order
+/// out of it: the order the Superfici land in a file is a discrete outcome, and
+/// the reproducibility contract asks two machines to write the same bytes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum TipoSuperficie {
@@ -162,7 +207,18 @@ pub struct Scenario {
     /// The one thing in a Scenario still indexed by cell, and deliberately so:
     /// the terrain is a sampled field, not an object, and it has no object
     /// shape. Everything with a shape carries metres instead.
+    ///
+    /// Written as runs of equal values, because a flat domain of 2500 cells is
+    /// 2500 zeros on one line and the file carries no `nx` to fold them back.
+    #[serde(with = "terreno")]
     pub terreno_m: Vec<f32>,
+    /// Where the objects of this Scenario come from, unless one of them says
+    /// otherwise.
+    ///
+    /// On the Scenario and not only on the objects because a Scenario
+    /// reconstructed from a description rather than surveyed has to say so once,
+    /// at the head of its file, instead of hiding it in the eight hundredth tree.
+    pub provenienza: Provenienza,
     pub edifici: Vec<Edificio>,
     pub alberi: Vec<Albero>,
     pub superfici: Vec<Superficie>,

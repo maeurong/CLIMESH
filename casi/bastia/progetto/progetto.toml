@@ -1,0 +1,26 @@
+nome = "bastia"
+scenari = ["stato-di-fatto", "interventi"]
+periodi = ["estate", "inverno"]
+
+[griglia]
+nx = 50
+ny = 50
+passo_m = 1.0
+crs = "EPSG:4326"
+origine = [12.56, 43.07]
+rotazione_gradi = 21.0
+
+[[punti]]
+id = 1
+posizione_m = [14.5, 17.5]
+etichetta = "punto 1 — cella 15;18"
+
+[[punti]]
+id = 2
+posizione_m = [24.5, 34.5]
+etichetta = "punto 2 — cella 25;35"
+
+[[punti]]
+id = 3
+posizione_m = [36.5, 14.5]
+etichetta = "punto 3 — cella 37;15"

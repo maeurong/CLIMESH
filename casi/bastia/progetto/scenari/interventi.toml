@@ -1,0 +1,8231 @@
+nome = "interventi"
+derivato_da = "stato-di-fatto"
+terreno_m = [[0.0, 2500]]
+
+[provenienza]
+origine = "ricostruito dalla descrizione della relazione, non rilevato: serve a misurare il carico di calcolo, non a pubblicare un risultato. Le siepi di confine sono 020060 .London Plane Tree (middle) e il verde addossato agli edifici è 0000PR .Tilia, due specie del modello al posto dei codici H2 e H4 della relazione, il cui plantID non sta nel materiale del corso"
+altezza = "predefinito"
+
+[[edifici]]
+altezza_m = 6.0
+
+[edifici.provenienza]
+origine = "file .INX di ENVI-met, matrice zTop"
+altezza = "rilievo"
+
+[[edifici.impronta]]
+x_min_m = 10.0
+y_min_m = 25.0
+x_max_m = 23.0
+y_max_m = 32.0
+
+[[edifici]]
+altezza_m = 6.0
+
+[edifici.provenienza]
+origine = "file .INX di ENVI-met, matrice zTop"
+altezza = "rilievo"
+
+[[edifici.impronta]]
+x_min_m = 31.0
+y_min_m = 25.0
+x_max_m = 44.0
+y_max_m = 32.0
+
+[[edifici]]
+altezza_m = 3.0
+
+[edifici.provenienza]
+origine = "file .INX di ENVI-met, matrice zTop"
+altezza = "rilievo"
+
+[[edifici.impronta]]
+x_min_m = 20.0
+y_min_m = 17.0
+x_max_m = 34.0
+y_max_m = 24.0
+
+[[alberi]]
+posizione_m = [0.5, 44.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 43.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 44.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 44.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 44.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 44.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 44.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 43.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 42.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 40.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 38.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 37.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 36.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 35.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 34.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 33.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 33.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 33.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 35.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 41.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 43.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 42.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 38.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 37.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 44.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 42.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 39.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 44.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 44.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 41.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 39.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 39.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 41.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 40.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 37.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 41.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 40.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 39.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 38.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 37.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 36.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 35.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 34.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 34.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 33.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 33.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 37.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 36.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 36.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 37.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 36.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 34.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 35.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 35.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 34.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 36.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 38.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 40.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 43.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 42.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 40.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 39.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 43.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 41.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 43.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 42.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 38.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 38.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 39.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 40.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 40.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 41.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 42.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 42.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 41.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 41.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 42.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 43.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 43.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 43.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 42.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 41.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 40.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 40.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 38.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 37.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 36.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 35.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 34.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 35.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 36.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 37.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 38.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 39.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 39.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 39.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 38.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 37.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 36.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 35.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 34.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 33.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 34.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 34.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 35.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 32.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 31.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 30.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 29.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 28.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [8.5, 27.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 27.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 27.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 27.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 27.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 27.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 27.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 27.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 28.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 31.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 33.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 32.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 30.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 29.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 28.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 29.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 33.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 32.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 31.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 30.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 33.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 32.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 31.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 30.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 29.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 28.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 28.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 28.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 28.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 28.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 28.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 29.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 30.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 31.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [7.5, 32.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 32.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 32.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 29.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 29.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 29.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 29.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 30.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 31.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 32.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 32.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 31.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 31.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 30.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 30.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 30.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 31.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 26.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 25.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 24.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 23.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 22.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 21.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [6.5, 20.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 20.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 21.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 21.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 21.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 20.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 20.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 20.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 20.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 21.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 22.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 26.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 25.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 23.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 24.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 23.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 22.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 25.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 26.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 27.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 26.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 25.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 24.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 22.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 22.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 22.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 21.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 21.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 23.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 25.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 26.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 26.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 25.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 22.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 23.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 26.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 25.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 24.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 24.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [5.5, 23.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 23.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 24.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 24.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 19.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 18.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [4.5, 17.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 17.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 17.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 17.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 17.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 18.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 19.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 20.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 19.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 19.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 19.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [3.5, 18.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 18.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 18.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 30.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 30.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 31.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 31.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [25.5, 31.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [25.5, 30.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [25.5, 29.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 29.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 29.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [25.5, 28.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 28.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 28.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 31.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 29.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 30.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 28.5]
+specie = "020111"
+altezza_m = 10.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [2.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [1.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [30.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [34.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [31.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [33.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [35.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 0.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [35.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [34.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [30.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [31.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [34.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [34.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [31.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [30.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [30.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [31.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [33.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [33.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [33.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [35.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [35.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 1.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [30.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [34.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [31.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [33.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [35.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 27.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 26.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 25.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [46.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [44.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [45.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [45.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [44.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [44.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [44.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [45.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [46.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [45.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [46.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [44.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [45.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [46.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [44.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [44.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [46.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [45.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [44.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [46.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [46.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [45.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [44.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [45.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [45.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [46.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 24.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 24.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 27.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 25.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 24.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 27.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 25.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 26.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 26.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [46.5, 24.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 13.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 12.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [34.5, 12.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [33.5, 12.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 12.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 11.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [33.5, 11.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [34.5, 11.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [35.5, 11.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [35.5, 12.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [33.5, 13.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [35.5, 13.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [35.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [34.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [34.5, 13.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [35.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 20.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 21.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 22.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 17.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 19.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 18.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 23.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 13.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 13.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 12.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 10.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [33.5, 10.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 6.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 5.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 2.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 5.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 3.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 4.5]
+specie = "020027"
+altezza_m = 15.0
+frazione_tronco = 0.45
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 49.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 49.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 46.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 44.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 43.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 48.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 46.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 46.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 47.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [36.5, 45.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 48.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 45.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 44.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 45.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 45.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 45.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 44.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 44.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 44.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 43.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 43.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 42.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 42.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 43.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 42.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 42.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 44.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [42.5, 45.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 45.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 46.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [41.5, 46.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [40.5, 47.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 48.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [39.5, 47.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 47.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [37.5, 47.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [38.5, 46.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [43.5, 43.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 47.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [31.5, 47.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 47.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 48.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [31.5, 48.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 48.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 49.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [31.5, 49.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [31.5, 46.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [32.5, 46.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [30.5, 47.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [30.5, 49.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [30.5, 48.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 38.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 36.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 35.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 38.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 35.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 37.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [47.5, 36.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 36.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [48.5, 37.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [49.5, 37.5]
+specie = "0000PA"
+altezza_m = 18.0
+frazione_tronco = 0.3
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 12.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 11.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 9.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [24.5, 11.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [24.5, 9.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [24.5, 10.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [24.5, 8.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [25.5, 8.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [25.5, 7.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 7.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 7.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 8.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 9.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 11.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 12.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 10.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [25.5, 11.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [25.5, 12.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [25.5, 10.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 10.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 8.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 7.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 11.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 9.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [29.5, 10.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [28.5, 10.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 8.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 9.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [25.5, 9.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [27.5, 12.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [26.5, 11.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [15.5, 7.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [17.5, 7.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [19.5, 7.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [19.5, 6.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [19.5, 4.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [19.5, 3.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [16.5, 3.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [15.5, 3.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [14.5, 5.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [14.5, 4.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [17.5, 4.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [20.5, 4.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [20.5, 5.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [17.5, 5.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [15.5, 5.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [16.5, 5.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [19.5, 5.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [20.5, 6.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [15.5, 6.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [14.5, 6.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [16.5, 7.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [16.5, 6.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [15.5, 4.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [16.5, 4.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [18.5, 4.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [18.5, 3.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [17.5, 3.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [18.5, 6.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [17.5, 6.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [18.5, 7.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [18.5, 5.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[alberi.provenienza]
+origine = "rilevato: viene dallo Scenario «stato-di-fatto»"
+altezza = "predefinito"
+
+[[alberi]]
+posizione_m = [0.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [1.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [2.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [3.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [4.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [5.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [6.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [7.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [8.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [9.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [10.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [11.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [12.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [13.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [14.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [15.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [16.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [17.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [18.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [20.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [21.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [22.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [23.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [24.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [25.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [26.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [27.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [28.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [32.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [33.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [34.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [35.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [36.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [37.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [40.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [41.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [42.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [43.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [44.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [45.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [46.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [47.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [48.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 49.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 48.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 48.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 47.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 47.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 46.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 46.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 45.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 45.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 44.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 43.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 42.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 41.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 40.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 39.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 34.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 33.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [10.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [11.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [12.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [13.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [14.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [15.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [16.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [17.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [18.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [20.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [21.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [22.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [31.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [32.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [33.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [34.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [35.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [36.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [37.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [38.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [39.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [40.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [41.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [42.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [43.5, 32.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 32.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [9.5, 31.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [23.5, 31.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [30.5, 31.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [44.5, 31.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 31.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [9.5, 30.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [23.5, 30.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [30.5, 30.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [44.5, 30.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 30.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [9.5, 29.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [23.5, 29.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [30.5, 29.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [44.5, 29.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 29.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [9.5, 28.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [23.5, 28.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [30.5, 28.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [44.5, 28.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 28.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [9.5, 27.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [44.5, 27.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [9.5, 26.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [44.5, 26.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [9.5, 25.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [44.5, 25.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [10.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [11.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [12.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [13.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [14.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [15.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [16.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [17.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [18.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [20.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [21.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [22.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [23.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [24.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [25.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [26.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [27.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [28.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [29.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [30.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [31.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [32.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [33.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [34.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [35.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [36.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [37.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [38.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [39.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [40.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [41.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [42.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [43.5, 24.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 23.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [34.5, 23.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 22.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [34.5, 22.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 21.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [34.5, 21.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 20.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [34.5, 20.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 19.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [34.5, 19.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 18.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [34.5, 18.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 17.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [34.5, 17.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 16.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [20.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [21.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [22.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [23.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [24.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [25.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [26.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [27.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [28.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [29.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [30.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [31.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [32.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [33.5, 16.5]
+specie = "0000PR"
+altezza_m = 12.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 15.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 14.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 13.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 13.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 12.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 12.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 11.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 11.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 10.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 10.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 9.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 9.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 8.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 8.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 7.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 7.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 6.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 5.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [0.5, 4.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 1.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [3.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [4.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [5.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [6.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [7.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [8.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [9.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [10.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [11.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [12.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [13.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [14.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [15.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [16.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [17.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [18.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [19.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [20.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [21.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [22.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [23.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [24.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [25.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [40.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [41.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [42.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [43.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [44.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [45.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [46.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [47.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [48.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[alberi]]
+posizione_m = [49.5, 0.5]
+specie = "020060"
+altezza_m = 15.0
+frazione_tronco = 0.35
+
+[[superfici]]
+tipo = "erba"
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 47.0
+x_max_m = 29.0
+y_max_m = 50.0
+
+[[superfici.impronta]]
+x_min_m = 32.0
+y_min_m = 49.0
+x_max_m = 38.0
+y_max_m = 50.0
+
+[[superfici.impronta]]
+x_min_m = 40.0
+y_min_m = 48.0
+x_max_m = 50.0
+y_max_m = 50.0
+
+[[superfici.impronta]]
+x_min_m = 33.0
+y_min_m = 48.0
+x_max_m = 37.0
+y_max_m = 49.0
+
+[[superfici.impronta]]
+x_min_m = 33.0
+y_min_m = 46.0
+x_max_m = 36.0
+y_max_m = 48.0
+
+[[superfici.impronta]]
+x_min_m = 41.0
+y_min_m = 47.0
+x_max_m = 50.0
+y_max_m = 48.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 46.0
+x_max_m = 31.0
+y_max_m = 47.0
+
+[[superfici.impronta]]
+x_min_m = 42.0
+y_min_m = 46.0
+x_max_m = 50.0
+y_max_m = 47.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 45.0
+x_max_m = 36.0
+y_max_m = 46.0
+
+[[superfici.impronta]]
+x_min_m = 43.0
+y_min_m = 45.0
+x_max_m = 50.0
+y_max_m = 46.0
+
+[[superfici.impronta]]
+x_min_m = 9.0
+y_min_m = 44.0
+x_max_m = 38.0
+y_max_m = 45.0
+
+[[superfici.impronta]]
+x_min_m = 44.0
+y_min_m = 44.0
+x_max_m = 50.0
+y_max_m = 45.0
+
+[[superfici.impronta]]
+x_min_m = 9.0
+y_min_m = 43.0
+x_max_m = 39.0
+y_max_m = 44.0
+
+[[superfici.impronta]]
+x_min_m = 43.0
+y_min_m = 43.0
+x_max_m = 50.0
+y_max_m = 44.0
+
+[[superfici.impronta]]
+x_min_m = 9.0
+y_min_m = 42.0
+x_max_m = 40.0
+y_max_m = 43.0
+
+[[superfici.impronta]]
+x_min_m = 44.0
+y_min_m = 42.0
+x_max_m = 50.0
+y_max_m = 43.0
+
+[[superfici.impronta]]
+x_min_m = 9.0
+y_min_m = 39.0
+x_max_m = 50.0
+y_max_m = 42.0
+
+[[superfici.impronta]]
+x_min_m = 9.0
+y_min_m = 38.0
+x_max_m = 48.0
+y_max_m = 39.0
+
+[[superfici.impronta]]
+x_min_m = 9.0
+y_min_m = 36.0
+x_max_m = 47.0
+y_max_m = 38.0
+
+[[superfici.impronta]]
+x_min_m = 9.0
+y_min_m = 35.0
+x_max_m = 48.0
+y_max_m = 36.0
+
+[[superfici.impronta]]
+x_min_m = 9.0
+y_min_m = 32.0
+x_max_m = 50.0
+y_max_m = 35.0
+
+[[superfici.impronta]]
+x_min_m = 9.0
+y_min_m = 27.0
+x_max_m = 10.0
+y_max_m = 32.0
+
+[[superfici.impronta]]
+x_min_m = 23.0
+y_min_m = 28.0
+x_max_m = 25.0
+y_max_m = 32.0
+
+[[superfici.impronta]]
+x_min_m = 29.0
+y_min_m = 28.0
+x_max_m = 31.0
+y_max_m = 32.0
+
+[[superfici.impronta]]
+x_min_m = 44.0
+y_min_m = 28.0
+x_max_m = 50.0
+y_max_m = 32.0
+
+[[superfici.impronta]]
+x_min_m = 44.0
+y_min_m = 25.0
+x_max_m = 47.0
+y_max_m = 28.0
+
+[[superfici.impronta]]
+x_min_m = 7.0
+y_min_m = 25.0
+x_max_m = 10.0
+y_max_m = 27.0
+
+[[superfici.impronta]]
+x_min_m = 7.0
+y_min_m = 24.0
+x_max_m = 46.0
+y_max_m = 25.0
+
+[[superfici.impronta]]
+x_min_m = 7.0
+y_min_m = 20.0
+x_max_m = 20.0
+y_max_m = 24.0
+
+[[superfici.impronta]]
+x_min_m = 34.0
+y_min_m = 23.0
+x_max_m = 38.0
+y_max_m = 24.0
+
+[[superfici.impronta]]
+x_min_m = 34.0
+y_min_m = 17.0
+x_max_m = 36.0
+y_max_m = 23.0
+
+[[superfici.impronta]]
+x_min_m = 5.0
+y_min_m = 17.0
+x_max_m = 20.0
+y_max_m = 20.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 16.0
+x_max_m = 36.0
+y_max_m = 17.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 15.0
+x_max_m = 35.0
+y_max_m = 16.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 14.0
+x_max_m = 34.0
+y_max_m = 15.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 13.0
+x_max_m = 33.0
+y_max_m = 14.0
+
+[[superfici.impronta]]
+x_min_m = 39.0
+y_min_m = 13.0
+x_max_m = 50.0
+y_max_m = 14.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 12.0
+x_max_m = 25.0
+y_max_m = 13.0
+
+[[superfici.impronta]]
+x_min_m = 29.0
+y_min_m = 12.0
+x_max_m = 32.0
+y_max_m = 13.0
+
+[[superfici.impronta]]
+x_min_m = 38.0
+y_min_m = 12.0
+x_max_m = 50.0
+y_max_m = 13.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 8.0
+x_max_m = 24.0
+y_max_m = 12.0
+
+[[superfici.impronta]]
+x_min_m = 30.0
+y_min_m = 10.0
+x_max_m = 32.0
+y_max_m = 12.0
+
+[[superfici.impronta]]
+x_min_m = 36.0
+y_min_m = 11.0
+x_max_m = 50.0
+y_max_m = 12.0
+
+[[superfici.impronta]]
+x_min_m = 34.0
+y_min_m = 10.0
+x_max_m = 50.0
+y_max_m = 11.0
+
+[[superfici.impronta]]
+x_min_m = 29.0
+y_min_m = 7.0
+x_max_m = 50.0
+y_max_m = 10.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 7.0
+x_max_m = 15.0
+y_max_m = 8.0
+
+[[superfici.impronta]]
+x_min_m = 20.0
+y_min_m = 7.0
+x_max_m = 25.0
+y_max_m = 8.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 4.0
+x_max_m = 14.0
+y_max_m = 7.0
+
+[[superfici.impronta]]
+x_min_m = 21.0
+y_min_m = 6.0
+x_max_m = 49.0
+y_max_m = 7.0
+
+[[superfici.impronta]]
+x_min_m = 21.0
+y_min_m = 5.0
+x_max_m = 48.0
+y_max_m = 6.0
+
+[[superfici.impronta]]
+x_min_m = 21.0
+y_min_m = 4.0
+x_max_m = 28.0
+y_max_m = 5.0
+
+[[superfici.impronta]]
+x_min_m = 38.0
+y_min_m = 4.0
+x_max_m = 48.0
+y_max_m = 5.0
+
+[[superfici.impronta]]
+x_min_m = 1.0
+y_min_m = 3.0
+x_max_m = 15.0
+y_max_m = 4.0
+
+[[superfici.impronta]]
+x_min_m = 20.0
+y_min_m = 3.0
+x_max_m = 26.0
+y_max_m = 4.0
+
+[[superfici.impronta]]
+x_min_m = 40.0
+y_min_m = 3.0
+x_max_m = 48.0
+y_max_m = 4.0
+
+[[superfici.impronta]]
+x_min_m = 2.0
+y_min_m = 2.0
+x_max_m = 26.0
+y_max_m = 3.0
+
+[[superfici.impronta]]
+x_min_m = 40.0
+y_min_m = 2.0
+x_max_m = 49.0
+y_max_m = 3.0
+
+[[superfici.impronta]]
+x_min_m = 3.0
+y_min_m = 0.0
+x_max_m = 26.0
+y_max_m = 2.0
+
+[[superfici.impronta]]
+x_min_m = 40.0
+y_min_m = 0.0
+x_max_m = 50.0
+y_max_m = 2.0
+
+[[superfici]]
+tipo = "acqua"
+
+[[superfici.impronta]]
+x_min_m = 23.0
+y_min_m = 25.0
+x_max_m = 31.0
+y_max_m = 28.0
+
+[[superfici]]
+tipo = "terreno-nudo"
+
+[[superfici.impronta]]
+x_min_m = 29.0
+y_min_m = 49.0
+x_max_m = 32.0
+y_max_m = 50.0
+
+[[superfici.impronta]]
+x_min_m = 38.0
+y_min_m = 49.0
+x_max_m = 40.0
+y_max_m = 50.0
+
+[[superfici.impronta]]
+x_min_m = 29.0
+y_min_m = 47.0
+x_max_m = 33.0
+y_max_m = 49.0
+
+[[superfici.impronta]]
+x_min_m = 37.0
+y_min_m = 48.0
+x_max_m = 40.0
+y_max_m = 49.0
+
+[[superfici.impronta]]
+x_min_m = 36.0
+y_min_m = 47.0
+x_max_m = 41.0
+y_max_m = 48.0
+
+[[superfici.impronta]]
+x_min_m = 31.0
+y_min_m = 46.0
+x_max_m = 33.0
+y_max_m = 47.0
+
+[[superfici.impronta]]
+x_min_m = 36.0
+y_min_m = 46.0
+x_max_m = 42.0
+y_max_m = 47.0
+
+[[superfici.impronta]]
+x_min_m = 36.0
+y_min_m = 45.0
+x_max_m = 43.0
+y_max_m = 46.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 27.0
+x_max_m = 9.0
+y_max_m = 45.0
+
+[[superfici.impronta]]
+x_min_m = 38.0
+y_min_m = 44.0
+x_max_m = 44.0
+y_max_m = 45.0
+
+[[superfici.impronta]]
+x_min_m = 39.0
+y_min_m = 43.0
+x_max_m = 43.0
+y_max_m = 44.0
+
+[[superfici.impronta]]
+x_min_m = 40.0
+y_min_m = 42.0
+x_max_m = 44.0
+y_max_m = 43.0
+
+[[superfici.impronta]]
+x_min_m = 48.0
+y_min_m = 38.0
+x_max_m = 50.0
+y_max_m = 39.0
+
+[[superfici.impronta]]
+x_min_m = 47.0
+y_min_m = 36.0
+x_max_m = 50.0
+y_max_m = 38.0
+
+[[superfici.impronta]]
+x_min_m = 48.0
+y_min_m = 35.0
+x_max_m = 50.0
+y_max_m = 36.0
+
+[[superfici.impronta]]
+x_min_m = 10.0
+y_min_m = 25.0
+x_max_m = 23.0
+y_max_m = 32.0
+
+[[superfici.impronta]]
+x_min_m = 25.0
+y_min_m = 28.0
+x_max_m = 29.0
+y_max_m = 32.0
+
+[[superfici.impronta]]
+x_min_m = 31.0
+y_min_m = 25.0
+x_max_m = 44.0
+y_max_m = 32.0
+
+[[superfici.impronta]]
+x_min_m = 47.0
+y_min_m = 25.0
+x_max_m = 50.0
+y_max_m = 28.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 20.0
+x_max_m = 7.0
+y_max_m = 27.0
+
+[[superfici.impronta]]
+x_min_m = 46.0
+y_min_m = 24.0
+x_max_m = 50.0
+y_max_m = 25.0
+
+[[superfici.impronta]]
+x_min_m = 20.0
+y_min_m = 17.0
+x_max_m = 34.0
+y_max_m = 24.0
+
+[[superfici.impronta]]
+x_min_m = 38.0
+y_min_m = 23.0
+x_max_m = 50.0
+y_max_m = 24.0
+
+[[superfici.impronta]]
+x_min_m = 36.0
+y_min_m = 16.0
+x_max_m = 50.0
+y_max_m = 23.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 17.0
+x_max_m = 5.0
+y_max_m = 20.0
+
+[[superfici.impronta]]
+x_min_m = 35.0
+y_min_m = 15.0
+x_max_m = 50.0
+y_max_m = 16.0
+
+[[superfici.impronta]]
+x_min_m = 34.0
+y_min_m = 14.0
+x_max_m = 50.0
+y_max_m = 15.0
+
+[[superfici.impronta]]
+x_min_m = 33.0
+y_min_m = 13.0
+x_max_m = 39.0
+y_max_m = 14.0
+
+[[superfici.impronta]]
+x_min_m = 25.0
+y_min_m = 12.0
+x_max_m = 29.0
+y_max_m = 13.0
+
+[[superfici.impronta]]
+x_min_m = 32.0
+y_min_m = 12.0
+x_max_m = 38.0
+y_max_m = 13.0
+
+[[superfici.impronta]]
+x_min_m = 24.0
+y_min_m = 10.0
+x_max_m = 30.0
+y_max_m = 12.0
+
+[[superfici.impronta]]
+x_min_m = 32.0
+y_min_m = 11.0
+x_max_m = 36.0
+y_max_m = 12.0
+
+[[superfici.impronta]]
+x_min_m = 32.0
+y_min_m = 10.0
+x_max_m = 34.0
+y_max_m = 11.0
+
+[[superfici.impronta]]
+x_min_m = 24.0
+y_min_m = 8.0
+x_max_m = 29.0
+y_max_m = 10.0
+
+[[superfici.impronta]]
+x_min_m = 15.0
+y_min_m = 7.0
+x_max_m = 20.0
+y_max_m = 8.0
+
+[[superfici.impronta]]
+x_min_m = 25.0
+y_min_m = 7.0
+x_max_m = 29.0
+y_max_m = 8.0
+
+[[superfici.impronta]]
+x_min_m = 14.0
+y_min_m = 4.0
+x_max_m = 21.0
+y_max_m = 7.0
+
+[[superfici.impronta]]
+x_min_m = 49.0
+y_min_m = 6.0
+x_max_m = 50.0
+y_max_m = 7.0
+
+[[superfici.impronta]]
+x_min_m = 48.0
+y_min_m = 3.0
+x_max_m = 50.0
+y_max_m = 6.0
+
+[[superfici.impronta]]
+x_min_m = 28.0
+y_min_m = 4.0
+x_max_m = 38.0
+y_max_m = 5.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 3.0
+x_max_m = 1.0
+y_max_m = 4.0
+
+[[superfici.impronta]]
+x_min_m = 15.0
+y_min_m = 3.0
+x_max_m = 20.0
+y_max_m = 4.0
+
+[[superfici.impronta]]
+x_min_m = 26.0
+y_min_m = 0.0
+x_max_m = 40.0
+y_max_m = 4.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 2.0
+x_max_m = 2.0
+y_max_m = 3.0
+
+[[superfici.impronta]]
+x_min_m = 49.0
+y_min_m = 2.0
+x_max_m = 50.0
+y_max_m = 3.0
+
+[[superfici.impronta]]
+x_min_m = 0.0
+y_min_m = 0.0
+x_max_m = 3.0
+y_max_m = 2.0
