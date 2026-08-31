@@ -1,0 +1,232 @@
+# Caso di riferimento CLIMESH: Casa Evolutiva, Bastia Umbra (PG).
+# Valori pubblicati nella relazione del caso studio, trascritti a mano perché
+# possano essere confrontati da un programma. TOML e non JSON per una ragione
+# sola: qui servono le note, e TOML ha i commenti.
+#
+# Questo file è scritto a mano. L'estratto del modello, invece, è generato:
+# vedi scenario-lab1.toml e docs/formato-inx.md.
+
+[provenienza]
+relazione = "materiale università/RELAZIONI/LA01.pdf, pagine 2-6"
+trascritto_da = "estrazione del testo del PDF, riletta e dettata durante la sessione di pianificazione"
+trascritto_il = 2026-08-31
+nota = """
+Nell'ambiente di lavoro non c'è un estrattore di PDF: i valori sono stati letti
+e dettati a mano. Ogni numero qui sotto porta l'ora e lo scenario a cui
+appartiene; dove la relazione è ambigua c'è una nota invece di una congettura.
+"""
+
+[ingressi]
+modello = "materiale università/LAB1.INX"
+modello_sha256 = "8bc18f929694939e8759b854e00b42ac5fa4ba8ad64ce4b5f5e3f5ab283b0ec2"
+modello_estratto = "casi/bastia/scenario-lab1.toml"
+meteo = "materiale università/ITA_Perugia.161810_IGDG.epw"
+meteo_sha256 = "45d3fd76d7b4748b3c2506c637b2aa67f8cfb12308491f5c91f1d5e31361d4e1"
+meteo_stazione = "Perugia, ITA, IGDG, WMO 161810, lat 43.08, lon 12.50, fuso +1.0, quota 213 m"
+meteo_righe_dati = 8760
+nota = """
+Le somme di controllo sono state calcolate con sha256sum sui file di
+`materiale università/`, che resta fuori dal repository perché non
+redistribuibile. Servono a dire se il file letto è ancora quello di allora.
+La stazione dell'EPW è Perugia; il modello è a Bastia Umbra, una ventina di
+chilometri più a est. La relazione non discute la differenza.
+"""
+
+# I tre punti in cui la relazione riporta le serie temporali, in coordinate di
+# griglia (i;j). Convenzione degli indici: vedi docs/formato-inx.md.
+[[punti_di_osservazione]]
+id = 1
+i = 15
+j = 18
+
+[[punti_di_osservazione]]
+id = 2
+i = 25
+j = 35
+
+[[punti_di_osservazione]]
+id = 3
+i = 37
+j = 15
+
+[[scenari]]
+nome = "stato di fatto"
+descrizione = "il luogo come si trova, senza interventi"
+vegetazione_codici_envimet = ["XX", "11", "27", "PA"]
+vegetazione_note = "XX erba, 11 albero centrale, 27 alberi circostanti, PA alberi in alto a destra"
+
+[[scenari]]
+nome = "interventi"
+descrizione = "stato di fatto più le mitigazioni proposte"
+vegetazione_codici_envimet = ["XX", "11", "27", "PA", "H2", "H4", "WW"]
+vegetazione_note = """
+Gli stessi dello stato di fatto, più H2 vegetazione di confine e sopra i
+duplex, H4 vegetazione addossata agli edifici, WW acqua.
+"""
+
+[[periodi]]
+nome = "estate"
+giorno = 2021-07-15
+durata_ore = 48
+forcing = "simple forcing"
+direzione_vento_gradi = 45
+
+[[periodi]]
+nome = "inverno"
+giorno = 2021-01-15
+durata_ore = 48
+forcing = "simple forcing"
+direzione_vento_gradi = 180
+
+[edifici]
+duplex_altezza_m = 6.0
+duplex_blocchi = 2
+simplex_altezza_m = 3.0
+simplex_blocchi = 1
+nota = """
+Le altezze coincidono con i valori di zTop letti in LAB1.INX: 6 m per i due
+blocchi maggiori, 3 m per quello minore, 0 altrove.
+"""
+
+# Temperatura dell'aria. Ogni riga porta il periodo, la grandezza, l'ora, e i
+# due scenari nell'ordine in cui la relazione li accosta.
+[[temperatura_aria]]
+periodo = "estate"
+giorno = 2021-07-15
+grandezza = "massima"
+ora = "06:00"
+stato_di_fatto = 19.44
+interventi = 19.50
+unita = "°C"
+
+[[temperatura_aria]]
+periodo = "estate"
+giorno = 2021-07-15
+grandezza = "massima"
+ora = "15:00"
+stato_di_fatto = 28.18
+interventi = 27.97
+unita = "°C"
+
+[[temperatura_aria]]
+periodo = "inverno"
+giorno = 2021-01-15
+grandezza = "massima"
+ora = "06:00"
+stato_di_fatto = 3.13
+interventi = 4.24
+unita = "°C"
+
+[[temperatura_aria]]
+periodo = "inverno"
+giorno = 2021-01-15
+grandezza = "massima"
+ora = "16:00"
+stato_di_fatto = 5.92
+interventi = 6.61
+unita = "°C"
+
+[[temperatura_aria]]
+periodo = "inverno"
+giorno = 2021-01-15
+grandezza = "minima"
+ora = "06:00"
+stato_di_fatto = 2.96
+interventi = 2.80
+unita = "°C"
+
+[[temperatura_aria]]
+periodo = "inverno"
+giorno = 2021-01-15
+grandezza = "minima"
+ora = "16:00"
+stato_di_fatto = 5.57
+interventi = 5.30
+unita = "°C"
+
+# Velocità del vento: la relazione pubblica la differenza massima introdotta
+# dagli interventi, non i due valori assoluti. Segno negativo: gli interventi
+# rallentano il vento.
+[[vento]]
+periodo = "estate"
+giorno = 2021-07-15
+ora = "06:00"
+differenza_massima = -0.10
+unita = "m/s"
+
+[[vento]]
+periodo = "estate"
+giorno = 2021-07-15
+ora = "15:00"
+differenza_massima = -0.12
+unita = "m/s"
+
+[[vento]]
+periodo = "inverno"
+giorno = 2021-01-15
+ora = "06:00"
+differenza_massima = -0.05
+unita = "m/s"
+
+[[vento]]
+periodo = "inverno"
+giorno = 2021-01-15
+ora = "16:00"
+differenza_massima = -0.07
+unita = "m/s"
+
+[note]
+ambiguita = [
+  "Non è detto su quale estensione siano presi i massimi e i minimi: se sull'intera griglia, sui soli tre punti di osservazione, o su una sezione. I valori qui restano come pubblicati.",
+  "D'estate la relazione riporta solo i massimi, d'inverno massimi e minimi. La mancanza è della fonte, non della trascrizione.",
+  "L'ora del pomeriggio cambia con la stagione: 15:00 d'estate, 16:00 d'inverno. Presumibilmente l'ora del massimo, ma la relazione non lo dice.",
+  "Non è detta la quota a cui sono presi i valori. ENVI-met riporta di norma il primo livello utile sopra il suolo; senza il file di configurazione della simulazione non è verificabile.",
+  "Le corse durano 48 ore a partire dal giorno indicato: non è detto se le ore riportate appartengano al primo o al secondo giorno simulato.",
+  "D'inverno gli interventi alzano il massimo (+1,11 °C alle 06:00) e abbassano il minimo (−0,16 °C alle 06:00): i due effetti hanno segno opposto, ed è così che la relazione li riporta.",
+]
+
+[verifica_scenario]
+scenario_contenuto_in_lab1 = "stato di fatto"
+nota = """
+Verificato leggendo LAB1.INX, non dedotto dal nome del file. Tre indizi
+concordi, e nessuno contrario:
+
+1. La matrice ID_soilprofile vale 000000 in tutte e 2500 le celle: nessuna
+   superficie d'acqua, e l'acqua (WW) è un intervento.
+2. Nessuna delle 616 istanze di vegetazione è radicata su una cella con
+   zTop > 0: sopra i duplex non c'è niente, e la vegetazione sopra i duplex è
+   un intervento.
+3. Nessun plantID del file finisce per H2 o H4, che sono i codici delle siepi
+   introdotte dagli interventi.
+
+Le cinque specie presenti sono: 020027 .Pine Tree (middle), 309 istanze;
+020060 .London Plane Tree (middle), 168; 0000PR .Tilia, 62; 0000PA
+.Populus Alba, 61; 020111 .Hanging Birch (middle), 16. Più l'erba 0100XX
+nella matrice ID_plants1D, presente in 1602 celle su 2500.
+"""
+per_avere_l_altro_scenario = """
+Manca il file .INX degli interventi, che nel materiale del corso non c'è: non
+è ricostruibile dallo stato di fatto senza sapere dove vadano messe le siepi e
+lo specchio d'acqua. Servirebbero, in ordine di quanto pesano:
+
+1. la posizione in griglia della vegetazione H2 di confine e sopra i duplex e
+   della H4 addossata agli edifici, e la loro specie;
+2. l'estensione in griglia della superficie d'acqua WW e il profilo di suolo
+   con cui è stata realizzata;
+3. la conferma che nient'altro cambi fra i due scenari — edifici, terreno e
+   griglia.
+
+Finché non ci sono, il caso versionato copre un solo Scenario dei due, e il
+confronto fra scenari resta sui numeri pubblicati nella relazione.
+"""
+
+[incongruenze]
+trovate = [
+  "locationName dice 'bergamo' ma le coordinate del file sono lat 43.07 lon 12.56, cioè l'Umbria, e il caso è a Bastia Umbra. Il nome è un refuso lasciato da un modello precedente: le coordinate sono quelle giuste, il nome no.",
+  "La relazione elenca per lo stato di fatto quattro codici di vegetazione (XX, 11, 27, PA), ma LAB1.INX contiene cinque specie: oltre a 020027 (27) e 020111 (11) e 0000PA (PA), ci sono 020060 .London Plane Tree con 168 istanze e 0000PR .Tilia con 62. Sono un terzo delle piante del modello e la relazione non le nomina.",
+  "Il codice 'PA' della relazione corrisponde a plantID 0000PA (.Populus Alba), che nel file sta nell'angolo a i alti e j alti, cioè in alto a destra guardando il modello con il nord in alto: coerente con la descrizione. Ma i codici della relazione sono le ultime due cifre del plantID a sei caratteri, e questa corrispondenza non è dichiarata da nessuna parte.",
+  "buildingNr spezza i tre blocchi costruiti in sette identificativi, alcuni dei quali coprono una sola cella. Chi conta gli edifici per numero ne conta sette invece di tre.",
+  "In ID_plants1D l'erba manca sotto tutti gli edifici e sotto 618 celle, mentre le istanze di vegetazione sono 616: due celle vuote non hanno né edificio né albero. Sono due sviste del disegno, non del formato.",
+  "L'EPW è della stazione di Perugia (lat 43.08, lon 12.50) mentre il modello è a Bastia Umbra (lat 43.07, lon 12.56). La relazione non discute la distanza.",
+  "Il file .INX non contiene i parametri della simulazione: giorni, durata, forcing e direzione del vento stanno solo nella relazione e nel file di configurazione .SIMX, che nel materiale del corso non c'è.",
+]
