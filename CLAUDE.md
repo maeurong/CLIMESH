@@ -101,3 +101,25 @@ Documentazione, file di dati e discussione in **italiano**.
 Test prima dell'implementazione. Un test che fallisce se la logica si rompe,
 niente framework e niente fixture elaborate. Enumera i casi degeneri prima di
 scrivere: sono il grosso del lavoro di correzione successivo.
+
+**Un commento non promette codice che non esiste.** È già successo tre volte in
+questo progetto: un commento che difendeva un vincolo TOML inesistente, uno che
+prometteva una cache mai implementata, uno che descriveva al presente una
+Derivazione non ancora scritta. Se una nota parla di qualcosa che verrà, va al
+futuro e dice che verrà; se parla di qualcosa che c'è, deve essere vero adesso.
+Un commento falso è peggio di nessun commento, perché chi legge gli crede.
+
+**Mai `git add -A` mentre un subagente sta scrivendo nell'albero.** Sempre percorsi
+espliciti: `git add -- src/questo.rs tests/quello.rs`. È già successo due volte che
+un commit intitolato a una cosa si portasse dentro il lavoro di un agente in corso —
+la seconda volta 49.743 righe sotto un messaggio che parlava di un file di licenza.
+Un commit che dichiara meno di quello che contiene è il difetto che questo progetto
+contesta agli altri, su un altro piano. La promessa di stare attenti non è bastata:
+la regola è meccanica.
+
+**Nessun identificativo inventato.** I codici delle specie, i nomi dei file, gli
+identificativi di qualunque cosa provengono da una fonte reale e citabile — la
+tabella in `src/specie.rs`, `casi/bastia/valori-di-riferimento.toml`, il file
+`.INX`. Un codice che *sembra* un plant-id di ENVI-met ma non lo è finisce in un
+Progetto che qualcuno pubblicherà, ed è esattamente il difetto che il progetto
+contesta agli altri.
