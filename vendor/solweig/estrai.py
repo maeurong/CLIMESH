@@ -32,6 +32,16 @@ from pathlib import Path
 # I file che servono al percorso CPU delle ombre, e nient'altro.
 FILE = ["shadowing.rs"]
 
+# Elementi che a monte sono `pub(crate)` e che devono diventare `pub`, perche'
+# il crate vendorato viene consumato da fuori. E' l'unica modifica al codice
+# rimasto, ed e' "adattare per far compilare": senza, la copia non serve a
+# niente. Va dichiarata in PROVENIENZA.toml, e sta qui perche' una patch fatta
+# a mano si perderebbe alla prossima estrazione senza che nessuno se ne accorga.
+DA_ESPORRE = [
+    "fn calculate_shadows_rust",
+    "struct ShadowingResultRust",
+]
+
 
 def estrai(testo: str) -> tuple[str, int]:
     """Restituisce il sorgente senza gli involucri Python, e quanti ne ha tolti."""
@@ -65,6 +75,18 @@ def estrai(testo: str) -> tuple[str, int]:
     return "\n".join(fuori), tolti
 
 
+def esponi(testo: str) -> tuple[str, int]:
+    """Promuove a `pub` gli elementi di DA_ESPORRE. Restituisce quanti ne ha promossi."""
+    righe = testo.split("\n")
+    fatti = 0
+    for k, riga in enumerate(righe):
+        for elemento in DA_ESPORRE:
+            if riga.startswith(f"pub(crate) {elemento}"):
+                righe[k] = riga.replace("pub(crate) ", "pub ", 1)
+                fatti += 1
+    return "\n".join(righe), fatti
+
+
 def main() -> int:
     if len(sys.argv) < 2:
         print(__doc__.strip().split("Uso:")[1].strip(), file=sys.stderr)
@@ -80,6 +102,7 @@ def main() -> int:
     for nome in FILE:
         testo = (sorgente / nome).read_text(encoding="utf-8")
         pulito, tolti = estrai(testo)
+        pulito, esposti = esponi(pulito)
         residui = sum(
             1
             for r in pulito.split("\n")
@@ -91,7 +114,14 @@ def main() -> int:
         (destinazione / nome).write_text(pulito, encoding="utf-8")
         prima = len(testo.split("\n"))
         dopo = len(pulito.split("\n"))
-        print(f"{nome}: {prima} -> {dopo} righe, {tolti} involucri rimossi")
+        print(f"{nome}: {prima} -> {dopo} righe, {tolti} involucri rimossi, {esposti} elementi esposti")
+        if esposti != len(DA_ESPORRE):
+            print(
+                f"{nome}: attesi {len(DA_ESPORRE)} elementi da esporre, promossi {esposti}. "
+                "A monte le visibilita' sono cambiate: rileggi DA_ESPORRE prima di fidarti.",
+                file=sys.stderr,
+            )
+            return 1
 
     return 0
 

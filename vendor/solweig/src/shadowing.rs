@@ -68,7 +68,7 @@ pub(crate) fn get_gpu_context() -> Option<&'static ShadowGpuContext> {
 }
 
 /// Rust-native result struct for internal shadow calculations.
-pub(crate) struct ShadowingResultRust {
+pub struct ShadowingResultRust {
     pub bldg_sh: Array2<f32>,
     pub veg_sh: Array2<f32>,
     pub veg_blocks_bldg_sh: Array2<f32>,
@@ -83,7 +83,7 @@ pub(crate) struct ShadowingResultRust {
 /// Internal Rust function for shadow calculations.
 /// Operates purely on ndarray types.
 #[allow(clippy::too_many_arguments)]
-pub(crate) fn calculate_shadows_rust(
+pub fn calculate_shadows_rust(
     azimuth_deg: f32,
     altitude_deg: f32,
     scale: f32,

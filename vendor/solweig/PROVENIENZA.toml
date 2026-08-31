@@ -41,11 +41,23 @@ dentro il modulo `gpu` di monte.
 """
 
 [modifiche_al_codice_rimasto]
+elementi_esposti = ["calculate_shadows_rust", "ShadowingResultRust"]
 nota = """
-Nessuna. Le righe che restano sono identiche a quelle di monte, comprese le
-intestazioni di licenza e i commenti. È la condizione che rende riconciliabile
-un aggiornamento: adattare per far compilare è lecito, migliorare no, perché
-ogni divergenza è debito da pagare al prossimo commit.
+Una sola, e sono due parole: quei due elementi a monte sono `pub(crate)`, e da
+un crate esterno non si vedono. `pub(crate)` significa "visibile dentro il
+crate", quindi un test scritto dentro la copia vendorata li raggiunge e uno
+scritto fuori no — è esattamente l'errore che ci è costato un giro, e la
+lezione è che un'API si prova dal posto da cui verrà usata.
+
+È "adattare per far compilare", non "migliorare": senza, la copia non serve a
+niente. La promozione la fa `estrai.py`, non una patch a mano, perché una patch
+si perderebbe alla prossima estrazione senza che nessuno se ne accorga; e lo
+script si ferma con errore se a monte quelle visibilità cambiano, invece di
+promuovere zero elementi e lasciar credere che sia andata bene.
+
+Nient'altro è toccato: le righe rimaste sono identiche a quelle di monte,
+intestazioni di licenza e commenti compresi. È la condizione che rende
+riconciliabile un aggiornamento.
 """
 
 [come_si_rifa]
@@ -64,6 +76,16 @@ orfano e cancella in silenzio l'elemento successivo.
 
 [verificato_al_momento_della_presa]
 compila = "con la sola ndarray 0.16.1, zero righe che nominano Python"
+usabile_da_fuori = """
+Verificato da un crate esterno che dipende da questa copia per percorso, non da
+un test interno: `pub(crate)` sarebbe stato visibile dall'interno e la prova non
+avrebbe detto niente.
+"""
+tempo = """
+Una chiamata su 50x50 con una torre al centro, in release: 47 ms a freddo, poi
+44, 45 e 11 ms. Il cancello dei 60 secondi chiede quattro Corse da 48 ore, e
+questo numero dice che il collo di bottiglia non sarà qui.
+"""
 righe = "974 -> 683"
 geometria = """
 Torre di 10 m al centro di un dominio piano 21x21 a passo 1 m, sole a sud a 45
