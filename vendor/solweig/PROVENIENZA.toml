@@ -1,0 +1,74 @@
+# Da dove viene questo codice, e cosa gli è stato fatto.
+#
+# I nomi delle chiavi `upstream`, `commit` e `percorso_sorgente` sono un
+# contratto con `.github/workflows/vendor-check.yml`, che li legge per chiedere
+# a monte, ogni quattro mesi, se il nucleo si è mosso. Rinominarli spegne il
+# controllo senza che nessuno se ne accorga.
+
+upstream = "UMEP-dev/solweig"
+commit = "02246ab71a3a8b127d740dde9640449ee9d558ff"
+tag_vicino = "v0.1.0b95"
+data_presa = "2026-09-01"
+licenza = "GPL-3.0"
+percorso_sorgente = "rust/src"
+
+autori = "Fredrik Lindberg (Univ. Göteborg), C. Sue B. Grimmond (Univ. Reading), UMEP Developers"
+
+[cosa_e_stato_preso]
+file = ["shadowing.rs"]
+nota = """
+Solo il percorso CPU delle ombre. Non il resto del nucleo: niente radiazione,
+niente sky view factor, niente temperatura media radiante, niente indici di
+comfort. Quelli arriveranno quando serviranno, e allora questo file cresce.
+"""
+
+[cosa_e_stato_tolto]
+involucri_python = 9
+nota = """
+Gli import di `pyo3` e `numpy`, i sette involucri `#[pyfunction]`, la struct
+specchio `#[pyclass] ShadowingResult` che esiste solo per restituire array a
+Python, e la funzione di introspezione della GPU esposta a Python.
+
+Il nucleo di calcolo `calculate_shadows_rust` prende `ArrayView2<f32>` e
+restituisce `ShadowingResultRust`, una struct Rust: Python compariva soltanto
+ai bordi. Tolti quelli, resta `ndarray` e nient'altro, che è ciò che serve al
+binario singolo.
+
+Il percorso GPU **non è stato toccato**: resta nel sorgente dietro
+`#[cfg(feature = "gpu")]`, e poiché il manifesto vendorato non dichiara quella
+feature si compila fuori da sé. Se un giorno servisse, si accende riportando
+dentro il modulo `gpu` di monte.
+"""
+
+[modifiche_al_codice_rimasto]
+nota = """
+Nessuna. Le righe che restano sono identiche a quelle di monte, comprese le
+intestazioni di licenza e i commenti. È la condizione che rende riconciliabile
+un aggiornamento: adattare per far compilare è lecito, migliorare no, perché
+ogni divergenza è debito da pagare al prossimo commit.
+"""
+
+[come_si_rifa]
+comandi = """
+git clone https://github.com/UMEP-dev/solweig /tmp/solweig
+cd /tmp/solweig && git checkout <commit>
+python3 vendor/solweig/estrai.py /tmp/solweig
+"""
+nota = """
+L'estrazione è uno script, non una copia a mano: chi aggiorna riesegue e
+confronta invece di indovinare cosa era stato tolto. Lo script documenta anche
+la trappola che ci è costata un giro — gli involucri sono preceduti da
+`#[cfg(feature = "gpu")]`, e togliendo solo la funzione l'attributo resta
+orfano e cancella in silenzio l'elemento successivo.
+"""
+
+[verificato_al_momento_della_presa]
+compila = "con la sola ndarray 0.16.1, zero righe che nominano Python"
+righe = "974 -> 683"
+geometria = """
+Torre di 10 m al centro di un dominio piano 21x21 a passo 1 m, sole a sud a 45
+gradi: l'ombra cade a nord, il lato a sud e il lato a ovest restano al sole. E
+un dominio piano con sole a 60 gradi è illuminato ovunque. La convenzione
+dell'azimut coincide quindi con la nostra — gradi da nord in senso orario, riga
+zero a nord — e il test lo prova invece di fidarsi della documentazione.
+"""

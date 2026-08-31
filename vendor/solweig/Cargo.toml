@@ -1,0 +1,24 @@
+# Manifesto della copia vendorata: solo cio' che serve al percorso CPU delle
+# ombre. Il manifesto a monte dichiara pyo3, numpy, wgpu e rayon; qui resta
+# ndarray, alla stessa versione minore, perche' due minori diverse sono due
+# tipi diversi e ArrayView2<f32> non combacerebbe.
+[package]
+name = "solweig-ombre"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-only"
+description = "Percorso CPU delle ombre di UMEP-dev/solweig, vendorato. Vedi PROVENIENZA.toml."
+publish = false
+
+[dependencies]
+ndarray = { version = "0.16.1", features = ["rayon"] }
+
+# Nessuna feature "gpu": il percorso GPU resta nel sorgente dietro il suo
+# #[cfg] e si compila fuori da se'.
+[features]
+default = []
+
+# Workspace a se': la copia vendorata non e' un membro del nostro, cosi' i suoi
+# avvisi non rompono `clippy -D warnings` in CI. Il codice di altri non si
+# corregge per far passare i nostri cancelli: si isola.
+[workspace]

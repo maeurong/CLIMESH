@@ -6,3 +6,5 @@ materiale università/
 
 # Le Corse del caso di riferimento: nascono dall'esecuzione, non dal repository.
 casi/bastia/progetto/corse/
+vendor/solweig/target/
+vendor/solweig/Cargo.lock
