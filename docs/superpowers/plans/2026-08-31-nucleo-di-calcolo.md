@@ -120,6 +120,22 @@ fn a_project_survives_a_write_and_read_round_trip() {
     assert_eq!(letto, atteso);
 }
 
+/// TOML mette ogni chiave scritta dopo una tabella dentro quella tabella. Se
+/// l'ordine dei campi scivola, il round-trip smette di essere fedele: questo
+/// test rilegge il testo, non solo la struttura.
+#[test]
+fn the_manifest_keeps_its_values_before_its_tables() {
+    let dir = tempdir_di_prova("ordine-toml");
+    progetto::scrivi(&dir, &progetto_di_prova()).unwrap();
+    let testo = std::fs::read_to_string(dir.join("progetto.toml")).unwrap();
+    let prima_tabella = testo.find('[').unwrap_or(testo.len());
+    assert!(testo.find("scenari =").unwrap() < prima_tabella,
+            "i valori devono precedere le tabelle:\n{testo}");
+    let periodo = std::fs::read_to_string(dir.join("periodi/luglio-2021.toml")).unwrap();
+    assert!(periodo.find("ore =").unwrap() < periodo.find("[inizio]").unwrap(),
+            "ore finirebbe dentro [inizio]:\n{periodo}");
+}
+
 #[test]
 fn a_project_directory_without_its_manifest_names_the_missing_file() {
     let dir = tempdir_di_prova("senza-manifesto");
@@ -192,6 +208,12 @@ pub struct Griglia {
     pub nx: usize,
     pub ny: usize,
     pub passo_m: f64,
+    /// The coordinate system `origine` is expressed in.
+    ///
+    /// Known gap: `passo_m` is metres while a geographic `crs` puts `origine` in
+    /// degrees, so the two do not yet belong to the same system. Nothing in this
+    /// plan reprojects, so nothing breaks here; the first georeferenced export
+    /// will hit it, and it is recorded as an open question in the spec.
     pub crs: String,
     /// Lower-left corner in the coordinate system named by `crs`.
     pub origine: (f64, f64),
@@ -245,7 +267,10 @@ pub struct Albero {
     pub provenienza: Provenienza,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+/// `Ord` perché la Derivazione raggruppa le celle per tipo in una `BTreeMap`:
+/// un ordine stabile tiene stabile anche l'ordine in cui le Superfici finiscono
+/// nel file, che il contratto di riproducibilità classifica come esito discreto.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum TipoSuperficie {
     Pavimentato,
@@ -306,9 +331,11 @@ pub struct Scenario {
 pub struct Periodo {
     pub nome: String,
     pub meteo: PathBuf,
-    pub inizio: Data,
     pub ore: u32,
     pub direzione_vento_gradi: Option<f64>,
+    /// Ultimo perché `Data` serializza come tabella, e in TOML ogni chiave
+    /// scritta dopo una tabella finisce dentro quella tabella.
+    pub inizio: Data,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -372,10 +399,11 @@ impl std::error::Error for ProgettoError {}
 #[derive(Serialize, Deserialize)]
 struct Manifesto {
     nome: String,
-    griglia: Griglia,
-    punti: Vec<PuntoDiOsservazione>,
+    /// I nomi prima delle tabelle: vedi la nota su `Periodo::inizio`.
     scenari: Vec<String>,
     periodi: Vec<String>,
+    griglia: Griglia,
+    punti: Vec<PuntoDiOsservazione>,
 }
 
 fn valida(p: &Progetto) -> Result<(), ProgettoError> {
@@ -417,10 +445,10 @@ pub fn scrivi(dir: impl AsRef<Path>, p: &Progetto) -> Result<(), ProgettoError> 
     let dir = dir.as_ref();
     let manifesto = Manifesto {
         nome: p.nome.clone(),
-        griglia: p.griglia.clone(),
-        punti: p.punti.clone(),
         scenari: p.scenari.iter().map(|s| s.nome.clone()).collect(),
         periodi: p.periodi.iter().map(|x| x.nome.clone()).collect(),
+        griglia: p.griglia.clone(),
+        punti: p.punti.clone(),
     };
     scrivi_toml(&dir.join("progetto.toml"), &manifesto)?;
     for s in &p.scenari {
@@ -493,7 +521,7 @@ Il lettore che esiste smette di essere un lettore di file e diventa un costrutto
 
 **Interfaces:**
 - Consumes: `dominio::*`, `inx::{read_inx, Inx, Matrix, Plant}`.
-- Produces: `da_inx::progetto_da_inx(inx: &inx::Inx, nome_scenario: &str) -> Progetto`; `specie::{altezza_di_chioma_m, frazione_tronco, e_decidua}`.
+- Produces: `da_inx::progetto_da_inx(inx: &inx::Inx, nome_progetto: &str, nome_scenario: &str) -> Progetto`; `specie::{altezza_di_chioma_m, frazione_tronco, e_decidua}`.
 
 - [ ] **Step 1: Scrivere il test che fallisce**
 
@@ -525,7 +553,7 @@ fn an_unknown_species_falls_back_and_says_so() {
 #[test]
 fn the_reference_case_becomes_a_project_with_one_scenario() {
     let Some(letto) = leggi_il_caso() else { return };
-    let p = da_inx::progetto_da_inx(&letto, "stato-di-fatto");
+    let p = da_inx::progetto_da_inx(&letto, "bastia", "stato-di-fatto");
 
     assert_eq!(p.griglia.nx, 50);
     assert_eq!(p.griglia.ny, 50);
@@ -539,7 +567,7 @@ fn the_reference_case_becomes_a_project_with_one_scenario() {
 #[test]
 fn building_cells_keep_their_height_and_are_marked_as_surveyed() {
     let Some(letto) = leggi_il_caso() else { return };
-    let p = da_inx::progetto_da_inx(&letto, "stato-di-fatto");
+    let p = da_inx::progetto_da_inx(&letto, "bastia", "stato-di-fatto");
     let celle: usize = p.scenari[0].edifici.iter().map(|e| e.celle.len()).sum();
     assert!(celle > 0, "il caso ha edifici");
     for e in &p.scenari[0].edifici {
@@ -552,21 +580,28 @@ fn building_cells_keep_their_height_and_are_marked_as_surveyed() {
 #[test]
 fn tree_heights_are_marked_as_estimated_because_the_file_does_not_carry_them() {
     let Some(letto) = leggi_il_caso() else { return };
-    let p = da_inx::progetto_da_inx(&letto, "stato-di-fatto");
+    let p = da_inx::progetto_da_inx(&letto, "bastia", "stato-di-fatto");
     for a in &p.scenari[0].alberi {
         assert_eq!(a.provenienza.altezza, FonteAltezza::Predefinito,
                    "l'altezza di chioma non sta nell'.INX: viene dalla tabella delle specie");
     }
 }
 
+/// L'oracolo non è la formula dell'implementazione — con quella, un verso
+/// invertito sbaglierebbe due volte e passerebbe in verde. È un fatto del caso
+/// reale, verificato quando il formato è stato documentato: **nessuna delle 616
+/// piante è radicata su una cella costruita**. Con il verso invertito il modello
+/// si specchia e gli alberi finiscono dentro gli edifici.
 #[test]
-fn a_tree_lands_on_the_cell_the_file_names() {
+fn no_tree_of_the_reference_case_stands_on_a_built_cell() {
     let Some(letto) = leggi_il_caso() else { return };
-    let p = da_inx::progetto_da_inx(&letto, "stato-di-fatto");
-    let primo = &letto.plants[0];
-    let atteso = (letto.geometry.grids_j - primo.j, primo.i - 1);
-    assert!(p.scenari[0].alberi.iter().any(|a| a.cella == atteso),
-            "nessun albero su {atteso:?}: le righe corrono da nord");
+    let p = da_inx::progetto_da_inx(&letto, "bastia", "stato-di-fatto");
+    let z_top = letto.z_top.as_ref().expect("il caso ha la matrice zTop");
+    let costruita = |(r, c): Cella| z_top.cells[r * z_top.cols + c] > 0.0;
+    let dentro: Vec<_> = p.scenari[0].alberi.iter().filter(|a| costruita(a.cella)).collect();
+    assert!(dentro.is_empty(),
+            "{} alberi dentro un edificio: le righe corrono da nord, riga 0 = j max",
+            dentro.len());
 }
 
 /// I test che leggono il caso reale si saltano quando il materiale non c'è:
@@ -604,11 +639,14 @@ pub const FRAZIONE_TRONCO_PREDEFINITA: f32 = 0.25;
 
 /// `(id, nome, altezza di chioma in metri, frazione di tronco, decidua)`
 const TABELLA: &[(&str, &str, f32, f32, bool)] = &[
+    // I nomi vengono da casi/bastia/valori-di-riferimento.toml, che li ha letti
+    // dal file reale. Sono ciò che un umano legge nel Giornale: un nome inventato
+    // qui diventa un nome sbagliato in una relazione.
     ("020027", "Pine Tree (middle)", 12.0, 0.45, false),
-    ("020060", "London Plane Tree", 15.0, 0.30, true),
+    ("020060", "London Plane Tree (middle)", 15.0, 0.30, true),
     ("0000PR", "Tilia", 12.0, 0.30, true),
-    ("0000PA", "Alberatura", 8.0, 0.25, true),
-    ("020111", "Albero centrale", 10.0, 0.25, true),
+    ("0000PA", "Populus Alba", 8.0, 0.25, true),
+    ("020111", "Hanging Birch (middle)", 10.0, 0.25, true),
 ];
 
 fn riga(id: &str) -> Option<&'static (&'static str, &'static str, f32, f32, bool)> {
@@ -699,7 +737,11 @@ fn superfici_da(suoli: Option<&Matrix<Option<String>>>, celle: usize) -> Vec<Sup
     per_tipo.into_iter().map(|(tipo, celle)| Superficie { celle, tipo }).collect()
 }
 
-pub fn progetto_da_inx(letto: &Inx, nome_scenario: &str) -> Progetto {
+/// `nome_progetto` è un parametro e non viene dal file: `locationData/locationName`
+/// del caso di riferimento dice `bergamo` per un modello di Bastia Umbra, refuso
+/// noto e registrato fra le incongruenze. Un Progetto non eredita in silenzio
+/// l'errore del file da cui nasce.
+pub fn progetto_da_inx(letto: &Inx, nome_progetto: &str, nome_scenario: &str) -> Progetto {
     let g = &letto.geometry;
     let celle = g.grids_i * g.grids_j;
 
@@ -726,7 +768,7 @@ pub fn progetto_da_inx(letto: &Inx, nome_scenario: &str) -> Progetto {
         .collect();
 
     Progetto {
-        nome: letto.location.name.clone(),
+        nome: nome_progetto.to_string(),
         griglia: Griglia {
             nx: g.grids_i,
             ny: g.grids_j,
@@ -756,55 +798,166 @@ pub fn progetto_da_inx(letto: &Inx, nome_scenario: &str) -> Progetto {
 Run: `cargo test --test da_inx`
 Expected: PASS, 6 test. Con `materiale università/` presente ne girano 6; senza, i quattro che leggono il caso si saltano stampando il motivo.
 
-- [ ] **Step 6: Scrivere il caso di riferimento come Progetto su disco**
+- [ ] **Step 6: Generare il caso di riferimento come Progetto su disco**
 
-Il cancello di Task 5 legge `casi/bastia/progetto`, che ancora non esiste. Nasce qui.
+Il cancello di Task 5 legge `casi/bastia/progetto`, che ancora non esiste. Nasce qui, e nasce **interamente generato**: niente file scritti a mano che una rigenerazione cancellerebbe.
 
-Aggiungere a `src/bin/extract_inx.rs` la scrittura del Progetto accanto all'estratto che già produce:
+Il binario esistente `src/bin/extract_inx.rs` non va riusato — vuole un percorso come argomento e scrive su stdout. Serve un binario nuovo.
+
+`src/bin/costruisci_caso.rs`:
 
 ```rust
-// In coda al main, dopo l'estratto TOML che il binario già scrive.
-let progetto = climesh::da_inx::progetto_da_inx(&letto, "stato-di-fatto");
-climesh::progetto::scrivi("casi/bastia/progetto", &progetto)
-    .expect("il Progetto del caso di riferimento deve scriversi");
+//! Builds the reference Progetto from the course material.
+//!
+//! Everything is generated, including the Periodi: a hand-written file next to a
+//! generated one gets erased the second time the generator runs, and the Periodi
+//! are what the budget gate reads.
+//!
+//! Run: `cargo run --bin costruisci_caso`
+
+use climesh::dominio::*;
+use climesh::{da_inx, inx, progetto};
+
+const SORGENTE: &str = "materiale università/LAB1.INX";
+const DESTINAZIONE: &str = "casi/bastia/progetto";
+
+fn main() {
+    let letto = match inx::read_inx(SORGENTE) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("{SORGENTE}: {e}");
+            eprintln!("Il materiale del corso non è nel repository: non è ridistribuibile.");
+            std::process::exit(1);
+        }
+    };
+
+    let mut p = da_inx::progetto_da_inx(&letto, "bastia", "stato-di-fatto");
+
+    // I tre punti in cui la relazione riporta le serie, in indici ENVI-met
+    // (i;j) convertiti in celle (riga, colonna) con riga 0 a nord.
+    p.punti = [(1, 15, 18), (2, 25, 35), (3, 37, 15)]
+        .iter()
+        .map(|&(id, i, j)| PuntoDiOsservazione {
+            id,
+            cella: (p.griglia.ny - j, i - 1),
+            etichetta: format!("punto {id}"),
+        })
+        .collect();
+
+    p.scenari.push(scenario_interventi(&p.griglia, &p.scenari[0]));
+    p.periodi = periodi();
+
+    progetto::scrivi(DESTINAZIONE, &p).expect("il Progetto deve scriversi");
+    println!("scritto {DESTINAZIONE}: {} scenari, {} periodi",
+             p.scenari.len(), p.periodi.len());
+}
+
+/// The mitigation Scenario, **reconstructed from the report's description**, not
+/// measured: `LAB1.INX` holds the baseline only, and the intervention file is
+/// not in the material. The report names hedges along the boundary, greenery
+/// against the buildings and a water body, without saying where.
+///
+/// It exists so the budget gate measures the real load — two Scenari mean two
+/// derivations and two sky-view-factor computations, which is the cost the
+/// caching has to carry. It is fit for measuring time and unfit for publishing
+/// results, and every object it adds says so in its Provenienza.
+fn scenario_interventi(g: &Griglia, base: &Scenario) -> Scenario {
+    const ORIGINE: &str = "ricostruito dalla descrizione della relazione LA01, non rilevato";
+    let mut s = base.clone();
+    s.nome = "interventi-ricostruiti".into();
+    s.derivato_da = Some(base.nome.clone());
+
+    let costruita = |r: usize, c: usize| {
+        base.edifici.iter().any(|e| e.celle.contains(&(r, c)))
+    };
+    let mut aggiungi = |s: &mut Scenario, r: usize, c: usize, specie: &str| {
+        if r < g.ny && c < g.nx && !costruita(r, c) {
+            s.alberi.push(Albero {
+                cella: (r, c),
+                altezza_m: climesh::specie::altezza_di_chioma_m(specie),
+                frazione_tronco: climesh::specie::frazione_tronco(specie),
+                specie: specie.to_string(),
+                provenienza: Provenienza {
+                    origine: ORIGINE.into(),
+                    altezza: FonteAltezza::Predefinito,
+                },
+            });
+        }
+    };
+
+    // Filari sul confine, un albero ogni tre celle.
+    for k in (2..g.nx - 2).step_by(3) {
+        aggiungi(&mut s, 1, k, "020060");
+        aggiungi(&mut s, g.ny - 2, k, "020060");
+    }
+    for k in (2..g.ny - 2).step_by(3) {
+        aggiungi(&mut s, k, 1, "0000PA");
+        aggiungi(&mut s, k, g.nx - 2, "0000PA");
+    }
+    // Verde addossato agli edifici, deterministico: nessun generatore casuale,
+    // perché la geometria di uno Scenario è un esito discreto e due macchine
+    // devono produrre lo stesso file.
+    for e in &base.edifici {
+        for &(r, c) in &e.celle {
+            for (dr, dc) in [(0i32, 1i32), (1, 0), (0, -1), (-1, 0)] {
+                let (rr, cc) = ((r as i32 + dr), (c as i32 + dc));
+                if rr >= 0 && cc >= 0 && (rr as usize * 31 + cc as usize * 17) % 3 == 0 {
+                    aggiungi(&mut s, rr as usize, cc as usize, "0000PA");
+                }
+            }
+        }
+    }
+    // Lo specchio d'acqua nella corte.
+    let acqua: Vec<Cella> = (26..33)
+        .flat_map(|r| (20..31).map(move |c| (r, c)))
+        .filter(|&(r, c)| r < g.ny && c < g.nx && !costruita(r, c))
+        .collect();
+    s.superfici.push(Superficie { celle: acqua, tipo: TipoSuperficie::Acqua });
+    s
+}
+
+/// I parametri di forcing non stanno nel `.INX`: vivono nel `.SIMX`, che non è
+/// nel materiale. I valori vengono da `casi/bastia/valori-di-riferimento.toml`.
+fn periodi() -> Vec<Periodo> {
+    let meteo = "materiale università/ITA_Perugia.161810_IGDG.epw";
+    vec![
+        Periodo {
+            nome: "luglio-2021".into(),
+            meteo: meteo.into(),
+            ore: 48,
+            direzione_vento_gradi: Some(45.0),
+            inizio: Data { anno: 2021, mese: 7, giorno: 15 },
+        },
+        Periodo {
+            nome: "gennaio-2021".into(),
+            meteo: meteo.into(),
+            ore: 48,
+            direzione_vento_gradi: Some(180.0),
+            inizio: Data { anno: 2021, mese: 1, giorno: 15 },
+        },
+    ]
+}
 ```
 
-Eseguirlo:
+Eseguirlo e verificare che il Progetto si rilegga:
 
 ```bash
-cargo run --bin extract_inx
-```
-
-I **Periodi non vengono dal `.INX`**: i parametri di forcing stanno nel `.SIMX`, che non è nel materiale. Si scrivono a mano da `casi/bastia/valori-di-riferimento.toml`, e sono l'unica parte del Progetto non generata.
-
-`casi/bastia/progetto/periodi/luglio-2021.toml`:
-
-```toml
-nome = "luglio-2021"
-meteo = "materiale università/ITA_Perugia.161810_IGDG.epw"
-ore = 48
-direzione_vento_gradi = 45.0
-
-[inizio]
-anno = 2021
-mese = 7
-giorno = 15
-```
-
-`casi/bastia/progetto/periodi/gennaio-2021.toml`: identico, con `direzione_vento_gradi = 180.0` e `mese = 1`.
-
-Aggiungere entrambi i nomi alla lista `periodi` in `casi/bastia/progetto/progetto.toml`, e i tre Punti di osservazione della relazione — `(15;18)`, `(25;35)`, `(37;15)` in indici ENVI-met, che in celle `(riga, colonna)` con riga 0 a nord diventano `(32, 14)`, `(15, 24)`, `(35, 36)`.
-
-Verificare che si rilegga:
-
-```bash
+cargo run --bin costruisci_caso
 cargo test --test progetto
+```
+
+Il generatore è **idempotente**: eseguirlo due volte produce lo stesso albero di file. Se non lo è, è un difetto.
+
+Aggiungere a `.gitignore` la cartella che le Corse producono, che non va versionata:
+
+```
+casi/bastia/progetto/corse/
 ```
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add src/specie.rs src/da_inx.rs src/lib.rs src/bin/extract_inx.rs tests/da_inx.rs casi/bastia/progetto
+git add src/specie.rs src/da_inx.rs src/lib.rs src/bin/costruisci_caso.rs tests/da_inx.rs .gitignore casi/bastia/progetto
 git commit -m "feat: build a Progetto from an ENVI-met .INX"
 ```
 
@@ -830,6 +983,14 @@ ndarray = "0.16"
 ```
 
 `ndarray` è Rust puro e produce `Array2<f32>`, che è il tipo che il Motore accetta senza conversioni.
+
+**La versione non è una nostra scelta: è quella del Motore.** `ndarray` non ha ancora la 1.0, quindi due versioni minori diverse sono due tipi diversi e `ArrayView2<f32>` non combacia. Prima di fissare questa riga, leggere la versione dichiarata dal Motore — è il dossier che il ticket di ricerca produce prima di ogni altro task:
+
+```bash
+curl -sL https://raw.githubusercontent.com/UMEP-dev/solweig/main/rust/Cargo.toml | grep -i ndarray
+```
+
+Pinnare la stessa versione minore. Se differisce da `0.16`, correggere qui e annotarlo, perché è un vincolo che arriva da fuori e non si vede nel codice.
 
 - [ ] **Step 2: Scrivere il test che fallisce**
 
@@ -897,6 +1058,15 @@ fn the_summer_derivation_drops_nothing() {
     let (g, s) = scenario_di_prova();
     let r = derivazione::deriva(&g, &s, Stagione::ConFoglie);
     assert_eq!(r.scelte.chiome_escluse, 0);
+}
+
+#[test]
+fn a_terrain_of_the_wrong_shape_is_recorded_rather_than_silently_flattened() {
+    let (g, mut s) = scenario_di_prova();
+    s.terreno_m.truncate(3);
+    let r = derivazione::deriva(&g, &s, Stagione::ConFoglie);
+    assert!(r.scelte.terreno_sostituito, "la sostituzione va nel Giornale");
+    assert_eq!(r.terreno.dim(), (g.ny, g.nx));
 }
 
 #[test]
@@ -984,6 +1154,10 @@ pub struct ScelteDiDerivazione {
     pub oggetti_fuori_griglia: usize,
     pub celle_costruite: usize,
     pub celle_con_chioma: usize,
+    /// Set when the Scenario's terrain did not match the Griglia and a flat
+    /// ground was used instead. A modelling choice taken by the program is a
+    /// thing the Giornale records, never a thing it swallows.
+    pub terreno_sostituito: bool,
 }
 
 pub struct RasterDiScenario {
@@ -1012,8 +1186,13 @@ pub fn deriva(g: &Griglia, s: &Scenario, stagione: Stagione) -> RasterDiScenario
     let forma = (g.ny, g.nx);
     let mut scelte = ScelteDiDerivazione::default();
 
-    let terreno = Array2::from_shape_vec(forma, s.terreno_m.clone())
-        .unwrap_or_else(|_| Array2::zeros(forma));
+    let terreno = match Array2::from_shape_vec(forma, s.terreno_m.clone()) {
+        Ok(a) => a,
+        Err(_) => {
+            scelte.terreno_sostituito = true;
+            Array2::zeros(forma)
+        }
+    };
     let mut superficie = terreno.clone();
     let mut chiome = Array2::zeros(forma);
     let mut tronchi = Array2::zeros(forma);
@@ -1089,7 +1268,7 @@ L'ombra viene dal nucleo riusato invece che da noi, e si verifica contro la geom
 - Test: `tests/motore.rs`
 
 **Interfaces:**
-- Consumes: `derivazione::{Raster, RasterDiScenario}`.
+- Consumes: `derivazione::Raster`. `RasterDiScenario` serve solo a Task 5.
 - Produces: `sole::{posizione, PosizioneSolare}`; `motore::{ombre, VersioneMotore, versione}`.
 
 - [ ] **Step 1: Preparare il fork del Motore**
@@ -1287,13 +1466,10 @@ pub fn ombre(dsm: &Raster, passo_m: f64, azimut_gradi: f64, altezza_gradi: f64) 
 
 Se la firma stampata allo step 1 differisce da questa, adattare **solo** questa chiamata: è l'unico punto del programma che la conosce.
 
-`Cargo.toml`:
+`Cargo.toml` — **aggiungere** questa riga alla sezione `[dependencies]` esistente, che a questo punto contiene già `serde`, `toml` e `ndarray`. Non sostituire la sezione:
 
 ```toml
-[dependencies]
 rustalgos = { git = "https://github.com/maeurong/solweig", tag = "api-rust-nativa-v1", package = "rustalgos" }
-
-[build-dependencies]
 ```
 
 `build.rs`, per rendere la versione del Motore leggibile a compilazione:
@@ -1350,7 +1526,7 @@ La prima Corsa completa sul caso di riferimento, con il suo Giornale, cronometra
 
 **Interfaces:**
 - Consumes: tutto il precedente.
-- Produces: `corsa::{esegui, Corsa, Campi}`; `giornale::{Giornale, Impronta, VerifichePerCorsa, scrivi}`.
+- Produces: `corsa::{esegui, esegui_caso_di_riferimento, Campi, Esito}`; `giornale::{Giornale, Impronta, Ingresso, Inviluppo, ConteggioProvenienza, conta_provenienza, inviluppo}`.
 
 - [ ] **Step 1: Aggiungere `sha2`**
 
@@ -1370,14 +1546,25 @@ use climesh::{corsa, giornale};
 
 #[test]
 fn the_fingerprint_is_the_same_for_the_same_inputs_and_differs_otherwise() {
-    let a = giornale::Impronta::calcola(&["progetto".into(), "luglio".into()], "1.0", "abc123");
-    let b = giornale::Impronta::calcola(&["progetto".into(), "luglio".into()], "1.0", "abc123");
-    let c = giornale::Impronta::calcola(&["progetto".into(), "gennaio".into()], "1.0", "abc123");
-    let d = giornale::Impronta::calcola(&["progetto".into(), "luglio".into()], "1.1", "abc123");
+    let ing = |nome: &str, somma: &str| giornale::Ingresso {
+        nome: nome.into(), somma: somma.into(),
+    };
+    let luglio = [ing("progetto", "aa"), ing("luglio", "bb")];
+    let gennaio = [ing("progetto", "aa"), ing("gennaio", "bb")];
+    let a = giornale::Impronta::calcola(&luglio, "1.0", "abc123");
+    let b = giornale::Impronta::calcola(&luglio, "1.0", "abc123");
+    let c = giornale::Impronta::calcola(&gennaio, "1.0", "abc123");
+    let d = giornale::Impronta::calcola(&luglio, "1.1", "abc123");
     assert_eq!(a, b, "stessi ingressi, stessa impronta");
     assert_ne!(a, c, "un Periodo diverso è una Corsa diversa");
     assert_ne!(a, d, "una versione diversa del binario è una Corsa diversa");
     assert_eq!(a.corta().len(), 12, "l'impronta corta si legge e si incolla");
+
+    // Lo stesso nome con contenuto diverso è una Corsa diversa: è il caso che
+    // le sole stringhe non distinguerebbero.
+    let modificato = [ing("progetto", "aa"), ing("luglio", "ZZ")];
+    assert_ne!(a, giornale::Impronta::calcola(&modificato, "1.0", "abc123"),
+               "un ingresso modificato cambia l'Impronta");
 }
 
 #[test]
@@ -1418,16 +1605,53 @@ fn a_field_with_holes_reports_the_fraction_of_missing_cells() {
 
 #[test]
 fn a_journal_opened_and_never_closed_still_says_where_the_run_stopped() {
-    let dir = std::path::Path::new(env!("CARGO_TARGET_TMPDIR")).join("corsa-interrotta");
-    let _ = std::fs::remove_dir_all(&dir);
-    std::fs::create_dir_all(&dir).unwrap();
+    let dir = dir_di_prova("corsa-interrotta");
     let mut g = giornale::Giornale::apri(&dir, "prova").expect("apertura");
     g.annota("derivazione", "raster prodotti");
     g.fallisci("il file meteo non esiste");
+    let v = rileggi(&dir);
+    assert_eq!(v["passi"][0]["passo"].as_str(), Some("derivazione"));
+    assert_eq!(v["conclusione"]["esito"].as_str(), Some("fallita"));
+    assert_eq!(v["conclusione"]["errore"].as_str(), Some("il file meteo non esiste"));
+}
+
+/// Un Giornale che non è TOML valido non si rilegge, e la vista nella pagina e
+/// l'appendice stampata sono rese di questo file: se non si rilegge, non
+/// esistono. Il caso che lo rompe è un testo con virgolette dentro.
+#[test]
+fn a_journal_stays_valid_toml_even_with_quotes_in_the_text() {
+    let dir = dir_di_prova("virgolette");
+    let mut g = giornale::Giornale::apri(&dir, "prova \"strana\"").expect("apertura");
+    g.annota("derivazione", "campo = \"ombra\", con virgolette e \\ barra");
+    g.verifica(&giornale::inviluppo("ombra", &[0.0, 1.0], 0.0, 1.0));
+    g.concludi(1.5);
+    let v = rileggi(&dir);
+    assert_eq!(v["etichetta"].as_str(), Some("prova \"strana\""));
+    assert_eq!(v["verifiche"][0]["campo"].as_str(), Some("ombra"));
+    assert_eq!(v["conclusione"]["esito"].as_str(), Some("riuscita"));
+}
+
+/// Finché la Corsa non è finita, `[conclusione]` non c'è: l'assenza è lo stato,
+/// e non esiste una seconda chiave che possa contraddirla.
+#[test]
+fn a_journal_in_progress_has_no_conclusion_at_all() {
+    let dir = dir_di_prova("in-corso");
+    let mut g = giornale::Giornale::apri(&dir, "prova").expect("apertura");
+    g.annota("derivazione", "raster prodotti");
+    assert!(rileggi(&dir).get("conclusione").is_none());
+}
+
+fn dir_di_prova(nome: &str) -> std::path::PathBuf {
+    let dir = std::path::Path::new(env!("CARGO_TARGET_TMPDIR")).join(nome);
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    dir
+}
+
+fn rileggi(dir: &std::path::Path) -> toml::Value {
     let testo = std::fs::read_to_string(dir.join("giornale.toml")).unwrap();
-    assert!(testo.contains("derivazione"), "il Giornale registra fin dove è arrivata");
-    assert!(testo.contains("il file meteo non esiste"));
-    assert!(testo.contains("esito = \"fallita\""));
+    testo.parse::<toml::Value>()
+        .unwrap_or_else(|e| panic!("il Giornale non è TOML valido: {e}\n{testo}"))
 }
 
 /// Il cancello del progetto. Gira solo con il materiale presente e con
@@ -1438,7 +1662,9 @@ fn the_reference_case_runs_under_the_budget() {
     let inizio = std::time::Instant::now();
     let esito = corsa::esegui_caso_di_riferimento().expect("il caso deve girare");
     let durata = inizio.elapsed();
-    assert_eq!(esito.corse, 4, "due Scenari per due Periodi");
+    assert_eq!(esito.corse, 4,
+               "due Scenari per due Periodi: il secondo Scenario è ricostruito, \
+                e serve a misurare il carico, non a pubblicare risultati");
     assert!(durata.as_secs_f64() < 60.0, "budget sforato: {:.1} s", durata.as_secs_f64());
 }
 
@@ -1479,14 +1705,40 @@ use std::path::{Path, PathBuf};
 /// Computed from the content, so two Corse with the same Impronta *are* the same
 /// Corsa. It answers the only question a reviewer actually asks: are we looking
 /// at the same result?
+/// One input file, named and hashed.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct Ingresso {
+    pub nome: String,
+    pub somma: String,
+}
+
+impl Ingresso {
+    /// Reads the file and hashes it. A file that cannot be read hashes as
+    /// `assente`, so a missing input changes the Impronta instead of being
+    /// silently equal to a present one.
+    pub fn da_file(percorso: &Path) -> Self {
+        let somma = match std::fs::read(percorso) {
+            Ok(b) => format!("{:x}", Sha256::digest(&b)),
+            Err(_) => "assente".to_string(),
+        };
+        Self { nome: percorso.display().to_string(), somma }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Impronta(String);
 
 impl Impronta {
-    pub fn calcola(ingressi: &[String], versione_binario: &str, rev_motore: &str) -> Self {
+    /// `ingressi` are the input files: each one contributes its path **and the
+    /// SHA-256 of its content**, per spec §7. Names alone would give two
+    /// different Progetti with the same Scenario name the same Impronta, which
+    /// would defeat the only question the Impronta exists to answer.
+    pub fn calcola(ingressi: &[Ingresso], versione_binario: &str, rev_motore: &str) -> Self {
         let mut h = Sha256::new();
         for i in ingressi {
-            h.update(i.as_bytes());
+            h.update(i.nome.as_bytes());
+            h.update([0u8]);
+            h.update(i.somma.as_bytes());
             h.update([0u8]);
         }
         h.update(versione_binario.as_bytes());
@@ -1557,6 +1809,25 @@ pub fn inviluppo(campo: &str, valori: &[f32], minimo_plausibile: f32, massimo_pl
     }
 }
 
+/// A TOML basic string, quotes and backslashes escaped. Everything written to
+/// the Giornale goes through here or through `toml::to_string`.
+fn stringa_toml(v: &str) -> String {
+    let mut out = String::with_capacity(v.len() + 2);
+    out.push('"');
+    for c in v.chars() {
+        match c {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\t' => out.push_str("\\t"),
+            c if (c as u32) < 0x20 => out.push_str(&format!("\\u{:04X}", c as u32)),
+            c => out.push(c),
+        }
+    }
+    out.push('"');
+    out
+}
+
 /// Opened at the start of a Corsa and appended to as it goes.
 pub struct Giornale {
     percorso: PathBuf,
@@ -1569,30 +1840,49 @@ impl Giornale {
         let mut f = std::fs::File::create(&percorso)?;
         writeln!(f, "# Giornale della Corsa. Scritto man mano: se la Corsa non")?;
         writeln!(f, "# arriva in fondo, quel che c'è dice fin dove è arrivata.")?;
-        writeln!(f, "etichetta = \"{etichetta}\"")?;
-        writeln!(f, "esito = \"in corso\"")?;
-        writeln!(f, "\n[[passi]]")?;
+        // Nessun `esito` qui: un file appeso non può riscrivere una riga di sopra,
+        // e due esiti nello stesso file sarebbero una contraddizione permanente.
+        // Finché `[conclusione]` non c'è, la Corsa non è finita.
+        writeln!(f, "etichetta = {}", stringa_toml(etichetta))?;
         Ok(Self { percorso })
     }
 
-    pub fn annota(&mut self, passo: &str, dettaglio: &str) {
+    fn appendi(&mut self, testo: &str) {
         if let Ok(mut f) = std::fs::OpenOptions::new().append(true).open(&self.percorso) {
-            let _ = writeln!(f, "passo = \"{passo}\"\ndettaglio = \"{dettaglio}\"\n\n[[passi]]");
+            let _ = write!(f, "{testo}");
+        }
+    }
+
+    pub fn annota(&mut self, passo: &str, dettaglio: &str) {
+        let testo = format!(
+            "\n[[passi]]\npasso = {}\ndettaglio = {}\n",
+            stringa_toml(passo),
+            stringa_toml(dettaglio)
+        );
+        self.appendi(&testo);
+    }
+
+    /// Records a per-Corsa check as a table of its own, serialised rather than
+    /// printed: the `Debug` of a struct carrying a `String` writes unescaped
+    /// quotes, and a Giornale that is not valid TOML cannot be read back by the
+    /// page or by anyone else.
+    pub fn verifica(&mut self, inv: &Inviluppo) {
+        match toml::to_string(inv) {
+            Ok(t) => self.appendi(&format!("\n[[verifiche]]\n{t}")),
+            Err(e) => self.annota("verifica", &format!("non serializzabile: {e}")),
         }
     }
 
     pub fn fallisci(&mut self, errore: &str) {
-        if let Ok(mut f) = std::fs::OpenOptions::new().append(true).open(&self.percorso) {
-            let _ = writeln!(f, "passo = \"errore\"\ndettaglio = \"{errore}\"");
-            let _ = writeln!(f, "\n[conclusione]\nesito = \"fallita\"");
-        }
+        let testo = format!(
+            "\n[conclusione]\nesito = \"fallita\"\nerrore = {}\n",
+            stringa_toml(errore)
+        );
+        self.appendi(&testo);
     }
 
     pub fn concludi(&mut self, secondi: f64) {
-        if let Ok(mut f) = std::fs::OpenOptions::new().append(true).open(&self.percorso) {
-            let _ = writeln!(f, "passo = \"fine\"\ndettaglio = \"completata\"");
-            let _ = writeln!(f, "\n[conclusione]\nesito = \"riuscita\"\nsecondi = {secondi:.3}");
-        }
+        self.appendi(&format!("\n[conclusione]\nesito = \"riuscita\"\nsecondi = {secondi:.3}\n"));
     }
 }
 ```
@@ -1604,10 +1894,18 @@ impl Giornale {
 ```rust
 //! Runs a Corsa: one Scenario computed for one Periodo.
 //!
-//! The rasters and the sky view factor are derived once per Scenario and reused
-//! across its Periodi. On the reference case that is four runs sharing two
-//! derivations, and it is the difference between meeting the budget on CPU alone
-//! and missing it.
+//! Derivation is cached by `(Scenario, Stagione)`, not by Scenario alone: the
+//! leaf-off Periodo drops deciduous canopies, so the canopy raster genuinely
+//! differs between seasons. On the reference case the two Periodi fall either
+//! side of the leaf-on window, so four Corse need four derivations and the cache
+//! saves nothing here — it pays off as soon as a Scenario gets a second Periodo
+//! in the same season, which is what a parametric study looks like.
+//!
+//! The saving the budget actually leans on is finer and does not exist yet: the
+//! building sky view factor is season-independent and can be computed once per
+//! Scenario, while the vegetated one is not. Measured on the reference geometry,
+//! that is 8.1 s against 29.2 s. It belongs to the task that adds the sky view
+//! factor, and until then this module must not claim it.
 
 use crate::derivazione::{self, RasterDiScenario, Stagione};
 use crate::dominio::*;
@@ -1639,7 +1937,14 @@ pub fn esegui(
     let etichetta = format!("{} · {}", scenario.nome, periodo.nome);
     let mut g = Giornale::apri(dir_corsa, &etichetta)?;
     let impronta = Impronta::calcola(
-        &[scenario.nome.clone(), periodo.nome.clone(), progetto.nome.clone()],
+        &[
+            giornale::Ingresso::da_file(&periodo.meteo),
+            giornale::Ingresso {
+                nome: format!("scenario:{}", scenario.nome),
+                somma: format!("{:x}", sha2::Sha256::digest(
+                    toml::to_string(scenario).unwrap_or_default().as_bytes())),
+            },
+        ],
         env!("CARGO_PKG_VERSION"),
         &motore::versione().git_rev,
     );
@@ -1665,8 +1970,7 @@ pub fn esegui(
     }
 
     let tutte: Vec<f32> = ombra_per_ora.iter().flat_map(|a| a.iter().copied()).collect();
-    let inv = giornale::inviluppo("ombra", &tutte, 0.0, 1.0);
-    g.annota("verifica", &format!("{inv:?}"));
+    g.verifica(&giornale::inviluppo("ombra", &tutte, 0.0, 1.0));
     g.concludi(inizio.elapsed().as_secs_f64());
     Ok(Campi { ombra_per_ora })
 }
@@ -1677,12 +1981,20 @@ pub fn esegui_caso_di_riferimento() -> std::io::Result<Esito> {
         .expect("il caso di riferimento deve essere un Progetto valido");
     let inizio = std::time::Instant::now();
     let mut corse = 0;
+    // La cache è per (Scenario, Stagione): due Periodi nella stessa stagione
+    // riusano la derivazione, due in stagioni diverse no, perché il raster delle
+    // chiome cambia davvero.
+    let mut cache: std::collections::HashMap<(String, Stagione), RasterDiScenario> =
+        std::collections::HashMap::new();
     for scenario in &progetto.scenari {
         for periodo in &progetto.periodi {
-            let raster = derivazione::deriva(&progetto.griglia, scenario, stagione_di(periodo));
+            let chiave = (scenario.nome.clone(), stagione_di(periodo));
+            let raster = cache.entry(chiave).or_insert_with(|| {
+                derivazione::deriva(&progetto.griglia, scenario, stagione_di(periodo))
+            });
             let dir = std::path::Path::new("casi/bastia/progetto/corse")
                 .join(format!("{}-{}", scenario.nome, periodo.nome));
-            esegui(&dir, &progetto, scenario, periodo, &raster)?;
+            esegui(&dir, &progetto, scenario, periodo, raster)?;
             corse += 1;
         }
     }
