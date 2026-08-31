@@ -40,18 +40,17 @@ tenere quelli come verità: è l'errore che l'ADR esiste per prevenire.
 
 ## Ambiente
 
-Rust non è nel PATH e **manca un linker C** su questa macchina. Non usare
-`cargo test` liscio: non collega.
+Rust non è nel PATH:
 
 ```bash
 export PATH=$HOME/.cargo/bin:$PATH
-CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=rust-lld \
-  cargo test --target x86_64-unknown-linux-musl
+cargo test
 ```
 
-È un fatto della macchina, non del progetto, quindi non sta in un file di
-configurazione committato. Nota però che musl con collegamento statico è
-esattamente ciò che serve al binario singolo.
+Serve un linker C (`gcc` e `libc6-dev`): le macro procedurali di `serde` si
+compilano sempre per l'host, quindi senza linker non compila nemmeno un test.
+Su una macchina che non ce l'ha, `sudo apt-get install -y gcc libc6-dev`, da un
+terminale vero — un prompt di password non compare dentro un agente.
 
 ## Vincoli che non si negoziano
 
