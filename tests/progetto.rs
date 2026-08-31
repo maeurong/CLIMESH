@@ -270,6 +270,26 @@ fn a_grid_with_more_cells_than_usize_can_count_is_rejected() {
 }
 
 #[test]
+fn a_grid_step_that_is_not_a_positive_finite_number_is_rejected() {
+    // A step of zero makes every footprint cover the whole Griglia and every
+    // tree fall outside it, silently; a negative one covers nothing at all.
+    for (i, passo) in [0.0, -1.0, f64::INFINITY, f64::NAN].into_iter().enumerate() {
+        let dir = tempdir_di_prova(&format!("passo-impossibile-{i}"));
+        let mut p = progetto_di_prova();
+        p.griglia.passo_m = passo;
+        let err = progetto::scrivi(&dir, &p).expect_err("deve fallire");
+        assert!(
+            matches!(err, progetto::ProgettoError::Griglia(_)),
+            "passo {passo}: variante {err:?}"
+        );
+        assert!(
+            !dir.join("progetto.toml").exists(),
+            "un passo rifiutato non deve lasciare un manifesto su disco"
+        );
+    }
+}
+
+#[test]
 fn a_terrain_that_does_not_match_the_grid_is_rejected() {
     let dir = tempdir_di_prova("terreno-corto");
     let mut p = progetto_di_prova();

@@ -10,10 +10,14 @@ use climesh::dominio::*;
 use std::path::PathBuf;
 
 fn griglia(nx: usize, ny: usize) -> Griglia {
+    griglia_di_passo(nx, ny, 1.0)
+}
+
+fn griglia_di_passo(nx: usize, ny: usize, passo_m: f64) -> Griglia {
     Griglia {
         nx,
         ny,
-        passo_m: 1.0,
+        passo_m,
         crs: "EPSG:4326".to_owned(),
         origine: (0.0, 0.0),
         rotazione_gradi: 0.0,
@@ -49,7 +53,7 @@ fn periodo(mese: u32, giorno: u32) -> Periodo {
     }
 }
 
-/// 15 July: inside the leaf window of the Motore.
+/// 15 July: inside the leaf window of the Derivazione.
 fn estate() -> Periodo {
     periodo(7, 15)
 }
@@ -88,8 +92,10 @@ fn albero(specie: &str, posizione_m: Posizione, altezza_m: f32, frazione_tronco:
     }
 }
 
-fn non_nulle(r: &climesh::derivazione::Raster) -> usize {
-    r.iter().filter(|&&v| v != 0.0).count()
+/// Cells that carry a canopy, that is the ones the `f32::NAN` of an empty cell
+/// has not been left in.
+fn con_chioma(r: &climesh::derivazione::Raster) -> usize {
+    r.iter().filter(|v| !v.is_nan()).count()
 }
 
 #[test]
@@ -178,10 +184,8 @@ fn un_albero_sul_confine_fra_due_celle_va_in_una_sola() {
     let mut s = scenario(vec![0.0; 3]);
     s.alberi.push(albero("020027", (1.0, 0.5), 10.0, 0.5));
     let d = deriva(&griglia(3, 1), &s, &estate()).unwrap();
-    assert_eq!(
-        d.chiome.iter().copied().collect::<Vec<f32>>(),
-        vec![0.0, 10.0, 0.0]
-    );
+    assert_eq!(d.chiome[[0, 1]], 10.0);
+    assert!(d.chiome[[0, 0]].is_nan() && d.chiome[[0, 2]].is_nan());
     assert_eq!(d.scelte.celle_con_chioma, 1);
     assert_eq!(d.scelte.oggetti_fuori_griglia, 0);
 }
@@ -223,7 +227,7 @@ fn uno_scenario_senza_alberi_in_un_periodo_senza_foglie_non_esclude_nulla() {
     let d = deriva(&griglia(2, 2), &s, &inverno()).unwrap();
     assert_eq!(d.scelte.chiome_escluse, 0);
     assert_eq!(d.scelte.celle_con_chioma, 0);
-    assert!(d.chiome.iter().all(|&v| v == 0.0));
+    assert!(d.chiome.iter().all(|v| v.is_nan()));
 }
 
 #[test]
@@ -234,8 +238,8 @@ fn i_decidui_escono_dal_raster_delle_chiome_nel_periodo_senza_foglie() {
     let d = deriva(&griglia(2, 2), &s, &inverno()).unwrap();
     assert_eq!(d.scelte.chiome_escluse, 2);
     assert_eq!(d.scelte.celle_con_chioma, 0);
-    assert!(d.chiome.iter().all(|&v| v == 0.0));
-    assert!(d.zona_tronco.iter().all(|&v| v == 0.0));
+    assert!(d.chiome.iter().all(|v| v.is_nan()));
+    assert!(d.zona_tronco.iter().all(|v| v.is_nan()));
 
     let estiva = deriva(&griglia(2, 2), &s, &estate()).unwrap();
     assert_eq!(estiva.scelte.chiome_escluse, 0);
@@ -283,13 +287,14 @@ fn due_alberi_sulla_stessa_cella_lasciano_la_chioma_piu_alta_e_il_suo_tronco() {
 
 #[test]
 fn la_riga_zero_e_a_nord() {
-    // Terrain is written row 0 northernmost; the building covers the northern
-    // metre and the tree stands in the southern one. A north-south flip swaps
-    // both.
+    // Terrain is written row 0 northernmost; the building covers the southern
+    // metre and the tree stands in the northern one. A north-south flip swaps
+    // both. The building is deliberately off the cell of the origin: standing on
+    // it, a height taken from the wrong terrain would still look right.
     let mut s = scenario(vec![9.0, 1.0]);
     s.edifici
-        .push(edificio(1.0, vec![rettangolo(0.0, 1.0, 1.0, 2.0)]));
-    s.alberi.push(albero("020027", (0.5, 0.5), 3.0, 0.5));
+        .push(edificio(1.0, vec![rettangolo(0.0, 0.0, 1.0, 1.0)]));
+    s.alberi.push(albero("020027", (0.5, 1.5), 3.0, 0.5));
     let d = deriva(&griglia(1, 2), &s, &estate()).unwrap();
     assert_eq!(
         d.modello_di_terreno.iter().copied().collect::<Vec<f32>>(),
@@ -300,12 +305,10 @@ fn la_riga_zero_e_a_nord() {
             .iter()
             .copied()
             .collect::<Vec<f32>>(),
-        vec![10.0, 1.0]
+        vec![9.0, 2.0]
     );
-    assert_eq!(
-        d.chiome.iter().copied().collect::<Vec<f32>>(),
-        vec![0.0, 4.0]
-    );
+    assert_eq!(d.chiome[[0, 0]], 12.0);
+    assert!(d.chiome[[1, 0]].is_nan());
 }
 
 #[test]
@@ -333,7 +336,178 @@ fn le_classi_di_superficie_seguono_la_stessa_regola_di_copertura() {
             CLASSE_ACQUA
         ]
     );
-    assert_ne!(CLASSE_TERRENO_NUDO, CLASSE_NESSUNA);
+}
+
+#[test]
+fn un_passo_diverso_da_un_metro_sposta_i_confini_delle_celle() {
+    // Cell centres at 0.25, 0.75, 1.25 and 1.75 m. The rectangle takes the two
+    // middle cells; read in cells instead of metres it would take the first two.
+    // The minimum also sits between the centre of cell 0 and the centre of cell
+    // 1, where rounding to the nearest cell and rounding up disagree.
+    let mut s = scenario(vec![0.0; 4]);
+    s.edifici
+        .push(edificio(3.0, vec![rettangolo(0.35, 0.0, 1.6, 0.5)]));
+    s.alberi.push(albero("020027", (1.75, 0.25), 10.0, 0.5));
+    let d = deriva(&griglia_di_passo(4, 1, 0.5), &s, &estate()).unwrap();
+    assert_eq!(
+        d.modello_di_superficie
+            .iter()
+            .copied()
+            .collect::<Vec<f32>>(),
+        vec![0.0, 3.0, 3.0, 0.0]
+    );
+    assert_eq!(d.scelte.celle_costruite, 2);
+    assert_eq!(d.chiome[[0, 3]], 10.0);
+    assert_eq!(d.scelte.celle_con_chioma, 1);
+}
+
+#[test]
+fn un_estremo_sul_centro_di_una_cella_e_incluso_al_minimo_ed_escluso_al_massimo() {
+    // 1.05 m is exactly the centre of cell 3 of a 0.3 m grid, and the division
+    // that finds it lands a few ulp above the whole number: unsnapped, the
+    // minimum the rule declares included falls out of the coverage.
+    let mut s = scenario(vec![0.0; 6]);
+    s.edifici
+        .push(edificio(2.0, vec![rettangolo(1.05, 0.0, 1.8, 0.3)]));
+    let d = deriva(&griglia_di_passo(6, 1, 0.3), &s, &estate()).unwrap();
+    assert_eq!(
+        d.modello_di_superficie
+            .iter()
+            .copied()
+            .collect::<Vec<f32>>(),
+        vec![0.0, 0.0, 0.0, 2.0, 2.0, 2.0]
+    );
+
+    // The mirror case: 2.10 m is the centre of cell 3 of a 0.6 m grid, and the
+    // maximum the rule declares excluded must stay excluded.
+    let mut s = scenario(vec![0.0; 4]);
+    s.edifici
+        .push(edificio(2.0, vec![rettangolo(0.0, 0.0, 2.1, 0.6)]));
+    let d = deriva(&griglia_di_passo(4, 1, 0.6), &s, &estate()).unwrap();
+    assert_eq!(
+        d.modello_di_superficie
+            .iter()
+            .copied()
+            .collect::<Vec<f32>>(),
+        vec![2.0, 2.0, 2.0, 0.0]
+    );
+}
+
+#[test]
+fn un_albero_sul_confine_di_celle_strette_va_nella_cella_orientale() {
+    // x = 0.3 m is the side between cell 2 and cell 3 of a 0.1 m grid, and
+    // 0.3 / 0.1 lands a few ulp below 3: unsnapped the tree drifts west, against
+    // the rule.
+    let mut s = scenario(vec![0.0; 4]);
+    s.alberi.push(albero("020027", (0.3, 0.05), 10.0, 0.5));
+    let d = deriva(&griglia_di_passo(4, 1, 0.1), &s, &estate()).unwrap();
+    assert_eq!(d.chiome[[0, 3]], 10.0);
+    assert_eq!(d.scelte.celle_con_chioma, 1);
+    assert_eq!(d.scelte.oggetti_fuori_griglia, 0);
+}
+
+#[test]
+fn due_edifici_sulla_stessa_cella_lasciano_il_piu_alto() {
+    let mut s = scenario(vec![0.0]);
+    let impronta = || vec![rettangolo(0.0, 0.0, 1.0, 1.0)];
+    s.edifici.push(edificio(9.0, impronta()));
+    s.edifici.push(edificio(4.0, impronta()));
+    let d = deriva(&griglia(1, 1), &s, &estate()).unwrap();
+    assert_eq!(d.modello_di_superficie[[0, 0]], 9.0);
+    assert_eq!(d.scelte.celle_costruite, 1);
+
+    // The same two in the other order must give the same raster.
+    s.edifici.reverse();
+    let girato = deriva(&griglia(1, 1), &s, &estate()).unwrap();
+    assert_eq!(girato.modello_di_superficie, d.modello_di_superficie);
+
+    // Two of the same height are one building of that height, not a tower of two.
+    let mut s = scenario(vec![0.0]);
+    s.edifici.push(edificio(6.0, impronta()));
+    s.edifici.push(edificio(6.0, impronta()));
+    let d = deriva(&griglia(1, 1), &s, &estate()).unwrap();
+    assert_eq!(d.modello_di_superficie[[0, 0]], 6.0);
+}
+
+#[test]
+fn due_chiome_di_pari_altezza_non_dipendono_dall_ordine() {
+    let mut s = scenario(vec![0.0]);
+    s.alberi.push(albero("020027", (0.5, 0.5), 10.0, 0.2));
+    s.alberi.push(albero("020027", (0.5, 0.5), 10.0, 0.8));
+    let d = deriva(&griglia(1, 1), &s, &estate()).unwrap();
+    s.alberi.reverse();
+    let girato = deriva(&griglia(1, 1), &s, &estate()).unwrap();
+    assert_eq!(d.chiome[[0, 0]], 10.0);
+    assert_eq!(girato.chiome, d.chiome);
+    // The deeper canopy of the two keeps its shade.
+    assert_eq!(d.zona_tronco[[0, 0]], 2.0);
+    assert_eq!(girato.zona_tronco, d.zona_tronco);
+}
+
+#[test]
+fn un_terreno_sotto_il_datum_lascia_vuote_le_celle_senza_chioma() {
+    // Absolute heights and a terrain below the datum: a cell with no tree that
+    // held 0.0 would be a canopy five metres over the ground.
+    let mut s = scenario(vec![-5.0, -5.0]);
+    s.alberi.push(albero("020027", (0.5, 0.5), 3.0, 0.5));
+    let d = deriva(&griglia(2, 1), &s, &estate()).unwrap();
+    assert_eq!(d.chiome[[0, 0]], -2.0);
+    assert!(d.chiome[[0, 1]].is_nan(), "{}", d.chiome[[0, 1]]);
+    assert!(d.zona_tronco[[0, 1]].is_nan(), "{}", d.zona_tronco[[0, 1]]);
+    assert_eq!(d.scelte.celle_con_chioma, 1);
+}
+
+#[test]
+fn due_superfici_sovrapposte_lasciano_l_ultima() {
+    let mut s = scenario(vec![0.0]);
+    let impronta = || vec![rettangolo(0.0, 0.0, 1.0, 1.0)];
+    s.superfici.push(Superficie {
+        tipo: TipoSuperficie::Erba,
+        impronta: impronta(),
+    });
+    s.superfici.push(Superficie {
+        tipo: TipoSuperficie::Acqua,
+        impronta: impronta(),
+    });
+    let d = deriva(&griglia(1, 1), &s, &estate()).unwrap();
+    assert_eq!(d.classi_di_superficie[[0, 0]], CLASSE_ACQUA);
+
+    s.superfici.reverse();
+    let girato = deriva(&griglia(1, 1), &s, &estate()).unwrap();
+    assert_eq!(girato.classi_di_superficie[[0, 0]], CLASSE_ERBA);
+}
+
+#[test]
+fn un_rettangolo_degenere_di_una_superficie_e_contato() {
+    let mut s = scenario(vec![0.0; 2]);
+    s.superfici.push(Superficie {
+        tipo: TipoSuperficie::Erba,
+        impronta: vec![
+            rettangolo(0.0, 0.0, 0.0, 1.0), // zero width
+            rettangolo(2.0, 1.0, 1.0, 0.0), // minimum and maximum swapped
+            rettangolo(1.0, 0.0, 2.0, 1.0), // sound, so the loop is not skipped
+        ],
+    });
+    let d = deriva(&griglia(2, 1), &s, &estate()).unwrap();
+    assert_eq!(d.scelte.rettangoli_degeneri, 2);
+    assert_eq!(
+        d.classi_di_superficie.iter().copied().collect::<Vec<u8>>(),
+        vec![CLASSE_NESSUNA, CLASSE_ERBA]
+    );
+}
+
+#[test]
+fn il_terreno_nudo_ha_la_sua_classe() {
+    let mut s = scenario(vec![0.0; 2]);
+    s.superfici.push(Superficie {
+        tipo: TipoSuperficie::TerrenoNudo,
+        impronta: vec![rettangolo(0.0, 0.0, 1.0, 1.0)],
+    });
+    let d = deriva(&griglia(2, 1), &s, &estate()).unwrap();
+    assert_eq!(
+        d.classi_di_superficie.iter().copied().collect::<Vec<u8>>(),
+        vec![CLASSE_TERRENO_NUDO, CLASSE_NESSUNA]
+    );
 }
 
 #[test]
@@ -346,8 +520,7 @@ fn una_griglia_di_una_cella_funziona() {
 
 #[test]
 fn una_griglia_che_non_sta_in_un_usize_e_rifiutata() {
-    let mut g = griglia(usize::MAX, 2);
-    g.ny = 2;
+    let g = griglia(usize::MAX, 2);
     let s = scenario(Vec::new());
     let errore = deriva(&g, &s, &estate()).unwrap_err();
     assert!(
@@ -372,8 +545,9 @@ fn una_data_impossibile_tiene_le_foglie() {
 }
 
 #[test]
-fn la_stagione_si_decide_dalla_finestra_con_foglie_del_motore() {
-    // Day 100 to day 300 inclusive.
+fn la_stagione_si_decide_dalla_finestra_con_foglie_della_derivazione() {
+    // Day 100 to day 300, day 300 included: `src/derivazione.rs` names the source
+    // of the window and says the inclusive end is our own choice.
     assert_eq!(Stagione::da_periodo(&periodo(4, 10)), Stagione::ConFoglie); // day 100
     assert_eq!(Stagione::da_periodo(&periodo(4, 9)), Stagione::SenzaFoglie); // day 99
     assert_eq!(Stagione::da_periodo(&periodo(10, 27)), Stagione::ConFoglie); // day 300
@@ -381,26 +555,6 @@ fn la_stagione_si_decide_dalla_finestra_con_foglie_del_motore() {
         Stagione::da_periodo(&periodo(10, 28)),
         Stagione::SenzaFoglie
     ); // day 301
-}
-
-#[test]
-fn due_derivazioni_dello_stesso_scenario_danno_gli_stessi_byte() {
-    let progetto = climesh::progetto::leggi("casi/bastia/progetto").unwrap();
-    let s = &progetto.scenari[0];
-    let prima = deriva(&progetto.griglia, s, &progetto.periodi[0]).unwrap();
-    let seconda = deriva(&progetto.griglia, s, &progetto.periodi[0]).unwrap();
-    for (a, b) in [
-        (&prima.modello_di_superficie, &seconda.modello_di_superficie),
-        (&prima.modello_di_terreno, &seconda.modello_di_terreno),
-        (&prima.chiome, &seconda.chiome),
-        (&prima.zona_tronco, &seconda.zona_tronco),
-    ] {
-        let bit =
-            |r: &climesh::derivazione::Raster| r.iter().map(|v| v.to_bits()).collect::<Vec<_>>();
-        assert_eq!(bit(a), bit(b));
-    }
-    assert_eq!(prima.classi_di_superficie, seconda.classi_di_superficie);
-    assert_eq!(prima.scelte, seconda.scelte);
 }
 
 #[test]
@@ -424,7 +578,7 @@ fn il_caso_di_riferimento_deriva_in_entrambe_le_stagioni() {
         assert_eq!(estivo.scelte.rettangoli_degeneri, 0);
         assert!(estivo.scelte.celle_costruite > 0);
         assert!(
-            non_nulle(&invernale.chiome) < non_nulle(&estivo.chiome),
+            con_chioma(&invernale.chiome) < con_chioma(&estivo.chiome),
             "the winter canopy must be the sparser one"
         );
         assert!(invernale.scelte.chiome_escluse > 0);

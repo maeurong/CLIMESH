@@ -32,7 +32,14 @@ pub const CLASSE_ERBA: u8 = 2;
 pub const CLASSE_ACQUA: u8 = 3;
 pub const CLASSE_TERRENO_NUDO: u8 = 4;
 
-/// The first and last day of the year the Motore treats as leafy.
+/// The first and last day of the year this Derivazione treats as leafy.
+///
+/// Day 100 to day 300, with conifers leafy all year, is the default of the
+/// SOLWEIG line the Motore comes from, recorded in `research/solweig-riuso.md`
+/// § 4. The vendored core carries no leaf logic of its own — it takes one canopy
+/// raster and one transmissivity per run — so which canopies stand in January is
+/// decided here and nowhere else. Day 300 falling *inside* the window is our
+/// own choice: the source names the bound, not which side it belongs to.
 const FINESTRA_CON_FOGLIE: (u32, u32) = (100, 300);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -84,9 +91,16 @@ pub struct RasterDiScenario {
     /// Terrain plus buildings, in metres above the datum of the terrain.
     pub modello_di_superficie: Raster,
     pub modello_di_terreno: Raster,
-    /// Canopy top, absolute: `0.0` where there is no tree.
+    /// Canopy top, absolute: `f32::NAN` where there is no tree.
+    ///
+    /// NAN and not `0.0`, because these are elevations and not local heights: a
+    /// zero over a terrain below the datum would read as a canopy metres above
+    /// the ground. It is also the value the vendored core already treats as no
+    /// vegetation — `vendor/solweig/src/shadowing.rs` guards its canopy reads
+    /// with `is_finite` — so the two conventions agree instead of diverging.
     pub chiome: Raster,
-    /// Top of the trunk zone, absolute: `0.0` where there is no tree.
+    /// Top of the trunk zone, absolute, with the same `f32::NAN` convention as
+    /// `chiome`.
     pub zona_tronco: Raster,
     pub classi_di_superficie: Array2<u8>,
     pub scelte: ScelteDiDerivazione,
@@ -119,8 +133,24 @@ impl std::error::Error for DerivazioneError {}
 /// The cast of a float to an integer saturates in Rust, and a NaN becomes zero,
 /// so a rectangle far outside the Griglia clips instead of wrapping.
 fn intervallo(min_m: f64, max_m: f64, passo_m: f64, n: usize) -> Range<usize> {
-    let indice = |m: f64| ((m / passo_m - 0.5).ceil().max(0.0) as usize).min(n);
+    let indice = |m: f64| ((agganciato(m / passo_m - 0.5)).ceil().max(0.0) as usize).min(n);
     indice(min_m)..indice(max_m)
+}
+
+/// A value nudged onto the whole number it is a few ulp away from.
+///
+/// Dividing metres by a step is not exact: `1.05 / 0.3` lands just above `3.5`
+/// and `0.3 / 0.1` just below `3`. Without this, a coordinate sitting exactly on
+/// a cell centre or on a cell side falls on the wrong side of the coverage rule
+/// — the minimum the rule includes drops out, the maximum it excludes creeps in
+/// — and the resulting model is plausible and wrong.
+fn agganciato(x: f64) -> f64 {
+    let intero = x.round();
+    if (x - intero).abs() <= 4.0 * f64::EPSILON * x.abs().max(1.0) {
+        intero
+    } else {
+        x
+    }
 }
 
 /// The rows and columns a rectangle covers, or `None` when the rectangle has no
@@ -128,8 +158,7 @@ fn intervallo(min_m: f64, max_m: f64, passo_m: f64, n: usize) -> Range<usize> {
 fn celle_coperte(griglia: &Griglia, r: &Rettangolo) -> Option<(Range<usize>, Range<usize>)> {
     // `partial_cmp` and not `<`: a side that is not a number is not a side, and
     // it has to fall on this branch rather than on an empty coverage nobody counts.
-    let senza_area =
-        |min: f64, max: f64| !matches!(min.partial_cmp(&max), Some(std::cmp::Ordering::Less));
+    let senza_area = |min: f64, max: f64| min.partial_cmp(&max) != Some(std::cmp::Ordering::Less);
     if senza_area(r.x_min_m, r.x_max_m) || senza_area(r.y_min_m, r.y_max_m) {
         return None;
     }
@@ -143,7 +172,7 @@ fn celle_coperte(griglia: &Griglia, r: &Rettangolo) -> Option<(Range<usize>, Ran
 /// The cell a position falls in, `None` when it falls outside the Griglia.
 fn cella_della_posizione(griglia: &Griglia, (x_m, y_m): Posizione) -> Option<(usize, usize)> {
     let indice = |m: f64, n: usize| {
-        let i = (m / griglia.passo_m).floor();
+        let i = agganciato(m / griglia.passo_m).floor();
         (i >= 0.0 && i < n as f64).then_some(i as usize)
     };
     let colonna = indice(x_m, griglia.nx)?;
@@ -196,9 +225,10 @@ pub fn deriva(
             for riga in righe {
                 for colonna in colonne.clone() {
                     let quota = modello_di_terreno[[riga, colonna]] + edificio.altezza_m;
-                    // Two Edifici on one cell leave the taller of the two.
-                    if !costruite[[riga, colonna]] || quota > modello_di_superficie[[riga, colonna]]
-                    {
+                    // Two Edifici on one cell leave the taller of the two. The
+                    // surface starts at the terrain of this very cell, so the
+                    // comparison also keeps a building from digging into it.
+                    if quota > modello_di_superficie[[riga, colonna]] {
                         modello_di_superficie[[riga, colonna]] = quota;
                     }
                     costruite[[riga, colonna]] = true;
@@ -208,9 +238,8 @@ pub fn deriva(
     }
     scelte.celle_costruite = costruite.iter().filter(|&&c| c).count();
 
-    let mut chiome: Raster = Array2::zeros((ny, nx));
-    let mut zona_tronco: Raster = Array2::zeros((ny, nx));
-    let mut con_chioma = Array2::from_elem((ny, nx), false);
+    let mut chiome: Raster = Array2::from_elem((ny, nx), f32::NAN);
+    let mut zona_tronco: Raster = Array2::from_elem((ny, nx), f32::NAN);
     for albero in &scenario.alberi {
         // Standing outside the Griglia is a fact about the geometry and not about
         // the season, so it is counted before the leaves are considered: the same
@@ -227,16 +256,23 @@ pub fn deriva(
         // over a terrain at 2 m has its top at 14 m.
         let suolo = modello_di_terreno[[riga, colonna]];
         let chioma = suolo + albero.altezza_m;
-        if con_chioma[[riga, colonna]] && chioma <= chiome[[riga, colonna]] {
+        let tronco = suolo + albero.altezza_m * albero.frazione_tronco as f32;
+        let corrente = chiome[[riga, colonna]];
+        if corrente.is_nan() || chioma > corrente {
             // Two trees on one cell leave the taller canopy, and the trunk zone
-            // that goes with it rather than the other tree's.
-            continue;
+            // that goes with it rather than the other tree's. An empty cell holds
+            // NAN, which compares false against everything, so the first tree
+            // always writes.
+            chiome[[riga, colonna]] = chioma;
+            zona_tronco[[riga, colonna]] = tronco;
+        } else if chioma == corrente {
+            // Two canopies of the same height: the lower trunk zone, so the
+            // answer does not depend on the order the Alberi are listed in, and
+            // of the two the deeper canopy is the one that keeps its shade.
+            zona_tronco[[riga, colonna]] = zona_tronco[[riga, colonna]].min(tronco);
         }
-        chiome[[riga, colonna]] = chioma;
-        zona_tronco[[riga, colonna]] = suolo + albero.altezza_m * albero.frazione_tronco as f32;
-        con_chioma[[riga, colonna]] = true;
     }
-    scelte.celle_con_chioma = con_chioma.iter().filter(|&&c| c).count();
+    scelte.celle_con_chioma = chiome.iter().filter(|v| !v.is_nan()).count();
 
     let mut classi_di_superficie = Array2::from_elem((ny, nx), CLASSE_NESSUNA);
     for superficie in &scenario.superfici {

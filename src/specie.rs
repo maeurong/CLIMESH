@@ -79,10 +79,9 @@ pub fn frazione_tronco(plant_id: &str) -> f64 {
 
 /// Whether the species drops its leaves in winter.
 ///
-/// An unknown species is not deciduous. The Derivazione, when it is written,
-/// will keep a canopy it cannot justify dropping: shade removed by mistake is the
-/// worse of the two errors, because it changes a result and leaves nothing behind
-/// to notice.
+/// An unknown species is not deciduous, so the Derivazione keeps a canopy it
+/// cannot justify dropping: shade removed by mistake is the worse of the two
+/// errors, because it changes a result and leaves nothing behind to notice.
 pub fn e_decidua(plant_id: &str) -> bool {
     cerca(plant_id).is_some_and(|s| s.decidua)
 }

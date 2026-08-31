@@ -147,6 +147,12 @@ fn valida(p: &Progetto) -> Result<(), ProgettoError> {
             "nx e ny devono essere maggiori di zero".into(),
         ));
     }
+    if !(p.griglia.passo_m.is_finite() && p.griglia.passo_m > 0.0) {
+        return Err(ProgettoError::Griglia(format!(
+            "il passo di {} m non è una lunghezza: dev'essere finito e maggiore di zero",
+            p.griglia.passo_m
+        )));
+    }
     let celle = p.griglia.celle().ok_or_else(|| {
         ProgettoError::Griglia(format!(
             "{} × {} celle non entrano in questa macchina",
