@@ -18,7 +18,7 @@
 - **Si disegna in oggetti, si calcola in raster** ([ADR 0001](../../adr/0001-oggetti-e-raster.md)). Nessuna funzione può prendere un raster e restituire un oggetto di dominio.
 - **Le righe corrono da nord.** Riga `0` di ogni raster è la più settentrionale. `inx::Matrix::at` fa già la conversione dagli indici ENVI-met; non reimplementarla.
 - **Test prima dell'implementazione.** Ogni task comincia da un test che fallisce.
-- **Ambiente:** `export PATH=$HOME/.cargo/bin:$PATH`. Su questa macchina manca un linker C, quindi ogni comando `cargo test` va eseguito come `CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=rust-lld cargo test --target x86_64-unknown-linux-musl`. Negli step qui sotto è abbreviato in `cargo test`; espanderlo sempre.
+- **Ambiente:** `export PATH=$HOME/.cargo/bin:$PATH`, poi `cargo test` normale. Il giro con musl che questo piano prescriveva non serve più: il linker C è installato.
 - **`materiale università/` resta fuori dal repository.** I test che lo leggono si saltano da soli quando non c'è.
 
 ---
@@ -513,457 +513,63 @@ git commit -m "feat: the Progetto on disk, with the manifest as the truth"
 
 Il lettore che esiste smette di essere un lettore di file e diventa un costruttore di Progetto.
 
+> **Scritto dopo Task 1**, contro i tipi che esistono davvero: `Edificio.impronta: Vec<Rettangolo>` e `Superficie.impronta` in metri dall'origine della Griglia, `Albero.posizione_m` e `PuntoDiOsservazione.posizione_m` come `Posizione = (f64, f64)`. Non esiste più nessun `Cella`. Leggi `src/dominio.rs` prima di scrivere: è la fonte, non questo file.
+
 **Files:**
 - Create: `src/specie.rs`
 - Create: `src/da_inx.rs`
+- Create: `src/bin/costruisci_caso.rs`
 - Modify: `src/lib.rs`
 - Test: `tests/da_inx.rs`
 
 **Interfaces:**
-- Consumes: `dominio::*`, `inx::{read_inx, Inx, Matrix, Plant}`.
-- Produces: `da_inx::progetto_da_inx(inx: &inx::Inx, nome_progetto: &str, nome_scenario: &str) -> Progetto`; `specie::{altezza_di_chioma_m, frazione_tronco, e_decidua}`.
+- Consumes: `dominio::*`, `inx::{read_inx, Inx, Matrix, Plant, Geometry}`, `progetto::scrivi`.
+- Produces: `da_inx::progetto_da_inx(letto: &Inx, nome_progetto: &str, nome_scenario: &str) -> Progetto`; `specie::{nome, altezza_di_chioma_m, frazione_tronco, e_decidua, ALTEZZA_PREDEFINITA_M, FRAZIONE_TRONCO_PREDEFINITA}`.
 
-- [ ] **Step 1: Scrivere il test che fallisce**
+**La conversione che decide tutto.** Il `.INX` parla in celle 1-based con `j = 1` a sud; il dominio parla in metri dall'angolo sud-ovest della Griglia. La cella `(i, j)` copre il rettangolo che va da `((i-1)·passo, (j-1)·passo)` a `(i·passo, j·passo)`. Un albero radicato in `(i, j)` sta al **centro** della sua cella, cioè `((i-0.5)·passo, (j-0.5)·passo)`.
 
-`tests/da_inx.rs`:
+Attenzione: `inx::Matrix::at(i, j)` prende già indici ENVI-met e fa il ribaltamento nord-sud. **Non reimplementarlo**, e non indicizzare `cells` a mano se non ti serve davvero l'ordine di scrittura.
 
-```rust
-use climesh::dominio::*;
-use climesh::{da_inx, inx, specie};
+**Cosa deve essere vero alla fine:**
 
-const CASO: &str = "materiale università/LAB1.INX";
+1. **La tabella delle specie** copre le cinque del caso — `020027` Pine Tree (middle), `020060` London Plane Tree (middle), `0000PR` Tilia, `0000PA` Populus Alba, `020111` Hanging Birch (middle) — con altezza di chioma, frazione di tronco e caducità. I nomi vengono da `casi/bastia/valori-di-riferimento.toml`, che li ha letti dal file vero: un nome inventato qui diventa un nome sbagliato in una relazione. Platano e tiglio sono decidui, il pino no. Una specie sconosciuta prende i valori predefiniti e **non** è decidua, perché togliere ombra che il modello non sa giustificare è l'errore peggiore.
+2. **Le altezze degli Edifici sono `FonteAltezza::Rilievo`**: vengono da una matrice del file. **Le altezze degli Alberi sono `FonteAltezza::Predefinito`**: non stanno nel `.INX`, stanno nel database piante di ENVI-met, che non abbiamo.
+3. **Il nome del Progetto è un parametro**, non `location.name`: nel caso di riferimento quel campo dice `bergamo` per un modello di Bastia Umbra, refuso noto e registrato fra le incongruenze.
+4. **Le celle costruite che condividono l'altezza formano un Edificio.** Il campo che numera gli edifici nel `.INX` spezza tre blocchi costruiti in sette identificativi, alcuni di una cella sola: raggrupparle per altezza è più vicino a ciò che un lettore chiama "un edificio".
+5. **Il generatore `costruisci_caso` produce l'intero caso**, Periodi compresi, ed è **idempotente**: due esecuzioni lasciano lo stesso albero di file. Niente file scritti a mano accanto a file generati, perché la seconda esecuzione li cancellerebbe — e i Periodi sono ciò che il cancello di Task 5 legge.
+6. **Il secondo Scenario è ricostruito, non rilevato.** `LAB1.INX` contiene solo lo stato di fatto. Quello degli interventi si costruisce dalla descrizione della relazione — filari sul confine, verde addossato agli edifici, specchio d'acqua nella corte — **in modo deterministico, senza generatori casuali**, perché la geometria di uno Scenario è un esito discreto e due macchine devono produrre lo stesso file. Ogni oggetto aggiunto porta in Provenienza che è ricostruito dalla descrizione e non rilevato. Serve a misurare il carico di calcolo, non a pubblicare risultati, e il codice lo deve dire.
+7. **I Periodi** vengono da `casi/bastia/valori-di-riferimento.toml`: 15/07/2021 e 15/01/2021, 48 ore, direzione del vento 45° d'estate e 180° d'inverno, meteo l'EPW di Perugia. Non stanno nel `.INX` perché il forcing vive nel `.SIMX`, che non è nel materiale.
+8. **I tre Punti di osservazione** della relazione, in indici ENVI-met `(15;18)`, `(25;35)`, `(37;15)`, convertiti in metri con la stessa regola del centro cella.
+9. `casi/bastia/progetto/corse/` finisce in `.gitignore`: nasce dall'esecuzione.
 
-#[test]
-fn every_species_in_the_reference_case_has_a_height_and_a_leaf_habit() {
-    for id in ["020027", "020060", "0000PR", "0000PA", "020111"] {
-        assert!(specie::altezza_di_chioma_m(id) > 0.0, "specie senza altezza: {id}");
-        assert!((0.0..1.0).contains(&specie::frazione_tronco(id)), "tronco fuori scala: {id}");
-    }
-    assert!(specie::e_decidua("020060"), "il platano perde le foglie");
-    assert!(specie::e_decidua("0000PR"), "il tiglio perde le foglie");
-    assert!(!specie::e_decidua("020027"), "il pino è sempreverde");
-}
+## Ingressi degeneri
 
-#[test]
-fn an_unknown_species_falls_back_and_says_so() {
-    assert_eq!(specie::altezza_di_chioma_m("zzzzzz"), specie::ALTEZZA_PREDEFINITA_M);
-    assert!(!specie::e_decidua("zzzzzz"), "in dubbio si tiene la chioma");
-}
+Ogni riga è un test, e ogni test deve fallire se togli la difesa:
 
-#[test]
-fn the_reference_case_becomes_a_project_with_one_scenario() {
-    let Some(letto) = leggi_il_caso() else { return };
-    let p = da_inx::progetto_da_inx(&letto, "bastia", "stato-di-fatto");
+- `.INX` senza la matrice degli edifici → Scenario senza Edifici, mai un panico e mai un edificio a quota zero
+- `.INX` senza la sezione dei suoli → nessuna Superficie, che non è la stessa cosa di un dominio tutto di terreno nudo
+- pianta con `plantID` sconosciuto → altezza e tronco predefiniti, non decidua, e la Provenienza lo dice
+- pianta radicata fuori dalla griglia dichiarata → segnalata, mai una posizione fuori dall'estensione che poi `progetto::valida` rifiuta
+- `.INX` con `dx` diverso da `dy` → o è supportato davvero, o è rifiutato con un messaggio che lo dice; mai una conversione che assume l'uno per l'altro
+- `.INX` di dimensione diversa da 50×50 → convertito lo stesso, nessuna dimensione cablata
+- generatore eseguito due volte di fila → stesso albero di file, byte per byte
+- generatore eseguito senza `materiale università/` → errore che nomina il file e spiega che non è ridistribuibile, codice d'uscita diverso da zero, nessun Progetto a metà
+- Progetto generato → `progetto::leggi` lo rilegge senza errori, e i due Scenari hanno nomi diversi
 
-    assert_eq!(p.griglia.nx, 50);
-    assert_eq!(p.griglia.ny, 50);
-    assert_eq!(p.griglia.passo_m, 1.0);
-    assert_eq!(p.griglia.rotazione_gradi, 21.0);
-    assert_eq!(p.scenari.len(), 1);
-    assert_eq!(p.scenari[0].terreno_m.len(), 2500);
-    assert_eq!(p.scenari[0].alberi.len(), 616, "le 616 istanze del file");
-}
-
-#[test]
-fn building_cells_keep_their_height_and_are_marked_as_surveyed() {
-    let Some(letto) = leggi_il_caso() else { return };
-    let p = da_inx::progetto_da_inx(&letto, "bastia", "stato-di-fatto");
-    let celle: usize = p.scenari[0].edifici.iter().map(|e| e.celle.len()).sum();
-    assert!(celle > 0, "il caso ha edifici");
-    for e in &p.scenari[0].edifici {
-        assert!(e.altezza_m > 0.0);
-        assert_eq!(e.provenienza.altezza, FonteAltezza::Rilievo,
-                   "un'altezza letta da .INX viene da un rilievo, non da una stima");
-    }
-}
-
-#[test]
-fn tree_heights_are_marked_as_estimated_because_the_file_does_not_carry_them() {
-    let Some(letto) = leggi_il_caso() else { return };
-    let p = da_inx::progetto_da_inx(&letto, "bastia", "stato-di-fatto");
-    for a in &p.scenari[0].alberi {
-        assert_eq!(a.provenienza.altezza, FonteAltezza::Predefinito,
-                   "l'altezza di chioma non sta nell'.INX: viene dalla tabella delle specie");
-    }
-}
-
-/// L'oracolo non è la formula dell'implementazione — con quella, un verso
-/// invertito sbaglierebbe due volte e passerebbe in verde. È un fatto del caso
-/// reale, verificato quando il formato è stato documentato: **nessuna delle 616
-/// piante è radicata su una cella costruita**. Con il verso invertito il modello
-/// si specchia e gli alberi finiscono dentro gli edifici.
-#[test]
-fn no_tree_of_the_reference_case_stands_on_a_built_cell() {
-    let Some(letto) = leggi_il_caso() else { return };
-    let p = da_inx::progetto_da_inx(&letto, "bastia", "stato-di-fatto");
-    let z_top = letto.z_top.as_ref().expect("il caso ha la matrice zTop");
-    let costruita = |(r, c): Cella| z_top.cells[r * z_top.cols + c] > 0.0;
-    let dentro: Vec<_> = p.scenari[0].alberi.iter().filter(|a| costruita(a.cella)).collect();
-    assert!(dentro.is_empty(),
-            "{} alberi dentro un edificio: le righe corrono da nord, riga 0 = j max",
-            dentro.len());
-}
-
-/// I test che leggono il caso reale si saltano quando il materiale non c'è:
-/// `materiale università/` è in .gitignore e non è ridistribuibile.
-fn leggi_il_caso() -> Option<inx::Inx> {
-    if !std::path::Path::new(CASO).exists() {
-        eprintln!("saltato: manca {CASO}");
-        return None;
-    }
-    Some(inx::read_inx(CASO).expect("il caso di riferimento deve leggersi"))
-}
-```
-
-- [ ] **Step 2: Eseguire il test e verificare che fallisca**
-
-Run: `cargo test --test da_inx`
-Expected: FAIL, `unresolved import climesh::specie`.
-
-- [ ] **Step 3: Scrivere la tabella delle specie**
-
-`src/specie.rs`:
-
-```rust
-//! Canopy geometry per species.
-//!
-//! ENVI-met keeps these in a plant database CLIMESH does not have, so the values
-//! below are declared estimates and every tree built from them carries
-//! `FonteAltezza::Predefinito`. Species ids are ENVI-met plant ids, kept verbatim
-//! so a reader can trace a tree back to the file it came from.
-
-/// Canopy height used when the species is unknown.
-pub const ALTEZZA_PREDEFINITA_M: f32 = 10.0;
-/// Trunk-zone top as a fraction of canopy height, matching the engine's default.
-pub const FRAZIONE_TRONCO_PREDEFINITA: f32 = 0.25;
-
-/// `(id, nome, altezza di chioma in metri, frazione di tronco, decidua)`
-const TABELLA: &[(&str, &str, f32, f32, bool)] = &[
-    // I nomi vengono da casi/bastia/valori-di-riferimento.toml, che li ha letti
-    // dal file reale. Sono ciò che un umano legge nel Giornale: un nome inventato
-    // qui diventa un nome sbagliato in una relazione.
-    ("020027", "Pine Tree (middle)", 12.0, 0.45, false),
-    ("020060", "London Plane Tree (middle)", 15.0, 0.30, true),
-    ("0000PR", "Tilia", 12.0, 0.30, true),
-    ("0000PA", "Populus Alba", 8.0, 0.25, true),
-    ("020111", "Hanging Birch (middle)", 10.0, 0.25, true),
-];
-
-fn riga(id: &str) -> Option<&'static (&'static str, &'static str, f32, f32, bool)> {
-    TABELLA.iter().find(|r| r.0 == id)
-}
-
-pub fn nome(id: &str) -> &str {
-    riga(id).map_or("specie sconosciuta", |r| r.1)
-}
-
-pub fn altezza_di_chioma_m(id: &str) -> f32 {
-    riga(id).map_or(ALTEZZA_PREDEFINITA_M, |r| r.2)
-}
-
-pub fn frazione_tronco(id: &str) -> f32 {
-    riga(id).map_or(FRAZIONE_TRONCO_PREDEFINITA, |r| r.3)
-}
-
-/// Whether the species drops its leaves. An unknown species keeps its canopy:
-/// removing shade the model cannot justify would be the worse mistake.
-pub fn e_decidua(id: &str) -> bool {
-    riga(id).is_some_and(|r| r.4)
-}
-```
-
-- [ ] **Step 4: Scrivere il costruttore**
-
-`src/da_inx.rs`:
-
-```rust
-//! Builds a Progetto out of an ENVI-met `.INX`.
-//!
-//! The only module that knows both vocabularies. It produces objects, never
-//! rasters: see ADR 0001.
-
-use crate::dominio::*;
-use crate::inx::{Inx, Matrix};
-use crate::specie;
-
-/// Cells that share a height become one Edificio. `.INX` numbers buildings in a
-/// field that splits three built blocks into seven ids, some a single cell wide,
-/// so grouping by height is closer to what a reader means by "a building" than
-/// trusting that field would be.
-fn edifici_da(z_top: &Matrix<f64>) -> Vec<Edificio> {
-    let mut per_altezza: std::collections::BTreeMap<u32, Vec<Cella>> = Default::default();
-    for r in 0..z_top.rows {
-        for c in 0..z_top.cols {
-            let h = z_top.cells[r * z_top.cols + c];
-            if h > 0.0 {
-                per_altezza.entry((h * 1000.0).round() as u32).or_default().push((r, c));
-            }
-        }
-    }
-    per_altezza
-        .into_iter()
-        .map(|(millimetri, celle)| Edificio {
-            celle,
-            altezza_m: millimetri as f32 / 1000.0,
-            provenienza: Provenienza {
-                origine: "LAB1.INX, matrice zTop".into(),
-                altezza: FonteAltezza::Rilievo,
-            },
-        })
-        .collect()
-}
-
-fn superfici_da(suoli: Option<&Matrix<Option<String>>>, celle: usize) -> Vec<Superficie> {
-    let Some(m) = suoli else {
-        // Nessuna sezione dei suoli nel file: nessuna Superficie. Un elenco vuoto
-        // non è la stessa cosa di un dominio tutto di terreno nudo, e la
-        // Derivazione ha già il proprio valore predefinito.
-        let _ = celle;
-        return Vec::new();
-    };
-    let mut per_tipo: std::collections::BTreeMap<TipoSuperficie, Vec<Cella>> = Default::default();
-    for r in 0..m.rows {
-        for c in 0..m.cols {
-            let profilo = m.cells[r * m.cols + c].as_deref().unwrap_or("");
-            let tipo = match profilo {
-                "" | "000000" => TipoSuperficie::TerrenoNudo,
-                p if p.ends_with("WW") => TipoSuperficie::Acqua,
-                p if p.ends_with("XX") => TipoSuperficie::Erba,
-                _ => TipoSuperficie::Pavimentato,
-            };
-            per_tipo.entry(tipo).or_default().push((r, c));
-        }
-    }
-    per_tipo.into_iter().map(|(tipo, celle)| Superficie { celle, tipo }).collect()
-}
-
-/// `nome_progetto` è un parametro e non viene dal file: `locationData/locationName`
-/// del caso di riferimento dice `bergamo` per un modello di Bastia Umbra, refuso
-/// noto e registrato fra le incongruenze. Un Progetto non eredita in silenzio
-/// l'errore del file da cui nasce.
-pub fn progetto_da_inx(letto: &Inx, nome_progetto: &str, nome_scenario: &str) -> Progetto {
-    let g = &letto.geometry;
-    let celle = g.grids_i * g.grids_j;
-
-    let terreno_m = letto.terrain_height.as_ref().map_or_else(
-        || vec![0.0f32; celle],
-        |m| m.cells.iter().map(|&v| v as f32).collect(),
-    );
-
-    let edifici = letto.z_top.as_ref().map_or_else(Vec::new, edifici_da);
-
-    let alberi = letto
-        .plants
-        .iter()
-        .map(|p| Albero {
-            cella: (g.grids_j - p.j, p.i - 1),
-            altezza_m: specie::altezza_di_chioma_m(&p.plant_id),
-            frazione_tronco: specie::frazione_tronco(&p.plant_id),
-            specie: p.plant_id.clone(),
-            provenienza: Provenienza {
-                origine: format!("LAB1.INX, istanza di pianta ({}, {})", p.i, p.j),
-                altezza: FonteAltezza::Predefinito,
-            },
-        })
-        .collect();
-
-    Progetto {
-        nome: nome_progetto.to_string(),
-        griglia: Griglia {
-            nx: g.grids_i,
-            ny: g.grids_j,
-            passo_m: g.dx,
-            crs: "EPSG:4326".into(),
-            origine: (letto.location.longitude, letto.location.latitude),
-            rotazione_gradi: letto.location.model_rotation,
-        },
-        punti: Vec::new(),
-        scenari: vec![Scenario {
-            nome: nome_scenario.to_string(),
-            derivato_da: None,
-            terreno_m,
-            edifici,
-            alberi,
-            superfici: superfici_da(letto.soil_profiles.as_ref(), celle),
-        }],
-        periodi: Vec::new(),
-    }
-}
-```
-
-`src/lib.rs` aggiunge `pub mod da_inx;` e `pub mod specie;`.
-
-- [ ] **Step 5: Eseguire i test e verificare che passino**
-
-Run: `cargo test --test da_inx`
-Expected: PASS, 6 test. Con `materiale università/` presente ne girano 6; senza, i quattro che leggono il caso si saltano stampando il motivo.
-
-- [ ] **Step 6: Generare il caso di riferimento come Progetto su disco**
-
-Il cancello di Task 5 legge `casi/bastia/progetto`, che ancora non esiste. Nasce qui, e nasce **interamente generato**: niente file scritti a mano che una rigenerazione cancellerebbe.
-
-Il binario esistente `src/bin/extract_inx.rs` non va riusato — vuole un percorso come argomento e scrive su stdout. Serve un binario nuovo.
-
-`src/bin/costruisci_caso.rs`:
-
-```rust
-//! Builds the reference Progetto from the course material.
-//!
-//! Everything is generated, including the Periodi: a hand-written file next to a
-//! generated one gets erased the second time the generator runs, and the Periodi
-//! are what the budget gate reads.
-//!
-//! Run: `cargo run --bin costruisci_caso`
-
-use climesh::dominio::*;
-use climesh::{da_inx, inx, progetto};
-
-const SORGENTE: &str = "materiale università/LAB1.INX";
-const DESTINAZIONE: &str = "casi/bastia/progetto";
-
-fn main() {
-    let letto = match inx::read_inx(SORGENTE) {
-        Ok(v) => v,
-        Err(e) => {
-            eprintln!("{SORGENTE}: {e}");
-            eprintln!("Il materiale del corso non è nel repository: non è ridistribuibile.");
-            std::process::exit(1);
-        }
-    };
-
-    let mut p = da_inx::progetto_da_inx(&letto, "bastia", "stato-di-fatto");
-
-    // I tre punti in cui la relazione riporta le serie, in indici ENVI-met
-    // (i;j) convertiti in celle (riga, colonna) con riga 0 a nord.
-    p.punti = [(1, 15, 18), (2, 25, 35), (3, 37, 15)]
-        .iter()
-        .map(|&(id, i, j)| PuntoDiOsservazione {
-            id,
-            cella: (p.griglia.ny - j, i - 1),
-            etichetta: format!("punto {id}"),
-        })
-        .collect();
-
-    p.scenari.push(scenario_interventi(&p.griglia, &p.scenari[0]));
-    p.periodi = periodi();
-
-    progetto::scrivi(DESTINAZIONE, &p).expect("il Progetto deve scriversi");
-    println!("scritto {DESTINAZIONE}: {} scenari, {} periodi",
-             p.scenari.len(), p.periodi.len());
-}
-
-/// The mitigation Scenario, **reconstructed from the report's description**, not
-/// measured: `LAB1.INX` holds the baseline only, and the intervention file is
-/// not in the material. The report names hedges along the boundary, greenery
-/// against the buildings and a water body, without saying where.
-///
-/// It exists so the budget gate measures the real load — two Scenari mean two
-/// derivations and two sky-view-factor computations, which is the cost the
-/// caching has to carry. It is fit for measuring time and unfit for publishing
-/// results, and every object it adds says so in its Provenienza.
-fn scenario_interventi(g: &Griglia, base: &Scenario) -> Scenario {
-    const ORIGINE: &str = "ricostruito dalla descrizione della relazione LA01, non rilevato";
-    let mut s = base.clone();
-    s.nome = "interventi-ricostruiti".into();
-    s.derivato_da = Some(base.nome.clone());
-
-    let costruita = |r: usize, c: usize| {
-        base.edifici.iter().any(|e| e.celle.contains(&(r, c)))
-    };
-    let mut aggiungi = |s: &mut Scenario, r: usize, c: usize, specie: &str| {
-        if r < g.ny && c < g.nx && !costruita(r, c) {
-            s.alberi.push(Albero {
-                cella: (r, c),
-                altezza_m: climesh::specie::altezza_di_chioma_m(specie),
-                frazione_tronco: climesh::specie::frazione_tronco(specie),
-                specie: specie.to_string(),
-                provenienza: Provenienza {
-                    origine: ORIGINE.into(),
-                    altezza: FonteAltezza::Predefinito,
-                },
-            });
-        }
-    };
-
-    // Filari sul confine, un albero ogni tre celle.
-    for k in (2..g.nx - 2).step_by(3) {
-        aggiungi(&mut s, 1, k, "020060");
-        aggiungi(&mut s, g.ny - 2, k, "020060");
-    }
-    for k in (2..g.ny - 2).step_by(3) {
-        aggiungi(&mut s, k, 1, "0000PA");
-        aggiungi(&mut s, k, g.nx - 2, "0000PA");
-    }
-    // Verde addossato agli edifici, deterministico: nessun generatore casuale,
-    // perché la geometria di uno Scenario è un esito discreto e due macchine
-    // devono produrre lo stesso file.
-    for e in &base.edifici {
-        for &(r, c) in &e.celle {
-            for (dr, dc) in [(0i32, 1i32), (1, 0), (0, -1), (-1, 0)] {
-                let (rr, cc) = ((r as i32 + dr), (c as i32 + dc));
-                if rr >= 0 && cc >= 0 && (rr as usize * 31 + cc as usize * 17) % 3 == 0 {
-                    aggiungi(&mut s, rr as usize, cc as usize, "0000PA");
-                }
-            }
-        }
-    }
-    // Lo specchio d'acqua nella corte.
-    let acqua: Vec<Cella> = (26..33)
-        .flat_map(|r| (20..31).map(move |c| (r, c)))
-        .filter(|&(r, c)| r < g.ny && c < g.nx && !costruita(r, c))
-        .collect();
-    s.superfici.push(Superficie { celle: acqua, tipo: TipoSuperficie::Acqua });
-    s
-}
-
-/// I parametri di forcing non stanno nel `.INX`: vivono nel `.SIMX`, che non è
-/// nel materiale. I valori vengono da `casi/bastia/valori-di-riferimento.toml`.
-fn periodi() -> Vec<Periodo> {
-    let meteo = "materiale università/ITA_Perugia.161810_IGDG.epw";
-    vec![
-        Periodo {
-            nome: "luglio-2021".into(),
-            meteo: meteo.into(),
-            ore: 48,
-            direzione_vento_gradi: Some(45.0),
-            inizio: Data { anno: 2021, mese: 7, giorno: 15 },
-        },
-        Periodo {
-            nome: "gennaio-2021".into(),
-            meteo: meteo.into(),
-            ore: 48,
-            direzione_vento_gradi: Some(180.0),
-            inizio: Data { anno: 2021, mese: 1, giorno: 15 },
-        },
-    ]
-}
-```
-
-Eseguirlo e verificare che il Progetto si rilegga:
-
-```bash
-cargo run --bin costruisci_caso
-cargo test --test progetto
-```
-
-Il generatore è **idempotente**: eseguirlo due volte produce lo stesso albero di file. Se non lo è, è un difetto.
-
-Aggiungere a `.gitignore` la cartella che le Corse producono, che non va versionata:
-
-```
-casi/bastia/progetto/corse/
-```
-
-- [ ] **Step 7: Commit**
-
-```bash
-git add src/specie.rs src/da_inx.rs src/lib.rs src/bin/costruisci_caso.rs tests/da_inx.rs .gitignore casi/bastia/progetto
-git commit -m "feat: build a Progetto from an ENVI-met .INX"
-```
+**Accettazione:** `cargo run --bin costruisci_caso` scrive `casi/bastia/progetto` con due Scenari e due Periodi; `cargo test` resta verde compresi i 18 test di `inx` e i 31 di `progetto`; `clippy` e `fmt` puliti. I test che leggono il materiale del corso si saltano da soli quando manca, stampando il motivo.
 
 ---
 
 ### Task 3: La Derivazione
+
+> ⚠️ **Il codice di questo task precede il cambio di modello e non compila più.**
+> Gli oggetti non hanno più indici di cella: `Edificio.impronta` e
+> `Superficie.impronta` sono `Vec<Rettangolo>` in metri, `Albero.posizione_m` e
+> `PuntoDiOsservazione.posizione_m` sono `Posizione`, `Cella` non esiste,
+> `Griglia::celle()` restituisce `Option<usize>` e `Data::giorno_dell_anno()`
+> pure. Leggi i tipi in `src/dominio.rs`, che è la fonte. Il testo qui sotto
+> resta valido per **intento, interfacce e ingressi degeneri**; il codice va
+> riscritto al momento del dispaccio, come è stato fatto per Task 2.
 
 Da oggetti a raster co-registrati. Verificabile per intero senza il Motore.
 
@@ -1260,6 +866,15 @@ git commit -m "feat: derive co-registered rasters from the objects of a Scenario
 ---
 
 ### Task 4: Il Motore, primo collegamento
+
+> ⚠️ **Il codice di questo task precede il cambio di modello e non compila più.**
+> Gli oggetti non hanno più indici di cella: `Edificio.impronta` e
+> `Superficie.impronta` sono `Vec<Rettangolo>` in metri, `Albero.posizione_m` e
+> `PuntoDiOsservazione.posizione_m` sono `Posizione`, `Cella` non esiste,
+> `Griglia::celle()` restituisce `Option<usize>` e `Data::giorno_dell_anno()`
+> pure. Leggi i tipi in `src/dominio.rs`, che è la fonte. Il testo qui sotto
+> resta valido per **intento, interfacce e ingressi degeneri**; il codice va
+> riscritto al momento del dispaccio, come è stato fatto per Task 2.
 
 L'ombra viene dal nucleo riusato invece che da noi, e si verifica contro la geometria.
 
@@ -1562,6 +1177,15 @@ git commit -m "feat: wire the reused radiative kernel and verify its shadows"
 ---
 
 ### Task 5: Il Giornale e il cancello dei 60 secondi
+
+> ⚠️ **Il codice di questo task precede il cambio di modello e non compila più.**
+> Gli oggetti non hanno più indici di cella: `Edificio.impronta` e
+> `Superficie.impronta` sono `Vec<Rettangolo>` in metri, `Albero.posizione_m` e
+> `PuntoDiOsservazione.posizione_m` sono `Posizione`, `Cella` non esiste,
+> `Griglia::celle()` restituisce `Option<usize>` e `Data::giorno_dell_anno()`
+> pure. Leggi i tipi in `src/dominio.rs`, che è la fonte. Il testo qui sotto
+> resta valido per **intento, interfacce e ingressi degeneri**; il codice va
+> riscritto al momento del dispaccio, come è stato fatto per Task 2.
 
 La prima Corsa completa sul caso di riferimento, con il suo Giornale, cronometrata.
 
