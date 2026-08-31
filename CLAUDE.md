@@ -52,6 +52,12 @@ compilano sempre per l'host, quindi senza linker non compila nemmeno un test.
 Su una macchina che non ce l'ha, `sudo apt-get install -y gcc libc6-dev`, da un
 terminale vero — un prompt di password non compare dentro un agente.
 
+**Il codice vendorato non si formatta e non si corregge.** `vendor/solweig/` è
+codice di altri: `cargo fmt --all` ci entra dentro seguendo la dipendenza di
+percorso, quindi si usa `cargo fmt -p climesh`. Riformattarlo o correggerne gli
+avvisi renderebbe irriconciliabile il prossimo aggiornamento, e l'unica modifica
+ammessa è quella dichiarata in `vendor/solweig/PROVENIENZA.toml`.
+
 ## Vincoli che non si negoziano
 
 **Velocità.** Il caso di riferimento completo — 50 × 50 celle a 1 m, 48 ore, due

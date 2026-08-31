@@ -22,8 +22,11 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
+      # `-p climesh` e non `--all`: --all segue la dipendenza di percorso ed entra
+      # in vendor/solweig, che e' codice di altri e non e' nostro da formattare.
+      # Riformattarlo renderebbe irriconciliabile il prossimo aggiornamento.
       - name: Formatting
-        run: cargo fmt --all --check
+        run: cargo fmt -p climesh --check
 
       - name: Lint
         run: cargo clippy --all-targets --all-features
