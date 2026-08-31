@@ -1,0 +1,104 @@
+# The radiative kernel is vendored, not depended on: its source lives in
+# vendor/solweig/ with the upstream commit recorded in PROVENIENZA.toml.
+#
+# Vendored code rots quietly. Nobody remembers to look, and a note in a file
+# is a note nobody reads. So this asks upstream every four months whether it
+# has moved, and opens an issue when it has - with the commits in between, so
+# the answer to "is this worth pulling in" is already on the page.
+name: Vendor check
+
+on:
+  schedule:
+    # 06:00 UTC on the first day of January, May and September.
+    - cron: "0 6 1 1,5,9 *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  upstream:
+    name: has the kernel moved
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compare the vendored commit against upstream
+        id: confronto
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          file=vendor/solweig/PROVENIENZA.toml
+          if [ ! -f "$file" ]; then
+            echo "Niente ancora vendorato: $file non esiste." >&2
+            echo "spostato=no" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          leggi() { grep -m1 "^$1 *=" "$file" | sed 's/.*= *"\(.*\)"/\1/'; }
+          upstream=$(leggi upstream)
+          nostro=$(leggi commit)
+          percorso=$(leggi percorso_sorgente)
+
+          loro=$(gh api "repos/$upstream/commits?path=$percorso&per_page=1" --jq '.[0].sha')
+          echo "vendorato: $nostro"
+          echo "a monte:   $loro"
+
+          if [ "$nostro" = "$loro" ]; then
+            echo "spostato=no" >> "$GITHUB_OUTPUT"
+          else
+            echo "spostato=si" >> "$GITHUB_OUTPUT"
+            {
+              echo "upstream=$upstream"
+              echo "nostro=$nostro"
+              echo "loro=$loro"
+            } >> "$GITHUB_OUTPUT"
+            gh api "repos/$upstream/compare/$nostro...$loro" \
+              --jq '.commits[] | "- \(.sha[0:9]) \(.commit.message | split("\n")[0])"' \
+              > commits.txt || echo "- (confronto non disponibile)" > commits.txt
+          fi
+
+      - name: Open an issue if it has
+        if: steps.confronto.outputs.spostato == 'si'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UP: ${{ steps.confronto.outputs.upstream }}
+          NOSTRO: ${{ steps.confronto.outputs.nostro }}
+          LORO: ${{ steps.confronto.outputs.loro }}
+        run: |
+          set -euo pipefail
+          titolo="Il nucleo vendorato e' indietro rispetto a $UP"
+
+          {
+            echo "Il controllo periodico dice che il sorgente vendorato in \`vendor/solweig/\`"
+            echo "non e' piu' quello a monte."
+            echo
+            echo "- vendorato: \`$NOSTRO\`"
+            echo "- a monte: \`$LORO\`"
+            echo "- confronto: https://github.com/$UP/compare/$NOSTRO...$LORO"
+            echo
+            echo "## Cosa e' cambiato"
+            echo
+            cat commits.txt
+            echo
+            echo "## Cosa fare"
+            echo
+            echo "Leggere i messaggi qui sopra e decidere, **non aggiornare per abitudine**: il"
+            echo "commit vendorato e' pinnato anche perche' il Giornale cita per versione la"
+            echo "validazione del nucleo, e cambiarlo cambia cio' che quella citazione afferma."
+            echo "Se si aggiorna, va rifatto il confronto di parita' e va aggiornato"
+            echo "\`vendor/solweig/PROVENIENZA.toml\`."
+            echo
+            echo "Se invece va bene cosi', chiudere questa issue: il controllo la riaprira'"
+            echo "solo quando a monte si muovera' di nuovo."
+          } > corpo.md
+
+          # Una issue aperta alla volta: un promemoria ripetuto smette di essere letto.
+          esistente=$(gh issue list --state open --search "$titolo in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$esistente" ]; then
+            gh issue comment "$esistente" --body-file corpo.md
+          else
+            gh issue create --title "$titolo" --body-file corpo.md
+          fi
