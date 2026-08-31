@@ -982,9 +982,11 @@ Da oggetti a raster co-registrati. Verificabile per intero senza il Motore.
 ndarray = "0.16"
 ```
 
+Versione confermata: il Motore dichiara `ndarray 0.16.1` con feature `rayon` in `rust/Cargo.toml:12`. **Non salire alla 0.17**, che esiste ed è semver-incompatibile: sarebbero due tipi diversi e `ArrayView2<f32>` non combacerebbe.
+
 `ndarray` è Rust puro e produce `Array2<f32>`, che è il tipo che il Motore accetta senza conversioni.
 
-**La versione non è una nostra scelta: è quella del Motore.** `ndarray` non ha ancora la 1.0, quindi due versioni minori diverse sono due tipi diversi e `ArrayView2<f32>` non combacia. Prima di fissare questa riga, leggere la versione dichiarata dal Motore — è il dossier che il ticket di ricerca produce prima di ogni altro task:
+**La versione non era una nostra scelta ed è già stata accertata.** Quanto segue resta come traccia del perché: `ndarray` non ha ancora la 1.0, quindi due versioni minori diverse sono due tipi diversi e `ArrayView2<f32>` non combacia. Prima di fissare questa riga, leggere la versione dichiarata dal Motore — è il dossier che il ticket di ricerca produce prima di ogni altro task:
 
 ```bash
 curl -sL https://raw.githubusercontent.com/UMEP-dev/solweig/main/rust/Cargo.toml | grep -i ndarray
@@ -1269,7 +1271,7 @@ L'ombra viene dal nucleo riusato invece che da noi, e si verifica contro la geom
 
 **Interfaces:**
 - Consumes: `derivazione::Raster`. `RasterDiScenario` serve solo a Task 5.
-- Produces: `sole::{posizione, PosizioneSolare}`; `motore::{ombre, VersioneMotore, versione}`.
+- Produces: `sole::{posizione, PosizioneSolare}`; `motore::{ombre, VersioneMotore, versione}`. `ombre` restituisce la **frazione illuminata**, non l'ombra: 1 al sole, 0 in ombra, come il campo `bldg_sh` del Motore.
 
 - [ ] **Step 1: Preparare il fork del Motore**
 
@@ -1280,15 +1282,36 @@ gh repo fork UMEP-dev/solweig --clone --fork-name solweig --remote=false
 cd solweig && git checkout -b api-rust-nativa
 ```
 
-In `rust/Cargo.toml` cambiare `crate-type = ["cdylib"]` in `crate-type = ["cdylib", "rlib"]`.
+**Il dossier `research/motore-api.md` dice cosa serve davvero, e non è solo `rlib`.** Tre ostacoli, in ordine di rischio crescente:
 
-In `rust/src/shadowing.rs`, la funzione `calculate_shadows_rust` è dichiarata `pub(crate)` intorno alla riga 191: cambiarla in `pub` e verificarne la firma esatta prima di scrivere il chiamante:
+1. `crate-type = ["cdylib"]` in `rust/Cargo.toml` diventa `["cdylib", "rlib"]`.
+2. I moduli in `rust/src/lib.rs:3-26` sono tutti `mod` privati: rendere pubblico `shadowing` e la funzione non basta se il modulo non è raggiungibile. Vanno resi `pub mod` quelli che servono, e vanno esportati i tipi che compaiono nella firma pubblica — `ShadowingResultRust` è `pub(crate)` a `shadowing.rs:151`.
+3. **L'ostacolo che decide il task:** `pyo3` è dichiarato con `extension-module` **non opzionale**, e la guida di PyO3 avverte che con quella feature attiva i binari non compilano. Va resa opzionale dietro una feature, spenta di default:
 
-```bash
-grep -n "fn calculate_shadows_rust" -A 12 rust/src/shadowing.rs
+```toml
+[features]
+default = []
+python = ["pyo3/extension-module"]
+
+[dependencies]
+pyo3 = { version = "...", optional = true, default-features = false }
 ```
 
-Annotare la firma stampata: i tipi dei parametri e l'ordine sono ciò contro cui va scritto lo step 4. Poi:
+**Verificare che compili prima di andare avanti**, perché è qui che il piano scopre se l'integrazione è praticabile:
+
+```bash
+cargo build --release -p rustalgos --no-default-features
+```
+
+Se non compila, **fermarsi e riferire**: il ripiego è il vendoring dei file sorgente dentro il nostro crate, che la GPL-3 di entrambe le parti rende lecito, ed è una decisione da prendere con Mario, non da improvvisare.
+
+La firma è nota e sta nel dossier. Verificarla comunque contro il sorgente prima di scrivere il chiamante, perché il pin potrebbe essere avanzato:
+
+```bash
+grep -n "fn calculate_shadows_rust" -A 18 rust/src/shadowing.rs
+```
+
+Poi:
 
 ```bash
 cargo build --release -p rustalgos && git commit -am "expose a native Rust API" && git push -u origin api-rust-nativa
@@ -1453,18 +1476,42 @@ pub fn ombre(dsm: &Raster, passo_m: f64, azimut_gradi: f64, altezza_gradi: f64) 
     if altezza_gradi <= 0.0 {
         return Raster::zeros(dsm.dim());
     }
-    let massimo = dsm.iter().copied().fold(0.0f32, f32::max);
-    rustalgos::shadowing::calculate_shadows_rust(
+    // `max_local_dsm_ht` è il **rilievo** del modello di superficie, massimo meno
+    // minimo, non il massimo: è la quota di cui il raggio deve salire prima di
+    // essere sicuramente sopra ogni ostacolo. Passare il massimo su un dominio
+    // con terreno a quota non nulla marcia più del necessario.
+    let massimo = dsm.iter().copied().fold(f32::NEG_INFINITY, f32::max);
+    let minimo = dsm.iter().copied().fold(f32::INFINITY, f32::min);
+    let rilievo = massimo - minimo;
+
+    // L'azimut del nucleo è gradi da nord in senso orario, come il nostro, e la
+    // riga 0 è a nord in entrambi: nessuna conversione. Verificato nel dossier
+    // `research/motore-api.md` § 2 su spec e docstring del Motore.
+    let esito = rustalgos::shadowing::calculate_shadows_rust(
         azimut_gradi as f32,
         altezza_gradi as f32,
         passo_m as f32,
-        massimo,
+        rilievo,
         dsm.view(),
-    )
+        None, // chiome
+        None, // tronchi
+        None, // cespugli
+        None, // muri
+        None, // esposizioni
+        None, // schema muri
+        None, // schema esposizioni
+        false, // uscite complete sui muri: non servono per le ombre
+        0.0,   // altezza solare minima: la soglia la decidiamo noi, sopra
+        f32::INFINITY, // distanza massima d'ombra: nessun taglio
+    );
+
+    // `bldg_sh` vale 1 dove c'è sole: è già la frazione illuminata che il resto
+    // del programma si aspetta, non l'ombra.
+    esito.bldg_sh
 }
 ```
 
-Se la firma stampata allo step 1 differisce da questa, adattare **solo** questa chiamata: è l'unico punto del programma che la conosce.
+Il numero e l'ordine dei parametri vengono da `research/motore-api.md` § 1, letti nel sorgente del Motore al commit `02246ab7`. Se il pin che si finisce per usare differisce, adattare **solo** questa chiamata: è l'unico punto del programma che conosce quella firma.
 
 `Cargo.toml` — **aggiungere** questa riga alla sezione `[dependencies]` esistente, che a questo punto contiene già `serde`, `toml` e `ndarray`. Non sostituire la sezione:
 
