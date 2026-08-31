@@ -677,8 +677,11 @@ fn edifici_da(z_top: &Matrix<f64>) -> Vec<Edificio> {
 
 fn superfici_da(suoli: Option<&Matrix<Option<String>>>, celle: usize) -> Vec<Superficie> {
     let Some(m) = suoli else {
-        return vec![Superficie { celle: (0..celle).map(|k| (k / 1, 0)).take(0).collect(),
-                                 tipo: TipoSuperficie::TerrenoNudo }];
+        // Nessuna sezione dei suoli nel file: nessuna Superficie. Un elenco vuoto
+        // non è la stessa cosa di un dominio tutto di terreno nudo, e la
+        // Derivazione ha già il proprio valore predefinito.
+        let _ = celle;
+        return Vec::new();
     };
     let mut per_tipo: std::collections::BTreeMap<TipoSuperficie, Vec<Cella>> = Default::default();
     for r in 0..m.rows {
@@ -753,10 +756,55 @@ pub fn progetto_da_inx(letto: &Inx, nome_scenario: &str) -> Progetto {
 Run: `cargo test --test da_inx`
 Expected: PASS, 6 test. Con `materiale università/` presente ne girano 6; senza, i quattro che leggono il caso si saltano stampando il motivo.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Scrivere il caso di riferimento come Progetto su disco**
+
+Il cancello di Task 5 legge `casi/bastia/progetto`, che ancora non esiste. Nasce qui.
+
+Aggiungere a `src/bin/extract_inx.rs` la scrittura del Progetto accanto all'estratto che già produce:
+
+```rust
+// In coda al main, dopo l'estratto TOML che il binario già scrive.
+let progetto = climesh::da_inx::progetto_da_inx(&letto, "stato-di-fatto");
+climesh::progetto::scrivi("casi/bastia/progetto", &progetto)
+    .expect("il Progetto del caso di riferimento deve scriversi");
+```
+
+Eseguirlo:
 
 ```bash
-git add src/specie.rs src/da_inx.rs src/lib.rs tests/da_inx.rs
+cargo run --bin extract_inx
+```
+
+I **Periodi non vengono dal `.INX`**: i parametri di forcing stanno nel `.SIMX`, che non è nel materiale. Si scrivono a mano da `casi/bastia/valori-di-riferimento.toml`, e sono l'unica parte del Progetto non generata.
+
+`casi/bastia/progetto/periodi/luglio-2021.toml`:
+
+```toml
+nome = "luglio-2021"
+meteo = "materiale università/ITA_Perugia.161810_IGDG.epw"
+ore = 48
+direzione_vento_gradi = 45.0
+
+[inizio]
+anno = 2021
+mese = 7
+giorno = 15
+```
+
+`casi/bastia/progetto/periodi/gennaio-2021.toml`: identico, con `direzione_vento_gradi = 180.0` e `mese = 1`.
+
+Aggiungere entrambi i nomi alla lista `periodi` in `casi/bastia/progetto/progetto.toml`, e i tre Punti di osservazione della relazione — `(15;18)`, `(25;35)`, `(37;15)` in indici ENVI-met, che in celle `(riga, colonna)` con riga 0 a nord diventano `(32, 14)`, `(15, 24)`, `(35, 36)`.
+
+Verificare che si rilegga:
+
+```bash
+cargo test --test progetto
+```
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add src/specie.rs src/da_inx.rs src/lib.rs src/bin/extract_inx.rs tests/da_inx.rs casi/bastia/progetto
 git commit -m "feat: build a Progetto from an ENVI-met .INX"
 ```
 
@@ -917,7 +965,7 @@ use ndarray::Array2;
 pub type Raster = Array2<f32>;
 
 /// Surface class codes. The list is closed because the engine only accepts known
-/// classes, and a closed list lets CLIMESH say so before the计算 rather than after.
+/// classes, and a closed list lets CLIMESH say so before the computation rather than after.
 pub const CLASSE_PREDEFINITA: u8 = 1;
 pub const CLASSE_PAVIMENTATO: u8 = 2;
 pub const CLASSE_ERBA: u8 = 5;
@@ -1015,8 +1063,6 @@ pub fn deriva(g: &Griglia, s: &Scenario, stagione: Stagione) -> RasterDiScenario
     RasterDiScenario { superficie, terreno, chiome, tronchi, classi, scelte }
 }
 ```
-
-Nota per l'implementatore: nel commento sopra c'è un carattere non latino da correggere in `del calcolo`. È volutamente segnalato qui perché il resto del file va scritto così com'è.
 
 - [ ] **Step 5: Eseguire i test e verificare che passino**
 
