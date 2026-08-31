@@ -10,3 +10,4 @@ repository = "https://github.com/maeurong/CLIMESH"
 [dependencies]
 serde = { version = "1", features = ["derive"] }
 toml = "0.8"
+ndarray = "0.16"
