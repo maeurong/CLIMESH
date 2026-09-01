@@ -11,3 +11,4 @@ repository = "https://github.com/maeurong/CLIMESH"
 serde = { version = "1", features = ["derive"] }
 toml = "0.8"
 ndarray = "0.16"
+solweig-ombre = { path = "vendor/solweig" }
