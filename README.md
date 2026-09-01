@@ -48,16 +48,24 @@ CLIMESH misura quella. E dichiara, oggetto per oggetto, quanto di ciò che mostr
 
 ## Stato
 
-**In costruzione.** Il progetto è stato progettato per intero prima di essere
-scritto; oggi nel repository c'è la prima parte del codice, non il programma.
+**In costruzione, ma il nucleo calcola.** Il progetto è stato progettato per
+intero prima di essere scritto, e il piano del nucleo di calcolo è chiuso.
 
 Esiste: il lettore dei file `.INX` di ENVI-met, con la
 [documentazione del formato](docs/formato-inx.md) che non era mai stata pubblica;
-il [caso di riferimento](casi/bastia/) estratto e versionato, con i valori
-pubblicati della relazione originale.
+il [caso di riferimento](casi/bastia/) estratto e versionato; il Progetto su
+disco con il suo modello a oggetti; la Derivazione da oggetti a raster; il
+[motore radiativo vendorato](vendor/solweig/) e collegato; il Giornale della
+Corsa.
 
-Non esiste ancora: la Derivazione, il collegamento al motore radiativo, il
-Giornale, la riga di comando, la pagina. L'ordine in cui arrivano è nella spec.
+**Il caso di riferimento completo gira in poco più di cinque secondi**, contro
+un budget di sessanta: due Scenari per due Periodi, 50 × 50 celle a un metro,
+48 ore, su sola CPU.
+
+Non esiste ancora: la catena radiativa completa fino alla temperatura media
+radiante e agli indici di comfort, la riga di comando, la pagina nel browser, e
+la validazione contro le misure di campo. L'ordine in cui arrivano è nella
+[spec](docs/spec.md).
 
 Il caso di riferimento è la Casa Evolutiva di Renzo Piano a Bastia Umbra: 50 × 50
 celle a un metro, 616 alberi di cinque specie, due scenari, due stagioni. Il
