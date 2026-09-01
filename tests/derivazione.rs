@@ -3,8 +3,9 @@
 //! `src/derivazione.rs`, and each test fails if that rule is dropped.
 
 use climesh::derivazione::{
-    deriva, RasterDiScenario, Stagione, CLASSE_ACQUA, CLASSE_ERBA, CLASSE_NESSUNA,
-    CLASSE_PAVIMENTATO, CLASSE_TERRENO_NUDO,
+    deriva, Raster, RasterDiScenario, Stagione, StratoDiChioma, CLASSE_ACQUA, CLASSE_ERBA,
+    CLASSE_NESSUNA, CLASSE_PAVIMENTATO, CLASSE_TERRENO_NUDO, TRASMISSIVITA_CON_FOGLIE,
+    TRASMISSIVITA_SENZA_FOGLIE,
 };
 use climesh::dominio::*;
 use std::path::PathBuf;
@@ -98,6 +99,32 @@ fn con_chioma(r: &climesh::derivazione::Raster) -> usize {
     r.iter().filter(|v| !v.is_nan()).count()
 }
 
+/// The canopy layer of a Derivazione called `nome`, which must be there.
+fn strato<'a>(d: &'a RasterDiScenario, nome: &str) -> &'a StratoDiChioma {
+    d.strati_di_chioma
+        .iter()
+        .find(|strato| strato.nome == nome)
+        .unwrap_or_else(|| {
+            panic!(
+                "nessuno strato «{nome}»: la Derivazione ne porta {:?}",
+                d.strati_di_chioma
+                    .iter()
+                    .map(|strato| strato.nome)
+                    .collect::<Vec<_>>()
+            )
+        })
+}
+
+/// The layer in leaf: every tree in a Periodo with leaves, the evergreens alone
+/// in one without.
+fn chiome(d: &RasterDiScenario) -> &Raster {
+    &strato(d, "chiome").chiome
+}
+
+fn zona_tronco(d: &RasterDiScenario) -> &Raster {
+    &strato(d, "chiome").zona_tronco
+}
+
 #[test]
 fn un_rettangolo_oltre_il_bordo_copre_solo_le_celle_dentro() {
     let mut s = scenario(vec![0.0; 9]);
@@ -184,8 +211,8 @@ fn un_albero_sul_confine_fra_due_celle_va_in_una_sola() {
     let mut s = scenario(vec![0.0; 3]);
     s.alberi.push(albero("020027", (1.0, 0.5), 10.0, 0.5));
     let d = deriva(&griglia(3, 1), &s, &estate()).unwrap();
-    assert_eq!(d.chiome[[0, 1]], 10.0);
-    assert!(d.chiome[[0, 0]].is_nan() && d.chiome[[0, 2]].is_nan());
+    assert_eq!(chiome(&d)[[0, 1]], 10.0);
+    assert!(chiome(&d)[[0, 0]].is_nan() && chiome(&d)[[0, 2]].is_nan());
     assert_eq!(d.scelte.celle_con_chioma, 1);
     assert_eq!(d.scelte.oggetti_fuori_griglia, 0);
 }
@@ -222,37 +249,87 @@ fn un_terreno_della_lunghezza_giusta_non_viene_sostituito() {
 }
 
 #[test]
-fn uno_scenario_senza_alberi_in_un_periodo_senza_foglie_non_esclude_nulla() {
+fn uno_scenario_senza_alberi_non_porta_nessuno_strato() {
     let s = scenario(vec![0.0; 4]);
     let d = deriva(&griglia(2, 2), &s, &inverno()).unwrap();
-    assert_eq!(d.scelte.chiome_escluse, 0);
+    assert_eq!(d.scelte.chiome_spogliate, 0);
     assert_eq!(d.scelte.celle_con_chioma, 0);
-    assert!(d.chiome.iter().all(|v| v.is_nan()));
+    // No layer at all, and not an empty one: an empty layer would cost the
+    // Motore a whole march to find out that nothing casts anything.
+    assert!(d.strati_di_chioma.is_empty());
 }
 
 #[test]
-fn i_decidui_escono_dal_raster_delle_chiome_nel_periodo_senza_foglie() {
+fn i_decidui_passano_allo_strato_spoglio_nel_periodo_senza_foglie() {
     let mut s = scenario(vec![0.0; 4]);
     s.alberi.push(albero("020060", (0.5, 0.5), 15.0, 0.35)); // London Plane
     s.alberi.push(albero("0000PR", (1.5, 0.5), 12.0, 0.35)); // Tilia
     let d = deriva(&griglia(2, 2), &s, &inverno()).unwrap();
-    assert_eq!(d.scelte.chiome_escluse, 2);
-    assert_eq!(d.scelte.celle_con_chioma, 0);
-    assert!(d.chiome.iter().all(|v| v.is_nan()));
-    assert!(d.zona_tronco.iter().all(|v| v.is_nan()));
+    assert_eq!(d.scelte.chiome_spogliate, 2);
+    // The geometry does not change with the season, only the opacity does: the
+    // same two cells carry a canopy in January as in July.
+    assert_eq!(d.scelte.celle_con_chioma, 2);
+    // Row 1 is the southern one: both trees stand at y = 0.5.
+    let spoglie = strato(&d, "chiome spoglie");
+    assert_eq!(spoglie.chiome[[1, 0]], 15.0);
+    assert_eq!(spoglie.chiome[[1, 1]], 12.0);
+    assert_eq!(spoglie.trasmissivita, TRASMISSIVITA_SENZA_FOGLIE);
+    // Nothing is left in leaf, so that layer is not built at all.
+    assert_eq!(
+        d.strati_di_chioma
+            .iter()
+            .map(|strato| strato.nome)
+            .collect::<Vec<_>>(),
+        vec!["chiome spoglie"]
+    );
 
     let estiva = deriva(&griglia(2, 2), &s, &estate()).unwrap();
-    assert_eq!(estiva.scelte.chiome_escluse, 0);
+    assert_eq!(estiva.scelte.chiome_spogliate, 0);
     assert_eq!(estiva.scelte.celle_con_chioma, 2);
+    assert_eq!(chiome(&estiva)[[1, 0]], 15.0);
+    assert_eq!(
+        strato(&estiva, "chiome").trasmissivita,
+        TRASMISSIVITA_CON_FOGLIE
+    );
 }
 
 #[test]
-fn un_sempreverde_resta_nel_raster_delle_chiome_senza_foglie() {
+fn d_inverno_sempreverdi_e_decidui_stanno_in_due_strati_distinti() {
+    // The reason there are layers at all: one transmissivity cannot say both
+    // "pine" and "bare plane tree", and the Motore reports which cells are in
+    // the shade of a canopy, never of which canopy.
+    let mut s = scenario(vec![0.0; 4]);
+    s.alberi.push(albero("020027", (0.5, 0.5), 15.0, 0.45)); // Pine
+    s.alberi.push(albero("020060", (1.5, 0.5), 15.0, 0.35)); // London Plane
+    let d = deriva(&griglia(2, 2), &s, &inverno()).unwrap();
+    assert_eq!(d.scelte.chiome_spogliate, 1);
+    assert_eq!(d.scelte.celle_con_chioma, 2);
+    assert_eq!(d.strati_di_chioma.len(), 2);
+    assert_eq!(chiome(&d)[[1, 0]], 15.0);
+    assert!(chiome(&d)[[1, 1]].is_nan());
+    assert!(strato(&d, "chiome spoglie").chiome[[1, 0]].is_nan());
+    assert_eq!(strato(&d, "chiome spoglie").chiome[[1, 1]], 15.0);
+}
+
+#[test]
+fn un_sempreverde_e_un_deciduo_sulla_stessa_cella_sono_una_cella_sola() {
+    // Two layers over one cell: the cell is shaded twice and counted once.
+    let mut s = scenario(vec![0.0]);
+    s.alberi.push(albero("020027", (0.5, 0.5), 15.0, 0.45)); // Pine
+    s.alberi.push(albero("020060", (0.5, 0.5), 12.0, 0.35)); // London Plane
+    let d = deriva(&griglia(1, 1), &s, &inverno()).unwrap();
+    assert_eq!(d.strati_di_chioma.len(), 2);
+    assert_eq!(d.scelte.celle_con_chioma, 1);
+}
+
+#[test]
+fn un_sempreverde_resta_nello_strato_in_foglia_senza_foglie() {
     let mut s = scenario(vec![0.0; 4]);
     s.alberi.push(albero("020027", (0.5, 0.5), 15.0, 0.45)); // Pine
     let d = deriva(&griglia(2, 2), &s, &inverno()).unwrap();
-    assert_eq!(d.scelte.chiome_escluse, 0);
+    assert_eq!(d.scelte.chiome_spogliate, 0);
     assert_eq!(d.scelte.celle_con_chioma, 1);
+    assert_eq!(strato(&d, "chiome").trasmissivita, TRASMISSIVITA_CON_FOGLIE);
 }
 
 #[test]
@@ -264,8 +341,8 @@ fn le_altezze_sono_assolute_e_la_zona_tronco_e_una_frazione_della_chioma() {
     let d = deriva(&griglia(1, 1), &s, &estate()).unwrap();
     assert_eq!(d.modello_di_terreno[[0, 0]], 2.0);
     assert_eq!(d.modello_di_superficie[[0, 0]], 8.0);
-    assert_eq!(d.chiome[[0, 0]], 14.0);
-    assert_eq!(d.zona_tronco[[0, 0]], 5.0);
+    assert_eq!(chiome(&d)[[0, 0]], 14.0);
+    assert_eq!(zona_tronco(&d)[[0, 0]], 5.0);
 }
 
 #[test]
@@ -274,15 +351,15 @@ fn due_alberi_sulla_stessa_cella_lasciano_la_chioma_piu_alta_e_il_suo_tronco() {
     s.alberi.push(albero("020027", (0.5, 0.5), 20.0, 0.8));
     s.alberi.push(albero("020027", (0.5, 0.5), 10.0, 0.2));
     let d = deriva(&griglia(1, 1), &s, &estate()).unwrap();
-    assert_eq!(d.chiome[[0, 0]], 20.0);
-    assert_eq!(d.zona_tronco[[0, 0]], 16.0);
+    assert_eq!(chiome(&d)[[0, 0]], 20.0);
+    assert_eq!(zona_tronco(&d)[[0, 0]], 16.0);
     assert_eq!(d.scelte.celle_con_chioma, 1);
 
     // The same two trees in the other order must give the same raster.
     s.alberi.reverse();
     let girato = deriva(&griglia(1, 1), &s, &estate()).unwrap();
-    assert_eq!(girato.chiome, d.chiome);
-    assert_eq!(girato.zona_tronco, d.zona_tronco);
+    assert_eq!(chiome(&girato), chiome(&d));
+    assert_eq!(zona_tronco(&girato), zona_tronco(&d));
 }
 
 #[test]
@@ -307,8 +384,8 @@ fn la_riga_zero_e_a_nord() {
             .collect::<Vec<f32>>(),
         vec![9.0, 2.0]
     );
-    assert_eq!(d.chiome[[0, 0]], 12.0);
-    assert!(d.chiome[[1, 0]].is_nan());
+    assert_eq!(chiome(&d)[[0, 0]], 12.0);
+    assert!(chiome(&d)[[1, 0]].is_nan());
 }
 
 #[test]
@@ -357,7 +434,7 @@ fn un_passo_diverso_da_un_metro_sposta_i_confini_delle_celle() {
         vec![0.0, 3.0, 3.0, 0.0]
     );
     assert_eq!(d.scelte.celle_costruite, 2);
-    assert_eq!(d.chiome[[0, 3]], 10.0);
+    assert_eq!(chiome(&d)[[0, 3]], 10.0);
     assert_eq!(d.scelte.celle_con_chioma, 1);
 }
 
@@ -401,7 +478,7 @@ fn un_albero_sul_confine_di_celle_strette_va_nella_cella_orientale() {
     let mut s = scenario(vec![0.0; 4]);
     s.alberi.push(albero("020027", (0.3, 0.05), 10.0, 0.5));
     let d = deriva(&griglia_di_passo(4, 1, 0.1), &s, &estate()).unwrap();
-    assert_eq!(d.chiome[[0, 3]], 10.0);
+    assert_eq!(chiome(&d)[[0, 3]], 10.0);
     assert_eq!(d.scelte.celle_con_chioma, 1);
     assert_eq!(d.scelte.oggetti_fuori_griglia, 0);
 }
@@ -437,11 +514,11 @@ fn due_chiome_di_pari_altezza_non_dipendono_dall_ordine() {
     let d = deriva(&griglia(1, 1), &s, &estate()).unwrap();
     s.alberi.reverse();
     let girato = deriva(&griglia(1, 1), &s, &estate()).unwrap();
-    assert_eq!(d.chiome[[0, 0]], 10.0);
-    assert_eq!(girato.chiome, d.chiome);
+    assert_eq!(chiome(&d)[[0, 0]], 10.0);
+    assert_eq!(chiome(&girato), chiome(&d));
     // The deeper canopy of the two keeps its shade.
-    assert_eq!(d.zona_tronco[[0, 0]], 2.0);
-    assert_eq!(girato.zona_tronco, d.zona_tronco);
+    assert_eq!(zona_tronco(&d)[[0, 0]], 2.0);
+    assert_eq!(zona_tronco(&girato), zona_tronco(&d));
 }
 
 #[test]
@@ -451,9 +528,13 @@ fn un_terreno_sotto_il_datum_lascia_vuote_le_celle_senza_chioma() {
     let mut s = scenario(vec![-5.0, -5.0]);
     s.alberi.push(albero("020027", (0.5, 0.5), 3.0, 0.5));
     let d = deriva(&griglia(2, 1), &s, &estate()).unwrap();
-    assert_eq!(d.chiome[[0, 0]], -2.0);
-    assert!(d.chiome[[0, 1]].is_nan(), "{}", d.chiome[[0, 1]]);
-    assert!(d.zona_tronco[[0, 1]].is_nan(), "{}", d.zona_tronco[[0, 1]]);
+    assert_eq!(chiome(&d)[[0, 0]], -2.0);
+    assert!(chiome(&d)[[0, 1]].is_nan(), "{}", chiome(&d)[[0, 1]]);
+    assert!(
+        zona_tronco(&d)[[0, 1]].is_nan(),
+        "{}",
+        zona_tronco(&d)[[0, 1]]
+    );
     assert_eq!(d.scelte.celle_con_chioma, 1);
 }
 
@@ -540,8 +621,8 @@ fn una_data_impossibile_tiene_le_foglie() {
     let mut s = scenario(vec![0.0]);
     s.alberi.push(albero("020060", (0.5, 0.5), 15.0, 0.35));
     let d = deriva(&griglia(1, 1), &s, &impossibile).unwrap();
-    assert_eq!(d.scelte.chiome_escluse, 0);
-    assert_eq!(d.chiome[[0, 0]], 15.0);
+    assert_eq!(d.scelte.chiome_spogliate, 0);
+    assert_eq!(chiome(&d)[[0, 0]], 15.0);
 }
 
 #[test]
@@ -577,10 +658,20 @@ fn il_caso_di_riferimento_deriva_in_entrambe_le_stagioni() {
         assert_eq!(estivo.scelte.oggetti_fuori_griglia, 0);
         assert_eq!(estivo.scelte.rettangoli_degeneri, 0);
         assert!(estivo.scelte.celle_costruite > 0);
+        // The winter layer in leaf holds the evergreens alone, so it is the
+        // sparser one — but no canopy is lost: the same cells carry a tree in
+        // January as in July, and what changed is how much light gets through.
         assert!(
-            con_chioma(&invernale.chiome) < con_chioma(&estivo.chiome),
-            "the winter canopy must be the sparser one"
+            con_chioma(chiome(invernale)) < con_chioma(chiome(estivo)),
+            "d'inverno lo strato in foglia deve essere il più rado"
         );
-        assert!(invernale.scelte.chiome_escluse > 0);
+        assert_eq!(
+            invernale.scelte.celle_con_chioma,
+            estivo.scelte.celle_con_chioma
+        );
+        assert_eq!(invernale.strati_di_chioma.len(), 2);
+        assert_eq!(estivo.strati_di_chioma.len(), 1);
+        assert!(invernale.scelte.chiome_spogliate > 0);
+        assert_eq!(estivo.scelte.chiome_spogliate, 0);
     }
 }

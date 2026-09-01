@@ -58,6 +58,10 @@ _Avoid_: metadati, fonte, origine
 Il passo che trasforma gli oggetti di uno Scenario nei raster che il motore consuma. Ha i suoi parametri e le sue scelte di modellazione, e per questo finisce nel Giornale.
 _Avoid_: rasterizzazione, preprocessing, conversione
 
+**Strato di chioma**:
+Un raster di chiome, con la trasmissività che le accomuna: quanta radiazione diretta lasciano passare. La Derivazione ne produce uno per stagione con foglie e due nella stagione senza — i sempreverdi, ancora opachi, e le chiome spoglie — perché il Motore risponde se una cella sta all'ombra di *una* chioma, mai di *quale*: due trasmissività chiedono due strati.
+_Avoid_: layer, CDSM, canopy raster
+
 **Motore**:
 Il nucleo di calcolo radiativo riusato da `UMEP-dev/solweig`, che dai raster e dal meteo produce ombre, radiazione, temperatura media radiante e indici di comfort.
 _Avoid_: solver, kernel, backend

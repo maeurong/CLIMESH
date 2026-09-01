@@ -37,10 +37,25 @@ pub const CLASSE_TERRENO_NUDO: u8 = 4;
 /// Day 100 to day 300, with conifers leafy all year, is the default of the
 /// SOLWEIG line the Motore comes from, recorded in `research/solweig-riuso.md`
 /// § 4. The vendored core carries no leaf logic of its own — it takes one canopy
-/// raster and one transmissivity per run — so which canopies stand in January is
-/// decided here and nowhere else. Day 300 falling *inside* the window is our
+/// raster at a time — so which canopies stand in January, and what each of them
+/// lets through, is decided here and nowhere else. Day 300 falling *inside* the window is our
 /// own choice: the source names the bound, not which side it belongs to.
 const FINESTRA_CON_FOGLIE: (u32, u32) = (100, 300);
+
+/// The fraction of the direct beam a canopy in leaf lets through: three per
+/// cent, measured on single urban trees by Konarska et al. (2013) and the
+/// default of the SOLWEIG line the Motore comes from.
+///
+/// One number for every species. No per-species measurement exists for the five
+/// species of the reference case, and five numbers made up to look specific
+/// would read as five measurements.
+pub const TRASMISSIVITA_CON_FOGLIE: f32 = 0.03;
+
+/// The same for a deciduous canopy in the season without leaves: bare branches
+/// are not air, and they still stop about half the beam. SOLWEIG's leaf-off
+/// default, and the reason a deciduous canopy stays in the raster all winter
+/// instead of being dropped from it.
+pub const TRASMISSIVITA_SENZA_FOGLIE: f32 = 0.5;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Stagione {
@@ -71,8 +86,10 @@ impl Stagione {
 /// terrain replaced.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct ScelteDiDerivazione {
-    /// Deciduous canopies left out of the canopy raster.
-    pub chiome_escluse: usize,
+    /// Deciduous canopies moved to the bare layer, because the Periodo falls
+    /// outside the leafy window. They still cast shade, at
+    /// [`TRASMISSIVITA_SENZA_FOGLIE`]; the count says how many.
+    pub chiome_spogliate: usize,
     /// Alberi rooted outside the extent of the Griglia.
     pub oggetti_fuori_griglia: usize,
     pub celle_costruite: usize,
@@ -85,13 +102,26 @@ pub struct ScelteDiDerivazione {
     pub terreno_sostituito: Option<usize>,
 }
 
-/// The five co-registered rasters, all of the shape of the Griglia.
-#[derive(Debug, Clone)]
-pub struct RasterDiScenario {
-    /// Terrain plus buildings, in metres above the datum of the terrain.
-    pub modello_di_superficie: Raster,
-    pub modello_di_terreno: Raster,
-    /// Canopy top, absolute: `f32::NAN` where there is no tree.
+/// One canopy layer: where the canopies are, and how much light they let
+/// through.
+///
+/// A layer per transmissivity, and not a transmissivity per cell, because of
+/// what the Motore answers: whether a cell stands in the shade of *some*
+/// canopy, never of *which* one. The two classes can therefore only be told
+/// apart on the way in, by handing the Motore one layer at a time and
+/// multiplying what comes back.
+///
+/// In the season with leaves there is one layer and every tree is in it. In the
+/// season without there are two — the evergreens, still opaque, and the bare
+/// ones — and a cell shaded by both gets the product of the two
+/// transmissivities, which is what a beam crossing both canopies does.
+#[derive(Debug, Clone, PartialEq)]
+pub struct StratoDiChioma {
+    /// What this layer is, for the Giornale to name it by.
+    pub nome: &'static str,
+    /// The fraction of the direct beam that gets through these canopies.
+    pub trasmissivita: f32,
+    /// Canopy top, absolute: `f32::NAN` where this layer has no tree.
     ///
     /// NAN and not `0.0`, because these are elevations and not local heights: a
     /// zero over a terrain below the datum would read as a canopy metres above
@@ -102,6 +132,51 @@ pub struct RasterDiScenario {
     /// Top of the trunk zone, absolute, with the same `f32::NAN` convention as
     /// `chiome`.
     pub zona_tronco: Raster,
+}
+
+impl StratoDiChioma {
+    fn vuoto(nome: &'static str, trasmissivita: f32, forma: (usize, usize)) -> Self {
+        Self {
+            nome,
+            trasmissivita,
+            chiome: Array2::from_elem(forma, f32::NAN),
+            zona_tronco: Array2::from_elem(forma, f32::NAN),
+        }
+    }
+
+    /// Puts one tree on one cell of this layer.
+    fn posa(&mut self, riga: usize, colonna: usize, chioma: f32, tronco: f32) {
+        let corrente = self.chiome[[riga, colonna]];
+        if corrente.is_nan() || chioma > corrente {
+            // Two trees on one cell leave the taller canopy, and the trunk zone
+            // that goes with it rather than the other tree's. An empty cell holds
+            // NAN, which compares false against everything, so the first tree
+            // always writes.
+            self.chiome[[riga, colonna]] = chioma;
+            self.zona_tronco[[riga, colonna]] = tronco;
+        } else if chioma == corrente {
+            // Two canopies of the same height: the lower trunk zone, so the
+            // answer does not depend on the order the Alberi are listed in, and
+            // of the two the deeper canopy is the one that keeps its shade.
+            self.zona_tronco[[riga, colonna]] = self.zona_tronco[[riga, colonna]].min(tronco);
+        }
+    }
+
+    fn ha_chiome(&self) -> bool {
+        self.chiome.iter().any(|v| !v.is_nan())
+    }
+}
+
+/// The co-registered rasters, all of the shape of the Griglia.
+#[derive(Debug, Clone)]
+pub struct RasterDiScenario {
+    /// Terrain plus buildings, in metres above the datum of the terrain.
+    pub modello_di_superficie: Raster,
+    pub modello_di_terreno: Raster,
+    /// The canopy layers that have at least one canopy in them, in the order
+    /// the Motore is to apply them. Empty when the Scenario has no tree inside
+    /// the Griglia, and then the Motore is never asked about vegetation at all.
+    pub strati_di_chioma: Vec<StratoDiChioma>,
     pub classi_di_superficie: Array2<u8>,
     pub scelte: ScelteDiDerivazione,
 }
@@ -238,8 +313,8 @@ pub fn deriva(
     }
     scelte.celle_costruite = costruite.iter().filter(|&&c| c).count();
 
-    let mut chiome: Raster = Array2::from_elem((ny, nx), f32::NAN);
-    let mut zona_tronco: Raster = Array2::from_elem((ny, nx), f32::NAN);
+    let mut in_foglia = StratoDiChioma::vuoto("chiome", TRASMISSIVITA_CON_FOGLIE, (ny, nx));
+    let mut spoglie = StratoDiChioma::vuoto("chiome spoglie", TRASMISSIVITA_SENZA_FOGLIE, (ny, nx));
     for albero in &scenario.alberi {
         // Standing outside the Griglia is a fact about the geometry and not about
         // the season, so it is counted before the leaves are considered: the same
@@ -248,31 +323,37 @@ pub fn deriva(
             scelte.oggetti_fuori_griglia += 1;
             continue;
         };
-        if stagione == Stagione::SenzaFoglie && specie::e_decidua(&albero.specie) {
-            scelte.chiome_escluse += 1;
-            continue;
-        }
         // Absolute heights: the Motore reasons on elevations, so a canopy of 12 m
         // over a terrain at 2 m has its top at 14 m.
         let suolo = modello_di_terreno[[riga, colonna]];
         let chioma = suolo + albero.altezza_m;
         let tronco = suolo + albero.altezza_m * albero.frazione_tronco as f32;
-        let corrente = chiome[[riga, colonna]];
-        if corrente.is_nan() || chioma > corrente {
-            // Two trees on one cell leave the taller canopy, and the trunk zone
-            // that goes with it rather than the other tree's. An empty cell holds
-            // NAN, which compares false against everything, so the first tree
-            // always writes.
-            chiome[[riga, colonna]] = chioma;
-            zona_tronco[[riga, colonna]] = tronco;
-        } else if chioma == corrente {
-            // Two canopies of the same height: the lower trunk zone, so the
-            // answer does not depend on the order the Alberi are listed in, and
-            // of the two the deeper canopy is the one that keeps its shade.
-            zona_tronco[[riga, colonna]] = zona_tronco[[riga, colonna]].min(tronco);
+        // A deciduous tree out of season keeps its geometry and loses its
+        // opacity: the branches are still there, and a canopy dropped from the
+        // raster would put full sun where half of it belongs.
+        if stagione == Stagione::SenzaFoglie && specie::e_decidua(&albero.specie) {
+            scelte.chiome_spogliate += 1;
+            spoglie.posa(riga, colonna, chioma, tronco);
+        } else {
+            in_foglia.posa(riga, colonna, chioma, tronco);
         }
     }
-    scelte.celle_con_chioma = chiome.iter().filter(|v| !v.is_nan()).count();
+    // A layer with no canopy in it would cost the Motore a whole march to learn
+    // that nothing casts anything.
+    let strati_di_chioma: Vec<StratoDiChioma> = [in_foglia, spoglie]
+        .into_iter()
+        .filter(StratoDiChioma::ha_chiome)
+        .collect();
+    // Cells with a canopy in *some* layer: an evergreen and a bare tree on the
+    // same cell are one shaded cell, not two.
+    scelte.celle_con_chioma = (0..ny)
+        .flat_map(|riga| (0..nx).map(move |colonna| (riga, colonna)))
+        .filter(|&(riga, colonna)| {
+            strati_di_chioma
+                .iter()
+                .any(|strato| !strato.chiome[[riga, colonna]].is_nan())
+        })
+        .count();
 
     let mut classi_di_superficie = Array2::from_elem((ny, nx), CLASSE_NESSUNA);
     for superficie in &scenario.superfici {
@@ -293,8 +374,7 @@ pub fn deriva(
     Ok(RasterDiScenario {
         modello_di_superficie,
         modello_di_terreno,
-        chiome,
-        zona_tronco,
+        strati_di_chioma,
         classi_di_superficie,
         scelte,
     })

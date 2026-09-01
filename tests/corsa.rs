@@ -498,7 +498,8 @@ fn un_giornale_che_e_un_collegamento_e_rifiutato() {
 
 use climesh::corsa;
 use climesh::dominio::{
-    Data, Edificio, FonteAltezza, Griglia, Periodo, Progetto, Provenienza, Rettangolo, Scenario,
+    Albero, Data, Edificio, FonteAltezza, Griglia, Periodo, Progetto, Provenienza, Rettangolo,
+    Scenario,
 };
 
 /// A Progetto with one flat Scenario and a tower in the middle of it.
@@ -540,6 +541,19 @@ fn progetto_di_prova(lato: usize, periodi: Vec<Periodo>) -> Progetto {
             superfici: vec![],
         }],
         periodi,
+    }
+}
+
+fn albero_di_prova(specie: &str, posizione_m: (f64, f64)) -> Albero {
+    Albero {
+        posizione_m,
+        specie: specie.into(),
+        altezza_m: 12.0,
+        frazione_tronco: 0.35,
+        provenienza: Some(Provenienza {
+            origine: "prova".into(),
+            altezza: FonteAltezza::Predefinito,
+        }),
     }
 }
 
@@ -686,17 +700,47 @@ fn il_giornale_registra_ingressi_versioni_scelte_e_inviluppi() {
     let nomi: Vec<&str> = campi.iter().map(|c| c["campo"].as_str().unwrap()).collect();
     assert!(nomi.contains(&"frazione illuminata media"));
     assert!(nomi.contains(&"ore di sole"));
-    assert!(nomi.contains(&"chiome"));
-    let chiome = campi
-        .iter()
-        .find(|c| c["campo"].as_str() == Some("chiome"))
-        .unwrap();
-    assert_eq!(
-        chiome["frazione_senza_dato"].as_float(),
-        Some(1.0),
-        "nessun albero: il campo è tutto senza dato"
+    assert!(
+        !nomi.contains(&"chiome"),
+        "questo Scenario non ha alberi: un campo delle chiome tutto senza dato \
+         direbbe che qualcosa è stato misurato e non trovato"
     );
-    assert!(chiome.get("minimo").is_none(), "nessun minimo inventato");
+}
+
+#[test]
+fn il_giornale_dichiara_ogni_strato_di_chioma_con_la_sua_trasmissivita() {
+    let mut progetto = progetto_di_prova(6, vec![periodo("inverno", 1, 15, 2)]);
+    // A pine and a plane tree: in January the first is still opaque and the
+    // second is bare, so the Corsa carries two layers and the Giornale has to
+    // name both.
+    progetto.scenari[0].alberi = vec![
+        albero_di_prova("020027", (1.5, 1.5)),
+        albero_di_prova("020060", (4.5, 4.5)),
+    ];
+    let (_, rapporto) = scrivi_ed_esegui("giornale-strati", &progetto);
+    let tabella = rileggi(&rapporto.corse[0].giornale);
+
+    assert_eq!(
+        tabella["derivazione"]["chiome_spogliate"].as_integer(),
+        Some(1)
+    );
+    let campi = tabella["campo"].as_array().unwrap();
+    let nomi: Vec<&str> = campi.iter().map(|c| c["campo"].as_str().unwrap()).collect();
+    assert!(nomi.contains(&"chiome"), "{nomi:?}");
+    assert!(nomi.contains(&"chiome spoglie"), "{nomi:?}");
+    for (campo, per_cento) in [("chiome", "3"), ("chiome spoglie", "50")] {
+        let nota = campi
+            .iter()
+            .find(|c| c["campo"].as_str() == Some(campo))
+            .unwrap()["nota"]
+            .as_str()
+            .unwrap()
+            .to_owned();
+        assert!(
+            nota.contains(&format!("{per_cento} per cento")),
+            "la nota di «{campo}» non dice quanto lascia passare: {nota}"
+        );
+    }
 }
 
 #[test]

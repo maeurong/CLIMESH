@@ -8,7 +8,9 @@
 //! again. Should the budget ever be missed, that decision has to be reopened
 //! together with the budget: they are the same decision.
 
-use crate::derivazione::{self, DerivazioneError, Raster, RasterDiScenario, Stagione};
+use crate::derivazione::{
+    self, DerivazioneError, Raster, RasterDiScenario, Stagione, StratoDiChioma,
+};
 use crate::dominio::{FonteAltezza, Griglia, Periodo, Progetto, Scenario};
 use crate::giornale::{
     arrotonda, conta_provenienza, inviluppo, Giornale, GiornaleError, Impronta, Ingresso, Inviluppo,
@@ -200,7 +202,7 @@ struct SoleCitato {
 /// its own is not swallowed in silence.
 #[derive(Serialize)]
 struct ScelteCitate {
-    chiome_escluse: usize,
+    chiome_spogliate: usize,
     oggetti_fuori_griglia: usize,
     celle_costruite: usize,
     celle_con_chioma: usize,
@@ -305,6 +307,7 @@ struct Marcia {
 fn marcia(
     modello_di_superficie: &Raster,
     costruite: &Raster,
+    strati: &[StratoDiChioma],
     griglia: &Griglia,
     periodo: &Periodo,
 ) -> Result<Marcia, CorsaError> {
@@ -331,7 +334,7 @@ fn marcia(
             ),
         })?;
         let inizio = Instant::now();
-        let illuminata = motore::ombre(modello_di_superficie, griglia.passo_m, sole);
+        let illuminata = motore::ombre(modello_di_superficie, griglia.passo_m, sole, strati);
         tempo_motore += inizio.elapsed();
 
         if sole.altezza_gradi <= 0.0 {
@@ -393,41 +396,48 @@ fn marcia(
 fn inviluppi(campi: &Campi, raster: &RasterDiScenario, ore: u32) -> Vec<Inviluppo> {
     const QUOTE_M: (f64, f64) = (-500.0, 9000.0);
     const CHIOME_M: (f64, f64) = (-500.0, 9150.0);
-    vec![
-        inviluppo(
-            "modello di superficie",
+    let mut campi_citati = vec![inviluppo(
+        "modello di superficie",
+        "m",
+        raster.modello_di_superficie.iter().copied(),
+        QUOTE_M,
+        "Terreno più Edifici. Le chiome non ne fanno parte: stanno nei loro raster, \
+         perché una chioma non è opaca e un edificio sì.",
+    )];
+    for strato in &raster.strati_di_chioma {
+        campi_citati.push(inviluppo(
+            strato.nome,
             "m",
-            raster.modello_di_superficie.iter().copied(),
-            QUOTE_M,
-            "Terreno più Edifici. Le chiome non ne fanno parte: vedi la nota del campo \"chiome\".",
-        ),
-        inviluppo(
-            "chiome",
-            "m",
-            raster.chiome.iter().copied(),
+            strato.chiome.iter().copied(),
             CHIOME_M,
-            "Quota assoluta della cima della chioma. Le celle senza chioma valgono NaN e \
-             contano nella frazione senza dato: qui \"senza dato\" vuol dire \"senza albero\", \
-             non \"dato mancante\". ATTENZIONE: questo campo è calcolato ma NON entra ancora \
-             nel calcolo dell'ombra, che oggi viene da terreno più Edifici soltanto. Due \
-             Scenari che differiscono solo per gli alberi danno perciò ombre identiche, e \
-             non è un risultato: è un limite di questa versione.",
-        ),
-        inviluppo(
-            "ore di sole",
-            "h",
-            campi.ore_di_sole.iter().copied(),
-            (0.0, f64::from(ore)),
-            "Ombra da terreno ed Edifici soltanto: la vegetazione non scherma ancora.",
-        ),
-        inviluppo(
-            "frazione illuminata media",
-            "adimensionale",
-            campi.frazione_illuminata_media.iter().copied(),
-            (0.0, 1.0),
-            "Media sulle ore del Periodo, con la stessa riserva sulla vegetazione.",
-        ),
-    ]
+            &format!(
+                "Quota assoluta della cima della chioma. Le celle senza chioma valgono NaN e \
+                 contano nella frazione senza dato: qui \"senza dato\" vuol dire \"senza \
+                 albero\", non \"dato mancante\". Questo strato lascia passare il {} per \
+                 cento della radiazione diretta.",
+                arrotonda(f64::from(strato.trasmissivita) * 100.0)
+            ),
+        ));
+    }
+    campi_citati.push(inviluppo(
+        "ore di sole",
+        "h",
+        campi.ore_di_sole.iter().copied(),
+        (0.0, f64::from(ore)),
+        "Somma oraria della frazione illuminata, non un conteggio di ore intere: \
+         un'ora sotto una chioma vale quanto la chioma lascia passare, e una cella \
+         all'ombra di un edificio vale zero.",
+    ));
+    campi_citati.push(inviluppo(
+        "frazione illuminata media",
+        "adimensionale",
+        campi.frazione_illuminata_media.iter().copied(),
+        (0.0, 1.0),
+        "Media sulle ore del Periodo. Zero all'ombra di un edificio o del terreno, \
+         la trasmissività dello strato sotto una chioma, il prodotto delle due \
+         sotto due chiome.",
+    ));
+    campi_citati
 }
 
 /// Runs one Corsa and writes its Giornale.
@@ -562,7 +572,7 @@ pub fn esegui(
     giornale.annota(
         "derivazione",
         &ScelteCitate {
-            chiome_escluse: raster.scelte.chiome_escluse,
+            chiome_spogliate: raster.scelte.chiome_spogliate,
             oggetti_fuori_griglia: raster.scelte.oggetti_fuori_griglia,
             celle_costruite: raster.scelte.celle_costruite,
             celle_con_chioma: raster.scelte.celle_con_chioma,
@@ -590,6 +600,7 @@ pub fn esegui(
             marcia(
                 &raster.modello_di_superficie,
                 &costruite,
+                &raster.strati_di_chioma,
                 &progetto.griglia,
                 periodo,
             )

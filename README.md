@@ -55,11 +55,12 @@ Esiste: il lettore dei file `.INX` di ENVI-met, con la
 [documentazione del formato](docs/formato-inx.md) che non era mai stata pubblica;
 il [caso di riferimento](casi/bastia/) estratto e versionato; il Progetto su
 disco con il suo modello a oggetti; la Derivazione da oggetti a raster; il
-[motore radiativo vendorato](vendor/solweig/) e collegato; il Giornale della
-Corsa.
+[motore radiativo vendorato](vendor/solweig/) e collegato; l'ombra degli
+Edifici e quella degli Alberi, con le chiome che attenuano invece di spegnere;
+il Giornale della Corsa.
 
-**Il caso di riferimento completo gira in poco più di cinque secondi**, contro
-un budget di sessanta: due Scenari per due Periodi, 50 × 50 celle a un metro,
+**Il caso di riferimento completo gira in un quarto di secondo**, contro un
+budget di sessanta: due Scenari per due Periodi, 50 × 50 celle a un metro,
 48 ore, su sola CPU.
 
 Non esiste ancora: la catena radiativa completa fino alla temperatura media

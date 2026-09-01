@@ -5,7 +5,9 @@
 //! Row 0 of every raster is the northernmost, and the azimuth is degrees from
 //! north clockwise, as everywhere else in the project.
 
-use climesh::derivazione::Raster;
+use climesh::derivazione::{
+    Raster, StratoDiChioma, TRASMISSIVITA_CON_FOGLIE, TRASMISSIVITA_SENZA_FOGLIE,
+};
 use climesh::dominio::Data;
 use climesh::motore::{ombre, versione, ALTEZZA_MINIMA_GRADI};
 use climesh::sole::{posizione, PosizioneSolare};
@@ -174,7 +176,7 @@ fn il_sole_sotto_l_orizzonte_lascia_tutto_in_ombra() {
     // Ours, not the kernel's: below the horizon the kernel finds no obstruction
     // and reports every cell lit. That a place at night is not in the sun is a
     // modelling decision, and it is taken here.
-    let illuminazione = ombre(&torre(11, 0.0), 1.0, sole_a(-10.0, 180.0));
+    let illuminazione = ombre(&torre(11, 0.0), 1.0, sole_a(-10.0, 180.0), &[]);
     assert!(
         illuminazione.iter().all(|&v| v == 0.0),
         "una cella al sole di notte: {illuminazione}"
@@ -184,7 +186,7 @@ fn il_sole_sotto_l_orizzonte_lascia_tutto_in_ombra() {
 #[test]
 fn un_dominio_piatto_col_sole_alto_e_tutto_al_sole() {
     let piatto = Raster::zeros((21, 21));
-    let illuminazione = ombre(&piatto, 1.0, sole_a(60.0, 180.0));
+    let illuminazione = ombre(&piatto, 1.0, sole_a(60.0, 180.0), &[]);
     assert!(
         illuminazione.iter().all(|&v| v > 0.99),
         "ombra dal nulla su un dominio piatto: {illuminazione}"
@@ -195,7 +197,7 @@ fn un_dominio_piatto_col_sole_alto_e_tutto_al_sole() {
 fn la_torre_getta_la_sua_ombra_a_nord_col_sole_a_sud_a_quarantacinque_gradi() {
     let lato = 25;
     let c = lato / 2;
-    let illuminazione = ombre(&torre(lato, 0.0), 1.0, sole_a(45.0, 180.0));
+    let illuminazione = ombre(&torre(lato, 0.0), 1.0, sole_a(45.0, 180.0), &[]);
 
     // A 10 m tower with the sun at 45 degrees casts 10 m of shadow, and it falls
     // to the north because the sun is to the south.
@@ -229,6 +231,7 @@ fn il_sole_all_alba_non_fa_panico_ne_ombre_infinite() {
         &torre(lato, 0.0),
         1.0,
         sole_a(ALTEZZA_MINIMA_GRADI + 0.01, 90.0),
+        &[],
     );
     assert!(
         illuminazione
@@ -253,9 +256,9 @@ fn il_terreno_a_quota_costante_da_le_stesse_ombre_del_terreno_a_zero() {
     // What the kernel is owed is the relief, max minus min, not the maximum:
     // the height the ray must climb to clear every obstacle. Feed it the
     // maximum and a domain sitting below the datum stops casting shadows at all.
-    let riferimento = ombre(&torre(21, 0.0), 1.0, sole_a(45.0, 180.0));
+    let riferimento = ombre(&torre(21, 0.0), 1.0, sole_a(45.0, 180.0), &[]);
     for quota in [100.0, -100.0] {
-        let sollevato = ombre(&torre(21, quota), 1.0, sole_a(45.0, 180.0));
+        let sollevato = ombre(&torre(21, quota), 1.0, sole_a(45.0, 180.0), &[]);
         assert_eq!(
             sollevato, riferimento,
             "a quota {quota} le ombre cambiano: {sollevato}"
@@ -265,7 +268,7 @@ fn il_terreno_a_quota_costante_da_le_stesse_ombre_del_terreno_a_zero() {
 
 #[test]
 fn una_griglia_di_una_cella_funziona() {
-    let illuminazione = ombre(&Raster::zeros((1, 1)), 1.0, sole_a(45.0, 180.0));
+    let illuminazione = ombre(&Raster::zeros((1, 1)), 1.0, sole_a(45.0, 180.0), &[]);
     assert_eq!(illuminazione.dim(), (1, 1));
     assert!(illuminazione[[0, 0]] > 0.5);
 }
@@ -282,7 +285,12 @@ fn alla_soglia_di_altezza_e_tutto_in_ombra_e_appena_sopra_no() {
     // The threshold is a modelling decision, so it is the threshold and not the
     // horizon that has to be exact: at the declared elevation the domain is
     // shaded, and the smallest step above it starts computing again.
-    let alla_soglia = ombre(&torre(11, 0.0), 1.0, sole_a(ALTEZZA_MINIMA_GRADI, 180.0));
+    let alla_soglia = ombre(
+        &torre(11, 0.0),
+        1.0,
+        sole_a(ALTEZZA_MINIMA_GRADI, 180.0),
+        &[],
+    );
     assert!(
         alla_soglia.iter().all(|&v| v == 0.0),
         "alla soglia di {ALTEZZA_MINIMA_GRADI} gradi una cella e' al sole: {alla_soglia}"
@@ -292,6 +300,7 @@ fn alla_soglia_di_altezza_e_tutto_in_ombra_e_appena_sopra_no() {
         &torre(11, 0.0),
         1.0,
         sole_a(ALTEZZA_MINIMA_GRADI + 0.001, 180.0),
+        &[],
     );
     assert!(
         appena_sopra.iter().any(|&v| v > 0.5),
@@ -307,7 +316,7 @@ fn col_passo_di_due_metri_l_ombra_della_torre_e_lunga_cinque_celle() {
     // give the same picture.
     let lato = 25;
     let c = lato / 2;
-    let illuminazione = ombre(&torre(lato, 0.0), 2.0, sole_a(45.0, 180.0));
+    let illuminazione = ombre(&torre(lato, 0.0), 2.0, sole_a(45.0, 180.0), &[]);
 
     for distanza in 1..=4 {
         assert!(
@@ -320,4 +329,192 @@ fn col_passo_di_due_metri_l_ombra_della_torre_e_lunga_cinque_celle() {
         illuminazione[[c - 6, c]] > 0.5,
         "l'ombra arriva a 12 m a nord, piu' lunga della torre: {illuminazione}"
     );
+}
+
+/// A canopy layer with one canopy on the centre cell of a `lato` x `lato`
+/// domain: top at `chioma` metres, trunk zone up to half of it.
+fn chioma_al_centro(
+    nome: &'static str,
+    trasmissivita: f32,
+    lato: usize,
+    chioma: f32,
+) -> StratoDiChioma {
+    let mut chiome = Raster::from_elem((lato, lato), f32::NAN);
+    let mut zona_tronco = Raster::from_elem((lato, lato), f32::NAN);
+    chiome[[lato / 2, lato / 2]] = chioma;
+    zona_tronco[[lato / 2, lato / 2]] = chioma / 2.0;
+    StratoDiChioma {
+        nome,
+        trasmissivita,
+        chiome,
+        zona_tronco,
+    }
+}
+
+fn minimo(illuminazione: &Raster) -> f32 {
+    illuminazione.iter().copied().fold(f32::INFINITY, f32::min)
+}
+
+#[test]
+fn una_chioma_lascia_passare_la_sua_trasmissivita_e_non_spegne_la_cella() {
+    let lato = 25;
+    let c = lato / 2;
+    let piatto = Raster::zeros((lato, lato));
+    let strati = [chioma_al_centro(
+        "chiome",
+        TRASMISSIVITA_CON_FOGLIE,
+        lato,
+        10.0,
+    )];
+    let illuminazione = ombre(&piatto, 1.0, sole_a(45.0, 180.0), &strati);
+
+    // A canopy is not a wall: the darkest cell of a domain with no building in
+    // it is the transmissivity, never zero. Getting a zero here would mean the
+    // canopy had been treated as opaque.
+    // `1 - (1 - 0) * (1 - 0.03)` in f32 lands a few ulp short of 0.03, so the
+    // comparison is on the tolerance and not on the bit pattern.
+    assert!(
+        (minimo(&illuminazione) - TRASMISSIVITA_CON_FOGLIE).abs() < 1e-6,
+        "una chioma ha spento una cella invece di ombreggiarla: minimo {}",
+        minimo(&illuminazione)
+    );
+    // The shade falls to the north, between the shadow of the trunk top and the
+    // shadow of the canopy top: sun at 45 degrees, canopy at 10 m, trunk at 5.
+    assert!(
+        (c - 9..c - 5).any(|riga| illuminazione[[riga, c]] < 1.0),
+        "nessuna ombra di chioma fra 5 e 9 m a nord: {illuminazione}"
+    );
+    assert_eq!(
+        illuminazione[[c + 3, c]],
+        1.0,
+        "ombra a sud, dalla parte del sole: {illuminazione}"
+    );
+}
+
+#[test]
+fn due_strati_sulla_stessa_cella_moltiplicano_le_trasmissivita() {
+    // What a beam crossing two canopies does. It is also the reason the layers
+    // exist: the Motore says a cell is in the shade of a canopy, never of which
+    // canopy, so two transmissivities need two marches.
+    let lato = 25;
+    let piatto = Raster::zeros((lato, lato));
+    let strati = [
+        chioma_al_centro("chiome", TRASMISSIVITA_CON_FOGLIE, lato, 10.0),
+        chioma_al_centro("chiome spoglie", TRASMISSIVITA_SENZA_FOGLIE, lato, 10.0),
+    ];
+    let illuminazione = ombre(&piatto, 1.0, sole_a(45.0, 180.0), &strati);
+    let atteso = TRASMISSIVITA_CON_FOGLIE * TRASMISSIVITA_SENZA_FOGLIE;
+    assert!(
+        (minimo(&illuminazione) - atteso).abs() < 1e-7,
+        "due strati non si moltiplicano: minimo {}, atteso {atteso}",
+        minimo(&illuminazione)
+    );
+}
+
+#[test]
+fn una_chioma_nell_ombra_di_un_edificio_non_la_schiarisce() {
+    // The building is opaque and the canopy is not, but a canopy cannot put
+    // light back where a wall has taken it away.
+    let lato = 25;
+    let c = lato / 2;
+    let mut strati = [chioma_al_centro(
+        "chiome",
+        TRASMISSIVITA_CON_FOGLIE,
+        lato,
+        8.0,
+    )];
+    // Move the canopy three cells north of the tower, inside its shadow.
+    strati[0].chiome = Raster::from_elem((lato, lato), f32::NAN);
+    strati[0].zona_tronco = Raster::from_elem((lato, lato), f32::NAN);
+    strati[0].chiome[[c - 3, c]] = 8.0;
+    strati[0].zona_tronco[[c - 3, c]] = 4.0;
+
+    let illuminazione = ombre(&torre(lato, 0.0), 1.0, sole_a(45.0, 180.0), &strati);
+    for distanza in 1..=9 {
+        assert_eq!(
+            illuminazione[[c - distanza, c]],
+            0.0,
+            "a {distanza} m a nord l'ombra della torre non è più nera: {illuminazione}"
+        );
+    }
+}
+
+#[test]
+fn uno_strato_senza_chiome_non_cambia_niente() {
+    // The Derivazione does not build an empty layer, and this says what would
+    // happen if it did: nothing. It is the guard that keeps the vegetation path
+    // from moving a result on a Scenario with no trees.
+    let lato = 21;
+    let piatto = torre(lato, 0.0);
+    let vuoto = StratoDiChioma {
+        nome: "chiome",
+        trasmissivita: TRASMISSIVITA_CON_FOGLIE,
+        chiome: Raster::from_elem((lato, lato), f32::NAN),
+        zona_tronco: Raster::from_elem((lato, lato), f32::NAN),
+    };
+    assert_eq!(
+        ombre(&piatto, 1.0, sole_a(45.0, 180.0), &[vuoto]),
+        ombre(&piatto, 1.0, sole_a(45.0, 180.0), &[])
+    );
+}
+
+#[test]
+fn di_notte_nemmeno_una_chioma_illumina() {
+    let lato = 11;
+    let strati = [chioma_al_centro(
+        "chiome",
+        TRASMISSIVITA_CON_FOGLIE,
+        lato,
+        10.0,
+    )];
+    let illuminazione = ombre(&torre(lato, 0.0), 1.0, sole_a(-10.0, 180.0), &strati);
+    assert!(
+        illuminazione.iter().all(|&v| v == 0.0),
+        "una cella al sole di notte: {illuminazione}"
+    );
+}
+
+#[test]
+fn nel_caso_di_riferimento_i_due_scenari_non_danno_piu_la_stessa_ombra() {
+    // The defect this whole layer exists to close. With the vegetation outside
+    // the shadow calculation, 616 trees and 846 trees produced fields identical
+    // to the last digit — and two identical results read as "the planting does
+    // nothing", which is a claim the model was not entitled to make.
+    let progetto = climesh::progetto::leggi("casi/bastia/progetto").unwrap();
+    let sole = sole_a(45.0, 180.0);
+    let campo = |nome: &str, periodo: &climesh::dominio::Periodo| {
+        let scenario = progetto
+            .scenari
+            .iter()
+            .find(|s| s.nome == nome)
+            .expect("il caso di riferimento porta questo Scenario");
+        let raster = climesh::derivazione::deriva(&progetto.griglia, scenario, periodo).unwrap();
+        ombre(
+            &raster.modello_di_superficie,
+            progetto.griglia.passo_m,
+            sole,
+            &raster.strati_di_chioma,
+        )
+    };
+    let sole_totale = |r: &Raster| r.iter().map(|&v| f64::from(v)).sum::<f64>();
+
+    assert_eq!(progetto.periodi.len(), 2, "estate e inverno");
+    for periodo in &progetto.periodi {
+        let fatto = campo("stato-di-fatto", periodo);
+        let interventi = campo("interventi", periodo);
+        assert_ne!(
+            fatto, interventi,
+            "nel Periodo «{}» i due Scenari danno la stessa ombra: gli alberi non stanno \
+             entrando nel calcolo",
+            periodo.nome
+        );
+        // 846 trees against 616: the planted Scenario is the darker one.
+        assert!(
+            sole_totale(&interventi) < sole_totale(&fatto),
+            "nel Periodo «{}» lo Scenario con più alberi prende più sole: {} contro {}",
+            periodo.nome,
+            sole_totale(&interventi),
+            sole_totale(&fatto)
+        );
+    }
 }
