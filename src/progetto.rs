@@ -42,6 +42,9 @@ pub enum ProgettoError {
     NomeDuplicato(String),
     /// An object placed where the Griglia does not reach.
     FuoriGriglia(String),
+    /// A height that is not a number: a NaN or an infinity in the elevations the
+    /// surface model is built from.
+    NonFinito(String),
 }
 
 impl fmt::Display for ProgettoError {
@@ -73,6 +76,9 @@ impl fmt::Display for ProgettoError {
             ),
             Self::FuoriGriglia(cosa) => {
                 write!(f, "{cosa} cade fuori dall'estensione della Griglia")
+            }
+            Self::NonFinito(cosa) => {
+                write!(f, "{cosa} non è una quota: dev'essere un numero finito")
             }
         }
     }
@@ -173,6 +179,21 @@ fn valida(p: &Progetto) -> Result<(), ProgettoError> {
         }
     }
     for s in &p.scenari {
+        // Every elevation the surface model is built from. A NaN or an infinity
+        // here never raises anything downstream: the relief the Motore computes
+        // becomes undefined or infinite, its guard is false on the first pass,
+        // the ray march never starts, and the run reports a domain in full sun.
+        let quote = (s.terreno_m.iter().map(|q| ("il terreno", *q)))
+            .chain(s.edifici.iter().map(|e| ("un edificio", e.altezza_m)))
+            .chain(s.alberi.iter().map(|a| ("un albero", a.altezza_m)));
+        for (cosa, quota) in quote {
+            if !quota.is_finite() {
+                return Err(ProgettoError::NonFinito(format!(
+                    "scenario {}: {quota} m di {cosa}",
+                    s.nome
+                )));
+            }
+        }
         if s.terreno_m.len() != celle {
             return Err(ProgettoError::Terreno {
                 scenario: s.nome.clone(),

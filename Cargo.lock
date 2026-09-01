@@ -13,6 +13,7 @@ name = "climesh"
 version = "0.1.0"
 dependencies = [
  "ndarray",
+ "rayon",
  "serde",
  "solweig-ombre",
  "toml",

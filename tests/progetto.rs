@@ -565,3 +565,44 @@ fn tempdir_di_prova(nome: &str) -> std::path::PathBuf {
     std::fs::create_dir_all(&dir).unwrap();
     dir
 }
+
+/// A Progetto that must not reach disk, and must name the reason.
+fn una_quota_non_finita_e_rifiutata(nome: &str, p: Progetto) {
+    let dir = tempdir_di_prova(nome);
+    let err = progetto::scrivi(&dir, &p).expect_err("deve fallire");
+    assert!(
+        matches!(err, progetto::ProgettoError::NonFinito(_)),
+        "{nome}: variante {err:?}"
+    );
+    assert!(
+        !dir.join("progetto.toml").exists(),
+        "{nome}: un Progetto rifiutato non lascia un manifesto su disco"
+    );
+}
+
+#[test]
+fn a_height_that_is_not_a_number_is_rejected() {
+    // A NaN or an infinity in the surface model is the quietest failure the
+    // program has: relief becomes infinite or undefined, the Motore's guard is
+    // false on the first pass, the ray march never starts, and every cell comes
+    // back in full sun with nothing written anywhere to say so.
+    let mut terreno_nan = progetto_di_prova();
+    terreno_nan.scenari[0].terreno_m[7] = f32::NAN;
+    una_quota_non_finita_e_rifiutata("terreno-nan", terreno_nan);
+
+    let mut terreno_inf = progetto_di_prova();
+    terreno_inf.scenari[0].terreno_m[7] = f32::INFINITY;
+    una_quota_non_finita_e_rifiutata("terreno-inf", terreno_inf);
+
+    let mut edificio_nan = progetto_di_prova();
+    edificio_nan.scenari[0].edifici[0].altezza_m = f32::NAN;
+    una_quota_non_finita_e_rifiutata("edificio-nan", edificio_nan);
+
+    let mut edificio_inf = progetto_di_prova();
+    edificio_inf.scenari[0].edifici[0].altezza_m = f32::NEG_INFINITY;
+    una_quota_non_finita_e_rifiutata("edificio-inf", edificio_inf);
+
+    let mut albero_nan = progetto_di_prova();
+    albero_nan.scenari[0].alberi[0].altezza_m = f32::NAN;
+    una_quota_non_finita_e_rifiutata("albero-nan", albero_nan);
+}

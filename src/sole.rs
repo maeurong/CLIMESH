@@ -6,6 +6,13 @@
 //! calculations, and the vendored kernel only ever receives the two angles.
 //!
 //! Azimuth is degrees from north, clockwise, as everywhere else in the project.
+//!
+//! Known ceiling: the declination comes from Spencer's Fourier series, which is
+//! off by up to 0.53 degrees over the year. Checked against Meeus on 21 June 2026
+//! at 43.07 N the whole function stays within 0.10 degrees in elevation and 0.29
+//! in azimuth over ten hours, with the solstice culmination at 70.382 against a
+//! theoretical 70.37. That is the accuracy on offer, and the tolerances of the
+//! tests are set to it; a tighter answer needs a different series, not a fix.
 
 use crate::dominio::Data;
 
@@ -56,6 +63,11 @@ pub fn posizione(
     // From south, positive westward, then turned into degrees from north
     // clockwise. `atan2` rather than the `acos` of the NOAA note, which loses
     // the morning-afternoon half of the sky and needs the sign patched back on.
+    //
+    // The `rem_euclid` below never fires and no test pretends otherwise: `atan2`
+    // returns (-180, 180], so adding 180 lands in (0, 360] and there is nothing
+    // to fold. It stays as the statement of the range the caller is promised,
+    // not as a branch: a test for it would be a test of unreachable code.
     let azimut_da_sud = angolo_orario
         .sin()
         .atan2(angolo_orario.cos() * latitudine.sin() - declinazione.tan() * latitudine.cos());
