@@ -7,7 +7,10 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  RUSTFLAGS: -D warnings
+  # Nessun RUSTFLAGS globale: varrebbe anche per vendor/solweig, perche' una
+  # dipendenza di percorso conta come sorgente locale, e i suoi avvisi
+  # diventerebbero errori nostri. I warning si negano dove servono, sul nostro
+  # pacchetto soltanto.
 
 jobs:
   verifica:
@@ -29,7 +32,7 @@ jobs:
         run: cargo fmt -p climesh --check
 
       - name: Lint
-        run: cargo clippy --all-targets --all-features
+        run: cargo clippy -p climesh --all-targets --all-features -- -D warnings
 
       # The reference case lives in `materiale università/`, which is not
       # redistributable and therefore not in the repository. The handful of tests
@@ -37,7 +40,7 @@ jobs:
       # here — never as passed. Everything else, the synthetic models included,
       # runs for real.
       - name: Tests
-        run: cargo test --all-features -- --nocapture
+        run: cargo test -p climesh --all-features -- --nocapture
 
       # Where the material is on disk — a developer machine, not this runner —
       # the same suite runs the ignored checks too:
