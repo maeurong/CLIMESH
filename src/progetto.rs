@@ -45,6 +45,10 @@ pub enum ProgettoError {
     /// A height that is not a number: a NaN or an infinity in the elevations the
     /// surface model is built from.
     NonFinito(String),
+    /// A Periodo of no hours. Not a short Periodo: one that is not there. The
+    /// Corsa would divide the hours in the sun by it, fill every raster with
+    /// NaN, and conclude «riuscita» over a field with nothing in it.
+    OreZero(String),
 }
 
 impl fmt::Display for ProgettoError {
@@ -80,6 +84,11 @@ impl fmt::Display for ProgettoError {
             Self::NonFinito(cosa) => {
                 write!(f, "{cosa} non è una quota: dev'essere un numero finito")
             }
+            Self::OreZero(nome) => write!(
+                f,
+                "il periodo «{nome}» dura zero ore: porta «ore» a un numero maggiore di zero \
+                 in periodi/{nome}.toml"
+            ),
         }
     }
 }
@@ -167,6 +176,11 @@ fn valida(p: &Progetto) -> Result<(), ProgettoError> {
     })?;
     valida_nomi(p.scenari.iter().map(|s| s.nome.as_str()))?;
     valida_nomi(p.periodi.iter().map(|x| x.nome.as_str()))?;
+    // Checked here and not in the Corsa: a Periodo of zero hours is a defect of
+    // the Progetto, and every path that computes anything divides by this number.
+    if let Some(x) = p.periodi.iter().find(|x| x.ore == 0) {
+        return Err(ProgettoError::OreZero(x.nome.clone()));
+    }
     let est_x = p.griglia.nx as f64 * p.griglia.passo_m;
     let est_y = p.griglia.ny as f64 * p.griglia.passo_m;
     let dentro = |(x, y): Posizione| x >= 0.0 && y >= 0.0 && x <= est_x && y <= est_y;

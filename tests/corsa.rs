@@ -29,6 +29,11 @@ fn rileggi(percorso: &std::path::Path) -> toml::Table {
 /// etichetta and what breaks a file written by hand.
 const TESTO_OSTILE: &str = "corsa \"buona\" \\ del\nlunedì";
 
+/// The Impronta of the inputs `l_impronta_di_ingressi_fissati_vale_questa`
+/// builds. A golden value: it moves only when what goes into an Impronta is
+/// meant to move.
+const IMPRONTA_FISSATA: &str = "7631d0b8bdebc89ba216960546891b38da17c9a6ddaeaecf8ce0b7e11b01203b";
+
 fn riga(chiave: &str, valore: &str) -> BTreeMap<String, String> {
     BTreeMap::from([(chiave.to_owned(), valore.to_owned())])
 }
@@ -51,10 +56,54 @@ fn la_somma_di_controllo_riproduce_i_vettori_noti() {
     );
 }
 
+/// The lengths the padding turns on. At 55 bytes the length field is the last
+/// eight of one block; at 56 it no longer fits and a whole second block appears;
+/// 63, 64, 119 and 120 are the same two steps one block further on. A padding
+/// loop that is off by one block is right on every other length, so these are
+/// the only lengths that notice.
+///
+/// Reference values from `hashlib.sha256` on `b"a" * n`.
+#[test]
+fn la_somma_di_controllo_riproduce_i_bordi_del_riempimento() {
+    for (quanti, atteso) in [
+        (
+            55,
+            "9f4390f8d30c2dd92ec9f095b65e2b9ae9b0a925a5258e241c9f1e910f734318",
+        ),
+        (
+            56,
+            "b35439a4ac6f0948b6d6f9e3c6af0f5f590ce20f1bde7090ef7970686ec6738a",
+        ),
+        (
+            63,
+            "7d3e74a05d7db15bce4ad9ec0658ea98e3f06eeecf16b4c6fff2da457ddc2f34",
+        ),
+        (
+            64,
+            "ffe054fe7ae0cb6dc65c3af9b61d5209f439851db43d0ba5997337df154668eb",
+        ),
+        (
+            119,
+            "31eba51c313a5c08226adf18d4a359cfdfd8d2e816b13f4af952f7ea6584dcfb",
+        ),
+        (
+            120,
+            "2f3d335432c70b580af0e8e1b3674a7c020d683aa5f73aaaedfdc55af904c21c",
+        ),
+    ] {
+        assert_eq!(
+            somma_di_controllo(&vec![b'a'; quanti]),
+            atteso,
+            "{quanti} byte"
+        );
+    }
+}
+
 #[test]
 fn il_giornale_resta_toml_valido_con_virgolette_barre_e_ritorni_a_capo() {
-    let percorso = tempdir_di_prova("giornale-ostile").join("giornale.toml");
-    let mut giornale = Giornale::apri(&percorso).unwrap();
+    let dir = tempdir_di_prova("giornale-ostile");
+    let mut giornale = Giornale::apri(&dir, "giornale.toml").unwrap();
+    let percorso = giornale.percorso().to_path_buf();
     giornale
         .annota("corsa", &riga("etichetta", TESTO_OSTILE))
         .unwrap();
@@ -70,8 +119,9 @@ fn il_giornale_resta_toml_valido_con_virgolette_barre_e_ritorni_a_capo() {
 
 #[test]
 fn un_giornale_interrotto_non_ha_conclusione_ne_un_esito_al_livello_superiore() {
-    let percorso = tempdir_di_prova("giornale-interrotto").join("giornale.toml");
-    let mut giornale = Giornale::apri(&percorso).unwrap();
+    let dir = tempdir_di_prova("giornale-interrotto");
+    let mut giornale = Giornale::apri(&dir, "giornale.toml").unwrap();
+    let percorso = giornale.percorso().to_path_buf();
     giornale
         .annota("corsa", &riga("etichetta", "interrotta"))
         .unwrap();
@@ -98,8 +148,9 @@ fn un_giornale_interrotto_non_ha_conclusione_ne_un_esito_al_livello_superiore() 
 
 #[test]
 fn una_corsa_fallita_conclude_con_esito_fallita_e_l_errore_leggibile() {
-    let percorso = tempdir_di_prova("giornale-fallito").join("giornale.toml");
-    let mut giornale = Giornale::apri(&percorso).unwrap();
+    let dir = tempdir_di_prova("giornale-fallito");
+    let mut giornale = Giornale::apri(&dir, "giornale.toml").unwrap();
+    let percorso = giornale.percorso().to_path_buf();
     giornale
         .annota("corsa", &riga("etichetta", "che fallisce"))
         .unwrap();
@@ -121,8 +172,9 @@ fn una_corsa_fallita_conclude_con_esito_fallita_e_l_errore_leggibile() {
 
 #[test]
 fn una_corsa_riuscita_conclude_con_esito_riuscita_e_nessun_errore() {
-    let percorso = tempdir_di_prova("giornale-riuscito").join("giornale.toml");
-    let mut giornale = Giornale::apri(&percorso).unwrap();
+    let dir = tempdir_di_prova("giornale-riuscito");
+    let mut giornale = Giornale::apri(&dir, "giornale.toml").unwrap();
+    let percorso = giornale.percorso().to_path_buf();
     giornale
         .annota("corsa", &riga("etichetta", "che riesce"))
         .unwrap();
@@ -136,7 +188,7 @@ fn una_corsa_riuscita_conclude_con_esito_riuscita_e_nessun_errore() {
 
 #[test]
 fn un_campo_tutto_nan_non_si_inventa_un_minimo() {
-    let inv = inviluppo("chiome", "m", [f32::NAN; 4], (0.0, 100.0));
+    let inv = inviluppo("chiome", "m", [f32::NAN; 4], (0.0, 100.0), "");
     assert_eq!(inv.minimo, None);
     assert_eq!(inv.massimo, None);
     assert_eq!(inv.media, None);
@@ -149,7 +201,13 @@ fn un_campo_tutto_nan_non_si_inventa_un_minimo() {
 
 #[test]
 fn l_inviluppo_conta_solo_le_celle_con_dato() {
-    let inv = inviluppo("chiome", "m", [f32::NAN, 2.0, 4.0, f32::NAN], (0.0, 100.0));
+    let inv = inviluppo(
+        "chiome",
+        "m",
+        [f32::NAN, 2.0, 4.0, f32::NAN],
+        (0.0, 100.0),
+        "",
+    );
     assert_eq!(inv.minimo, Some(2.0));
     assert_eq!(inv.massimo, Some(4.0));
     assert_eq!(inv.media, Some(3.0));
@@ -158,11 +216,11 @@ fn l_inviluppo_conta_solo_le_celle_con_dato() {
 
 #[test]
 fn un_valore_fuori_dall_intervallo_plausibile_alza_la_bandiera_e_viene_riportato() {
-    let inv = inviluppo("frazione illuminata", "1", [0.5, 3.0], (0.0, 1.0));
+    let inv = inviluppo("ore di sole", "h", [0.5, 3.0], (0.0, 1.0), "");
     assert!(inv.fuori_intervallo);
     assert_eq!(inv.massimo, Some(3.0), "il valore si riporta comunque");
 
-    let dentro = inviluppo("frazione illuminata", "1", [0.0, 1.0], (0.0, 1.0));
+    let dentro = inviluppo("ore di sole", "h", [0.0, 1.0], (0.0, 1.0), "");
     assert!(!dentro.fuori_intervallo, "gli estremi sono dentro");
 }
 
@@ -172,11 +230,16 @@ fn l_impronta_cambia_se_cambia_un_solo_byte_di_un_ingresso() {
     let file = dir.join("meteo.epw");
     fs::write(&file, "abc").unwrap();
     let motore = motore::versione();
-    let calcola = || Impronta::calcola(&[Ingresso::leggi(&file, "meteo")], "0.1.0", &motore, "p");
+    let calcola = || {
+        Impronta::calcola(
+            &[Ingresso::leggi(&file, &dir, "meteo")],
+            "0.1.0",
+            &motore,
+            "p",
+        )
+    };
 
     let prima = calcola();
-    assert_eq!(prima, calcola(), "stessi ingressi, stessa Impronta");
-
     fs::write(&file, "abd").unwrap();
     assert_ne!(prima, calcola(), "un byte diverso, Impronta diversa");
 }
@@ -187,7 +250,7 @@ fn l_impronta_cambia_se_cambiano_i_parametri_o_il_binario() {
     let file = dir.join("meteo.epw");
     fs::write(&file, "abc").unwrap();
     let motore = motore::versione();
-    let ingressi = [Ingresso::leggi(&file, "meteo")];
+    let ingressi = [Ingresso::leggi(&file, &dir, "meteo")];
 
     let base = Impronta::calcola(&ingressi, "0.1.0", &motore, "p");
     assert_ne!(base, Impronta::calcola(&ingressi, "0.2.0", &motore, "p"));
@@ -200,7 +263,7 @@ fn un_ingresso_assente_non_e_mai_identico_a_uno_presente() {
     let file = dir.join("mai-scritto.epw");
     let motore = motore::versione();
 
-    let mancante = Ingresso::leggi(&file, "meteo");
+    let mancante = Ingresso::leggi(&file, &dir, "meteo");
     assert_eq!(mancante.sha256, ASSENTE);
     let senza = Impronta::calcola(&[mancante], "0.1.0", &motore, "p");
 
@@ -208,7 +271,12 @@ fn un_ingresso_assente_non_e_mai_identico_a_uno_presente() {
     // word "assente" is still a file that is there.
     for contenuto in ["", "assente", ASSENTE] {
         fs::write(&file, contenuto).unwrap();
-        let presente = Impronta::calcola(&[Ingresso::leggi(&file, "meteo")], "0.1.0", &motore, "p");
+        let presente = Impronta::calcola(
+            &[Ingresso::leggi(&file, &dir, "meteo")],
+            "0.1.0",
+            &motore,
+            "p",
+        );
         assert_ne!(senza, presente, "contenuto «{contenuto}»");
     }
 }
@@ -260,6 +328,167 @@ fn la_provenienza_si_conta_per_anello_della_catena() {
     assert_eq!(
         conteggio.predefinito, 1,
         "l'albero eredita l'anello dello Scenario"
+    );
+}
+
+/// The branch a value *below* the minimum takes. Nothing in this project ever
+/// produced one, so the branch was never walked: a plausible range with only its
+/// upper half enforced is half a check.
+#[test]
+fn un_valore_sotto_il_minimo_plausibile_alza_la_bandiera_e_viene_riportato() {
+    let inv = inviluppo("quota", "m", [-3.0, 5.0], (0.0, 10.0), "");
+    assert!(inv.fuori_intervallo);
+    assert_eq!(inv.minimo, Some(-3.0), "il valore si riporta comunque");
+}
+
+/// The Giornale is read by a person. The reproducibility lives in the Impronta,
+/// not in the fifteenth decimal of a mean.
+#[test]
+fn l_inviluppo_arrotonda_le_cifre_che_scrive() {
+    let inv = inviluppo("quota", "m", [10.0, 18.0, 15.0, f32::NAN], (0.0, 100.0), "");
+    assert_eq!(inv.media, Some(14.3333));
+    assert_eq!(inv.frazione_senza_dato, 0.25);
+
+    let terzi = inviluppo("quota", "m", [f32::NAN, f32::NAN, 1.0], (0.0, 100.0), "");
+    assert_eq!(terzi.frazione_senza_dato, 0.6667);
+}
+
+/// A field of a Giornale that a reader can misread has to carry the sentence
+/// that stops them: `frazione_senza_dato` on the canopies is not missing data.
+#[test]
+fn ogni_campo_porta_la_sua_nota() {
+    let inv = inviluppo("chiome", "m", [1.0], (0.0, 100.0), "una nota qualunque");
+    assert_eq!(inv.nota, "una nota qualunque");
+}
+
+/// Two files with the same bytes under two different names are two different
+/// inputs, and a Corsa that read one did not read the other.
+#[test]
+fn l_impronta_cambia_se_cambia_il_percorso_di_un_ingresso() {
+    let dir = tempdir_di_prova("impronta-percorso");
+    fs::write(dir.join("uno.epw"), "abc").unwrap();
+    fs::write(dir.join("due.epw"), "abc").unwrap();
+    let motore = motore::versione();
+    let impronta = |nome: &str| {
+        Impronta::calcola(
+            &[Ingresso::leggi(dir.join(nome), &dir, "meteo")],
+            "0.1.0",
+            &motore,
+            "p",
+        )
+    };
+    assert_ne!(impronta("uno.epw"), impronta("due.epw"));
+}
+
+/// The pinned kernel is half of what makes the answer what it is, and the
+/// Giornale cites it. An Impronta blind to it would call two Corse the same
+/// Corsa across a change of engine.
+#[test]
+fn l_impronta_cambia_se_cambia_il_motore() {
+    let motore = |commit: &str, data: &str| climesh::motore::VersioneMotore {
+        commit: commit.to_owned(),
+        data_presa: data.to_owned(),
+    };
+    let base = Impronta::calcola(&[], "0.1.0", &motore("aaa", "2026-01-01"), "p");
+    assert_ne!(
+        base,
+        Impronta::calcola(&[], "0.1.0", &motore("bbb", "2026-01-01"), "p"),
+        "commit diverso"
+    );
+    assert_ne!(
+        base,
+        Impronta::calcola(&[], "0.1.0", &motore("aaa", "2026-01-02"), "p"),
+        "data di presa diversa"
+    );
+}
+
+/// A fixed value, so that a change to what goes into the Impronta or to the
+/// order it goes in has somewhere to fail. Regenerate it on purpose, never to
+/// make a red test green.
+#[test]
+fn l_impronta_di_ingressi_fissati_vale_questa() {
+    let motore = climesh::motore::VersioneMotore {
+        commit: "0000000000000000000000000000000000000000".into(),
+        data_presa: "2026-01-01".into(),
+    };
+    let ingresso = |percorso: &str| Ingresso {
+        percorso: percorso.to_owned(),
+        ruolo: "scenario".to_owned(),
+        sha256: somma_di_controllo(percorso.as_bytes()),
+        usato: true,
+    };
+    let ingressi = [ingresso("scenari/a.toml"), ingresso("scenari/b.toml")];
+    assert_eq!(
+        Impronta::calcola(&ingressi, "0.1.0", &motore, "parametri").testo(),
+        IMPRONTA_FISSATA
+    );
+
+    let invertiti = [ingressi[1].clone(), ingressi[0].clone()];
+    assert_ne!(
+        Impronta::calcola(&invertiti, "0.1.0", &motore, "parametri").testo(),
+        IMPRONTA_FISSATA,
+        "l'ordine degli ingressi è parte dell'Impronta"
+    );
+}
+
+/// A Progetto is a folder that gets copied, moved and unzipped somewhere else.
+/// Its Corse are the same Corse afterwards, or the reproducibility this project
+/// promises at the head of `src/corsa.rs` is not true.
+#[test]
+fn lo_stesso_progetto_in_due_cartelle_ha_la_stessa_impronta() {
+    let motore = motore::versione();
+    let impronta_di = |nome: &str| {
+        let dir = tempdir_di_prova(nome);
+        fs::create_dir_all(dir.join("scenari")).unwrap();
+        fs::write(dir.join("scenari/stato-di-fatto.toml"), "abc").unwrap();
+        Impronta::calcola(
+            &[Ingresso::leggi(
+                dir.join("scenari/stato-di-fatto.toml"),
+                &dir,
+                "scenario",
+            )],
+            "0.1.0",
+            &motore,
+            "p",
+        )
+    };
+    assert_eq!(impronta_di("progetto-qui"), impronta_di("progetto-altrove"));
+}
+
+/// The Giornale refuses to write through a link. `giornale.toml` was covered and
+/// its folders were not, which is the half that a `corse -> /etc` uses.
+#[cfg(unix)]
+#[test]
+fn un_giornale_sotto_una_cartella_collegata_e_rifiutato() {
+    let dir = tempdir_di_prova("corse-collegate");
+    fs::create_dir_all(dir.join("altrove")).unwrap();
+    std::os::unix::fs::symlink(dir.join("altrove"), dir.join("corse")).unwrap();
+    let err = Giornale::apri(&dir, "corse/abc/giornale.toml").expect_err("deve fallire");
+    assert!(
+        matches!(err, climesh::giornale::GiornaleError::Collegamento(_)),
+        "variante: {err:?}"
+    );
+    assert!(
+        !dir.join("altrove/abc").exists(),
+        "nessuna scrittura attraverso il collegamento"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn un_giornale_che_e_un_collegamento_e_rifiutato() {
+    let dir = tempdir_di_prova("giornale-collegato");
+    fs::write(dir.join("fuori.toml"), "").unwrap();
+    std::os::unix::fs::symlink(dir.join("fuori.toml"), dir.join("giornale.toml")).unwrap();
+    let err = Giornale::apri(&dir, "giornale.toml").expect_err("deve fallire");
+    assert!(
+        matches!(err, climesh::giornale::GiornaleError::Collegamento(_)),
+        "variante: {err:?}"
+    );
+    assert_eq!(
+        fs::read_to_string(dir.join("fuori.toml")).unwrap(),
+        "",
+        "nessuna scrittura attraverso il collegamento"
     );
 }
 
@@ -524,5 +753,34 @@ fn il_caso_di_riferimento_sta_sotto_i_sessanta_secondi() {
     assert!(
         totale < std::time::Duration::from_secs(60),
         "il caso di riferimento ha impiegato {totale:?}"
+    );
+}
+
+/// Una verifica che non ha potuto girare non deve somigliare a una passata.
+/// `scarto_massimo` resta a zero quando nessun'ora è verificabile, e zero si
+/// legge come accordo perfetto: la bandiera deve alzarsi lo stesso.
+#[test]
+fn una_verifica_mai_eseguita_alza_la_bandiera() {
+    // Uno Scenario senza Edifici: nessun volume di cui confrontare l'ombra,
+    // quindi nessun'ora verificabile.
+    let mut progetto = progetto_di_prova(6, vec![periodo("luglio", 7, 15, 6)]);
+    progetto.scenari[0].edifici.clear();
+    let (dir, rapporto) = scrivi_ed_esegui("verifica-mai-eseguita", &progetto);
+
+    let giornale = rileggi(
+        &dir.join("corse")
+            .join(rapporto.corse[0].impronta.testo())
+            .join("giornale.toml"),
+    );
+    let v = giornale["verifica_ombra"].as_table().unwrap();
+    assert_eq!(
+        v["ore_verificate"].as_integer(),
+        Some(0),
+        "senza Edifici non c'è niente da verificare"
+    );
+    assert_eq!(
+        v["bandiera"].as_bool(),
+        Some(true),
+        "zero ore verificate deve alzare la bandiera, non lasciarla bassa"
     );
 }

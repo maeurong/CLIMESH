@@ -365,38 +365,67 @@ fn marcia(
             },
             altezza_minima_gradi: ALTEZZA_MINIMA_PER_LA_VERIFICA_GRADI,
             scarto_ammesso_gradi: SCARTO_AMMESSO_GRADI,
-            bandiera: scarto_massimo > SCARTO_AMMESSO_GRADI,
+            // A check that never ran must not look like a check that passed.
+            // `scarto_massimo` stays at zero when no hour could be verified -
+            // no buildings, or the sun never high enough - and zero reads as
+            // agreement. The night is in here too: a Motore lighting the domain
+            // at midnight used to raise nothing at all.
+            bandiera: scarto_massimo > SCARTO_AMMESSO_GRADI
+                || !notte_tutta_in_ombra
+                || ore_verificate == 0,
             nota: "l'ombra degli edifici, confrontata con una posizione solare \
                    calcolata a parte dal Motore: scarto fra la direzione che va dal \
                    centro dei volumi al centro dell'ombra al suolo e la direzione \
-                   opposta al sole",
+                   opposta al sole. La bandiera si alza anche quando nessun'ora ha \
+                   potuto essere verificata: una verifica non eseguita non è una \
+                   verifica passata",
         },
         tempo_motore,
     })
 }
 
-/// The plausible ranges of the fields, as elevations on Earth and as fractions.
+/// A plausible range per field, and a note saying what a reader of that number
+/// needs to know before trusting it.
+///
+/// Each field gets its own range. Giving canopy heights the range of terrain
+/// elevations would leave a flag that can never fire, which is worse than no
+/// flag: it looks like a check and is not one.
 fn inviluppi(campi: &Campi, raster: &RasterDiScenario, ore: u32) -> Vec<Inviluppo> {
     const QUOTE_M: (f64, f64) = (-500.0, 9000.0);
+    const CHIOME_M: (f64, f64) = (-500.0, 9150.0);
     vec![
         inviluppo(
             "modello di superficie",
             "m",
             raster.modello_di_superficie.iter().copied(),
             QUOTE_M,
+            "Terreno più Edifici. Le chiome non ne fanno parte: vedi la nota del campo \"chiome\".",
         ),
-        inviluppo("chiome", "m", raster.chiome.iter().copied(), QUOTE_M),
+        inviluppo(
+            "chiome",
+            "m",
+            raster.chiome.iter().copied(),
+            CHIOME_M,
+            "Quota assoluta della cima della chioma. Le celle senza chioma valgono NaN e \
+             contano nella frazione senza dato: qui \"senza dato\" vuol dire \"senza albero\", \
+             non \"dato mancante\". ATTENZIONE: questo campo è calcolato ma NON entra ancora \
+             nel calcolo dell'ombra, che oggi viene da terreno più Edifici soltanto. Due \
+             Scenari che differiscono solo per gli alberi danno perciò ombre identiche, e \
+             non è un risultato: è un limite di questa versione.",
+        ),
         inviluppo(
             "ore di sole",
             "h",
             campi.ore_di_sole.iter().copied(),
             (0.0, f64::from(ore)),
+            "Ombra da terreno ed Edifici soltanto: la vegetazione non scherma ancora.",
         ),
         inviluppo(
             "frazione illuminata media",
-            "1",
+            "adimensionale",
             campi.frazione_illuminata_media.iter().copied(),
             (0.0, 1.0),
+            "Media sulle ore del Periodo, con la stessa riserva sulla vegetazione.",
         ),
     ]
 }
@@ -432,8 +461,9 @@ pub fn esegui(
     // The folder is named by the Impronta and by nothing else: two Corse with
     // the same Impronta are the same Corsa, and sixty-four hexadecimal
     // characters cannot carry a path separator out of an etichetta.
-    let percorso = dir_corse.join(impronta.testo()).join("giornale.toml");
-    let mut giornale = Giornale::apri(&percorso)?;
+    let relativo = Path::new(impronta.testo()).join("giornale.toml");
+    let percorso = dir_corse.join(&relativo);
+    let mut giornale = Giornale::apri(dir_corse, &relativo)?;
 
     giornale.annota(
         "corsa",
@@ -586,18 +616,18 @@ pub fn esegui_progetto(dir: impl AsRef<Path>) -> Result<Rapporto, CorsaError> {
     let dir = dir.as_ref();
     let progetto = progetto::leggi(dir).map_err(CorsaError::Progetto)?;
 
-    let mut ingressi = vec![Ingresso::leggi(dir.join("progetto.toml"), "manifesto")];
+    let mut ingressi = vec![Ingresso::leggi(dir.join("progetto.toml"), dir, "manifesto")];
     for scenario in &progetto.scenari {
         let file = dir.join("scenari").join(format!("{}.toml", scenario.nome));
-        ingressi.push(Ingresso::leggi(file, "scenario"));
+        ingressi.push(Ingresso::leggi(file, dir, "scenario"));
     }
     for periodo in &progetto.periodi {
         let file = dir.join("periodi").join(format!("{}.toml", periodo.nome));
-        ingressi.push(Ingresso::leggi(file, "periodo"));
+        ingressi.push(Ingresso::leggi(file, dir, "periodo"));
     }
     let meteo: BTreeSet<&Path> = progetto.periodi.iter().map(|p| p.meteo.as_path()).collect();
     for file in meteo {
-        ingressi.push(Ingresso::leggi(file, "meteo"));
+        ingressi.push(Ingresso::leggi(file, dir, "meteo"));
     }
 
     let dir_corse = dir.join("corse");

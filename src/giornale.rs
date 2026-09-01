@@ -72,30 +72,59 @@ pub const ASSENTE: &str = "assente";
 /// has to be able to check ours with the same tool.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Ingresso {
+    /// Relative to the folder of the Progetto when the file lives inside it,
+    /// with `/` as the separator on every platform. See [`Ingresso::leggi`]:
+    /// this string goes into the Impronta, so an absolute path would make the
+    /// same Progetto a different Corsa in a different folder, and a backslash
+    /// would make it a different Corsa on Windows.
     pub percorso: String,
     /// What the file is to the Corsa: `meteo`, `scenario`, `periodo`, `manifesto`.
     /// The weather values are an input and never a result, and this is where the
     /// file says so.
     pub ruolo: String,
     pub sha256: String,
+    /// Whether this Corsa opened the file. The list is the same for every Corsa
+    /// of a Progetto, because the Impronta is taken over the Progetto as a
+    /// whole; a Corsa of one Scenario reads one Scenario file, and the other
+    /// Scenari are there without being ingredients of *this* answer.
+    pub usato: bool,
 }
 
 impl Ingresso {
     /// Reads a file and takes its checksum. A file that cannot be read
     /// contributes as [`ASSENTE`]: unreadable and missing are the same thing to
     /// a Corsa, and neither is ever mistaken for a file that is there.
-    pub fn leggi(percorso: impl AsRef<Path>, ruolo: &str) -> Self {
+    ///
+    /// `radice` is the folder the recorded path is relative to — the folder of
+    /// the Progetto. A file outside it keeps the path it was named with, which
+    /// is what a weather file shared between Progetti has.
+    ///
+    /// Comes back `usato: true`; the caller marks the ones its Corsa never
+    /// opened.
+    pub fn leggi(percorso: impl AsRef<Path>, radice: impl AsRef<Path>, ruolo: &str) -> Self {
         let percorso = percorso.as_ref();
         let sha256 = match std::fs::read(percorso) {
             Ok(byte) => somma_di_controllo(&byte),
             Err(_) => ASSENTE.to_owned(),
         };
         Self {
-            percorso: percorso.to_string_lossy().into_owned(),
+            percorso: percorso_relativo(percorso, radice.as_ref()),
             ruolo: ruolo.to_owned(),
             sha256,
+            usato: true,
         }
     }
+}
+
+/// A path as the Impronta takes it: relative to `radice` when it lies under it,
+/// and `/` between the components whatever the platform writes.
+fn percorso_relativo(percorso: &Path, radice: &Path) -> String {
+    let relativo = percorso.strip_prefix(radice).unwrap_or(percorso);
+    let pezzi: Vec<String> = relativo
+        .components()
+        .map(|c| c.as_os_str().to_string_lossy().into_owned())
+        .collect();
+    pezzi.join("/")
 }
 
 /// The name a Corsa gets from its own content: two Corse with the same Impronta
@@ -148,7 +177,17 @@ impl Impronta {
     }
 }
 
-/// The range, the mean and the missing-data fraction of one field.
+/// How many decimals the Giornale writes. The reproducibility of a Corsa lives
+/// in its Impronta, taken over the inputs; the fifteenth decimal of a mean is
+/// noise a reader has to step over.
+const DECIMALI: f64 = 1e4;
+
+/// A number as the Giornale writes it.
+fn arrotonda(valore: f64) -> f64 {
+    (valore * DECIMALI).round() / DECIMALI
+}
+
+/// The range, the mean and the no-value fraction of one field.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct Inviluppo {
     pub campo: String,
@@ -159,23 +198,35 @@ pub struct Inviluppo {
     pub minimo: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub massimo: Option<f64>,
+    /// Over the cells that carry a value, and over no others: a field that says
+    /// nothing about a cell does not average a zero in for it.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub media: Option<f64>,
+    /// The share of cells the field carries no value for. Not always a defect:
+    /// on the canopies it is the share of the domain with no tree over it, and
+    /// [`Inviluppo::nota`] is where each field says which of the two it is.
     pub frazione_senza_dato: f64,
     pub intervallo_plausibile: (f64, f64),
     /// Raised when a value falls outside the plausible range. The value is
     /// reported all the same: a flag that hides the number it is about is worse
     /// than no flag.
     pub fuori_intervallo: bool,
+    /// What the field is and what it is not, in the words of whoever computed
+    /// it. A reader has this file and nothing else.
+    pub nota: String,
 }
 
 /// The envelope of a field. `NaN` is no data, as it is everywhere else in the
 /// project — it is the value the Derivazione writes where there is no canopy.
+///
+/// The flag is decided on the raw values and the figures are rounded on the way
+/// out, so that a value just past the bound is not rounded back inside it.
 pub fn inviluppo(
     campo: &str,
     unita: &str,
     valori: impl IntoIterator<Item = f32>,
     intervallo_plausibile: (f64, f64),
+    nota: &str,
 ) -> Inviluppo {
     let (mut minimo, mut massimo) = (f64::INFINITY, f64::NEG_INFINITY);
     let (mut somma, mut con_dato, mut celle) = (0.0f64, 0usize, 0usize);
@@ -205,12 +256,13 @@ pub fn inviluppo(
     Inviluppo {
         campo: campo.to_owned(),
         unita: unita.to_owned(),
-        minimo,
-        massimo,
-        media,
-        frazione_senza_dato,
+        minimo: minimo.map(arrotonda),
+        massimo: massimo.map(arrotonda),
+        media: media.map(arrotonda),
+        frazione_senza_dato: arrotonda(frazione_senza_dato),
         intervallo_plausibile,
         fuori_intervallo,
+        nota: nota.to_owned(),
     }
 }
 
@@ -253,6 +305,7 @@ struct Conclusione<'a> {
 }
 
 /// A Giornale open on disk, appended to as the Corsa proceeds.
+#[derive(Debug)]
 pub struct Giornale {
     file: std::fs::File,
     percorso: PathBuf,
@@ -261,15 +314,27 @@ pub struct Giornale {
 }
 
 impl Giornale {
-    pub fn apri(percorso: impl AsRef<Path>) -> Result<Self, GiornaleError> {
-        let percorso = percorso.as_ref().to_path_buf();
-        // A Progetto is an archive that gets exchanged, and a link inside one
-        // makes a write land somewhere the manifest never names.
-        match std::fs::symlink_metadata(&percorso) {
-            Ok(m) if m.file_type().is_symlink() => {
-                return Err(GiornaleError::Collegamento(percorso))
+    /// Opens `radice/relativo`, refusing a symbolic link **at any level** of the
+    /// path under `radice`.
+    ///
+    /// The two arguments are not decoration. Checking only the final file left
+    /// the half that matters open: a Progetto is an archive people exchange, and
+    /// one whose `corse` is a link to somewhere else makes `create_dir_all`
+    /// follow it and the write land where the manifest never names. Walking the
+    /// chain is the only way to see that.
+    pub fn apri(
+        radice: impl AsRef<Path>,
+        relativo: impl AsRef<Path>,
+    ) -> Result<Self, GiornaleError> {
+        let mut percorso = radice.as_ref().to_path_buf();
+        for parte in relativo.as_ref().components() {
+            percorso.push(parte);
+            match std::fs::symlink_metadata(&percorso) {
+                Ok(m) if m.file_type().is_symlink() => {
+                    return Err(GiornaleError::Collegamento(percorso))
+                }
+                _ => {}
             }
-            _ => {}
         }
         if let Some(genitore) = percorso.parent() {
             std::fs::create_dir_all(genitore).map_err(|causa| GiornaleError::Io {

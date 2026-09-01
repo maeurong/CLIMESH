@@ -606,3 +606,22 @@ fn a_height_that_is_not_a_number_is_rejected() {
     albero_nan.scenari[0].alberi[0].altezza_m = f32::NAN;
     una_quota_non_finita_e_rifiutata("albero-nan", albero_nan);
 }
+
+/// Zero ore non è un Periodo corto: è un Periodo che non c'è. La Corsa ci
+/// dividerebbe sopra, riempirebbe i raster di NaN e concluderebbe «riuscita».
+#[test]
+fn a_period_of_zero_hours_is_rejected_and_names_the_file_to_correct() {
+    let dir = tempdir_di_prova("periodo-zero-ore");
+    let mut p = progetto_di_prova();
+    p.periodi[0].ore = 0;
+    let err = progetto::scrivi(&dir, &p).expect_err("deve fallire");
+    let messaggio = err.to_string();
+    assert!(
+        messaggio.contains("periodi/luglio-2021.toml"),
+        "l'errore deve nominare il file da correggere: {messaggio}"
+    );
+    assert!(
+        !dir.join("progetto.toml").exists(),
+        "un Periodo rifiutato non lascia un manifesto su disco"
+    );
+}
