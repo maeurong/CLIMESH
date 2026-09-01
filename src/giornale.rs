@@ -183,7 +183,7 @@ impl Impronta {
 const DECIMALI: f64 = 1e4;
 
 /// A number as the Giornale writes it.
-fn arrotonda(valore: f64) -> f64 {
+pub(crate) fn arrotonda(valore: f64) -> f64 {
     (valore * DECIMALI).round() / DECIMALI
 }
 

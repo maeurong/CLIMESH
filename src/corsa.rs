@@ -9,9 +9,9 @@
 //! together with the budget: they are the same decision.
 
 use crate::derivazione::{self, DerivazioneError, Raster, RasterDiScenario, Stagione};
-use crate::dominio::{Griglia, Periodo, Progetto, Scenario};
+use crate::dominio::{FonteAltezza, Griglia, Periodo, Progetto, Scenario};
 use crate::giornale::{
-    conta_provenienza, inviluppo, Giornale, GiornaleError, Impronta, Ingresso, Inviluppo,
+    arrotonda, conta_provenienza, inviluppo, Giornale, GiornaleError, Impronta, Ingresso, Inviluppo,
 };
 use crate::motore;
 use crate::progetto::{self, ProgettoError};
@@ -357,11 +357,11 @@ fn marcia(
             ore_verificate,
             ore_notturne,
             notte_tutta_in_ombra,
-            scarto_massimo_gradi: scarto_massimo,
+            scarto_massimo_gradi: arrotonda(scarto_massimo),
             scarto_medio_gradi: if ore_verificate == 0 {
                 0.0
             } else {
-                scarto_somma / ore_verificate as f64
+                arrotonda(scarto_somma / ore_verificate as f64)
             },
             altezza_minima_gradi: ALTEZZA_MINIMA_PER_LA_VERIFICA_GRADI,
             scarto_ammesso_gradi: SCARTO_AMMESSO_GRADI,
@@ -473,10 +473,24 @@ pub fn esegui(
             progetto: &progetto.nome,
             scenario: &scenario.nome,
             periodo: &periodo.nome,
+            // The caveat travels inside the citation, not forty lines below it:
+            // whoever copies this line is exactly the person who will never
+            // scroll down to the Scenario's provenance.
             citazione: format!(
                 "CLIMESH {versione_binario}, nucleo solweig {} preso il {}; \
-                 Progetto «{}», Scenario «{}», Periodo «{}»; Corsa {impronta}.",
-                motore.commit, motore.data_presa, progetto.nome, scenario.nome, periodo.nome
+                 Progetto «{}», Scenario «{}»{}, Periodo «{}»; Corsa {}. \
+                 https://github.com/maeurong/CLIMESH",
+                motore.commit,
+                motore.data_presa,
+                progetto.nome,
+                scenario.nome,
+                if scenario.provenienza.altezza == FonteAltezza::Rilievo {
+                    ""
+                } else {
+                    " (ricostruito, non rilevato)"
+                },
+                periodo.nome,
+                &impronta.testo()[..12],
             ),
         },
     )?;
