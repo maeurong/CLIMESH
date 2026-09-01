@@ -7,6 +7,7 @@ pub mod derivazione;
 pub mod dominio;
 pub mod giornale;
 pub mod inx;
+pub mod lingua;
 pub mod meteo;
 pub mod motore;
 pub mod progetto;
