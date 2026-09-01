@@ -743,6 +743,82 @@ fn il_giornale_dichiara_ogni_strato_di_chioma_con_la_sua_trasmissivita() {
     }
 }
 
+/// A weather file with `fuso` as its time zone and one record per hour of two
+/// days, written into the Progetto so the test does not depend on a file that
+/// is not in the repository.
+fn scrivi_epw(dir: &std::path::Path, fuso: f64) -> PathBuf {
+    let mut testo = format!("LOCATION,Prova,-,ITA,X,000000,43.07,12.56,{fuso},213.0");
+    for _ in 0..7 {
+        testo.push_str("\nRIGA DI INTESTAZIONE,ignorata");
+    }
+    for giorno in [15, 16] {
+        for ora in 1..=24 {
+            testo.push_str(&format!(
+                "\n2005,7,{giorno},{ora},0,?9?9,24.0,7.2,55,98792,9999,9999,290,120,300,80,\
+                 999900,999900,999900,99990,45,4.0,1,1,999.0,999,9,999999999,0,0.0000,0,88,\
+                 999.000,999.0,99.0"
+            ));
+        }
+    }
+    testo.push('\n');
+    let percorso = dir.join("prova.epw");
+    fs::write(&percorso, testo).unwrap();
+    percorso
+}
+
+#[test]
+fn il_fuso_orario_della_corsa_viene_dal_file_meteo() {
+    // Twelve degrees and a half of longitude round to a zone of +1, so a file
+    // that declares +3 is the only way to tell a read zone from a guessed one.
+    // Three hours are forty-five degrees of angolo orario: the sun of a Corsa
+    // that guessed would be somewhere else entirely.
+    let dir = tempdir_di_prova("fuso-dal-meteo");
+    let epw = scrivi_epw(&dir, 3.0);
+    let mut progetto = progetto_di_prova(6, vec![periodo("estate", 7, 15, 2)]);
+    progetto.periodi[0].meteo = epw;
+    climesh::progetto::scrivi(&dir, &progetto).unwrap();
+    let rapporto = corsa::esegui_progetto(&dir).unwrap();
+    let tabella = rileggi(&rapporto.corse[0].giornale);
+
+    assert_eq!(tabella["sole"]["fuso_ore"].as_float(), Some(3.0));
+    assert_eq!(tabella["sole"]["fuso_da"].as_str(), Some("file meteo"));
+}
+
+#[test]
+fn un_fuso_a_mezz_ora_arriva_intero_fino_al_giornale() {
+    // Kathmandu is at +5.75 and Adelaide at +9.5. The guess from the longitude
+    // could only ever produce whole hours, so the half-hour zones were not
+    // approximated: they were unrepresentable.
+    let dir = tempdir_di_prova("fuso-a-mezz-ora");
+    let epw = scrivi_epw(&dir, 5.75);
+    let mut progetto = progetto_di_prova(6, vec![periodo("estate", 7, 15, 2)]);
+    progetto.periodi[0].meteo = epw;
+    climesh::progetto::scrivi(&dir, &progetto).unwrap();
+    let rapporto = corsa::esegui_progetto(&dir).unwrap();
+    assert_eq!(
+        rileggi(&rapporto.corse[0].giornale)["sole"]["fuso_ore"].as_float(),
+        Some(5.75)
+    );
+}
+
+#[test]
+fn senza_file_meteo_il_fuso_torna_alla_longitudine_e_il_giornale_lo_dice() {
+    // The Corsa still runs — the weather file is an Ingresso and its absence is
+    // already recorded — but the number it used is a guess, and a Giornale that
+    // showed only the number would not let anyone tell the two apart.
+    let dir = tempdir_di_prova("fuso-senza-meteo");
+    let mut progetto = progetto_di_prova(6, vec![periodo("estate", 7, 15, 2)]);
+    progetto.periodi[0].meteo = dir.join("questo-file-non-esiste.epw");
+    climesh::progetto::scrivi(&dir, &progetto).unwrap();
+    let rapporto = corsa::esegui_progetto(&dir).unwrap();
+    let tabella = rileggi(&rapporto.corse[0].giornale);
+
+    assert_eq!(tabella["sole"]["fuso_ore"].as_float(), Some(1.0));
+    let fonte = tabella["sole"]["fuso_da"].as_str().unwrap();
+    assert!(fonte.contains("longitudine"), "{fonte}");
+    assert!(fonte.contains("non si è potuto leggere"), "{fonte}");
+}
+
 #[test]
 fn l_ombra_cade_dalla_parte_opposta_al_sole_calcolato_a_parte() {
     let progetto = progetto_di_prova(21, vec![periodo("estate", 7, 15, 24)]);

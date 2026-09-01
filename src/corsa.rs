@@ -15,6 +15,7 @@ use crate::dominio::{FonteAltezza, Griglia, Periodo, Progetto, Scenario};
 use crate::giornale::{
     arrotonda, conta_provenienza, inviluppo, Giornale, GiornaleError, Impronta, Ingresso, Inviluppo,
 };
+use crate::meteo::Epw;
 use crate::motore;
 use crate::progetto::{self, ProgettoError};
 use crate::sole::{self, PosizioneSolare};
@@ -195,6 +196,10 @@ struct SoleCitato {
     latitudine_gradi: f64,
     longitudine_gradi: f64,
     fuso_ore: f64,
+    /// Where the time zone came from. A zone taken from the weather file and a
+    /// zone derived from the longitude are not the same claim, and a Giornale
+    /// that showed only the number would not let anyone tell them apart.
+    fuso_da: &'static str,
     nota: &'static str,
 }
 
@@ -240,7 +245,7 @@ struct Parametri<'a> {
 /// The offset is the nearest whole hour of longitude, and the Giornale writes
 /// it down: no field of the domain carries the offset of the weather file, and
 /// a stand-in a reader can see is better than one they cannot.
-fn coordinate(griglia: &Griglia) -> Result<(f64, f64, f64), CorsaError> {
+fn coordinate(griglia: &Griglia, meteo: Option<&Epw>) -> Result<Luogo, CorsaError> {
     let (longitudine, latitudine) = griglia.origine;
     if !griglia.crs.eq_ignore_ascii_case("EPSG:4326")
         || !(-90.0..=90.0).contains(&latitudine)
@@ -251,8 +256,33 @@ fn coordinate(griglia: &Griglia) -> Result<(f64, f64, f64), CorsaError> {
             origine: griglia.origine,
         });
     }
-    Ok((latitudine, longitudine, (longitudine / 15.0).round()))
+    // The weather file states its time zone, and the hours it carries are
+    // written against that zone. Deriving one from the longitude instead was a
+    // guess with a whole hour of granularity — fifteen degrees of hour angle,
+    // enough to move every shadow — and it cannot represent the half-hour and
+    // quarter-hour zones at all.
+    let (fuso_ore, fonte_del_fuso) = match meteo {
+        Some(epw) => (epw.fuso_ore, FONTE_FILE_METEO),
+        None => ((longitudine / 15.0).round(), FONTE_LONGITUDINE),
+    };
+    Ok(Luogo {
+        latitudine,
+        longitudine,
+        fuso_ore,
+        fonte_del_fuso,
+    })
 }
+
+/// Where the sun of a Corsa is computed, and where its time zone came from.
+struct Luogo {
+    latitudine: f64,
+    longitudine: f64,
+    fuso_ore: f64,
+    fonte_del_fuso: &'static str,
+}
+
+const FONTE_FILE_METEO: &str = "file meteo";
+const FONTE_LONGITUDINE: &str = "longitudine, perché il file meteo non si è potuto leggere";
 
 /// The centre of mass of the cells `dentro` accepts, in metric axes: `x` east,
 /// `y` north, with row 0 the northernmost.
@@ -310,8 +340,8 @@ fn marcia(
     strati: &[StratoDiChioma],
     griglia: &Griglia,
     periodo: &Periodo,
+    luogo: &Luogo,
 ) -> Result<Marcia, CorsaError> {
-    let (latitudine, longitudine, fuso) = coordinate(griglia)?;
     let mut ore_di_sole = Raster::zeros(modello_di_superficie.dim());
     let mut tempo_motore = Duration::ZERO;
     let (mut ore_verificate, mut ore_notturne) = (0usize, 0usize);
@@ -322,9 +352,9 @@ fn marcia(
         let sole = sole::posizione(
             periodo.inizio,
             f64::from(ora),
-            fuso,
-            latitudine,
-            longitudine,
+            luogo.fuso_ore,
+            luogo.latitudine,
+            luogo.longitudine,
         )
         .ok_or_else(|| CorsaError::DataImpossibile {
             periodo: periodo.nome.clone(),
@@ -455,6 +485,7 @@ pub fn esegui(
     scenario: &Scenario,
     periodo: &Periodo,
     raster: &RasterDiScenario,
+    meteo: Option<&Epw>,
     ingressi: &[Ingresso],
     etichetta: &str,
 ) -> Result<Esito, CorsaError> {
@@ -583,18 +614,20 @@ pub fn esegui(
     giornale.annota("provenienza", &conta_provenienza(scenario))?;
 
     let costruite = &raster.modello_di_superficie - &raster.modello_di_terreno;
-    let esito = match coordinate(&progetto.griglia) {
+    let esito = match coordinate(&progetto.griglia, meteo) {
         Err(e) => Err(e),
-        Ok((latitudine, longitudine, fuso)) => {
+        Ok(luogo) => {
             giornale.annota(
                 "sole",
                 &SoleCitato {
-                    latitudine_gradi: latitudine,
-                    longitudine_gradi: longitudine,
-                    fuso_ore: fuso,
+                    latitudine_gradi: luogo.latitudine,
+                    longitudine_gradi: luogo.longitudine,
+                    fuso_ore: luogo.fuso_ore,
+                    fuso_da: luogo.fonte_del_fuso,
                     nota: "posizione solare calcolata da CLIMESH e non chiesta al Motore. \
-                           Il fuso è l'ora intera più vicina alla longitudine: nessun campo \
-                           del Progetto porta ancora quello del file meteo",
+                           Le ore di un file EPW sono in ora solare tutto l'anno, senza \
+                           spostamento estivo, e il fuso che le colloca nel giorno è quello \
+                           dichiarato dal file",
                 },
             )?;
             marcia(
@@ -603,6 +636,7 @@ pub fn esegui(
                 &raster.strati_di_chioma,
                 &progetto.griglia,
                 periodo,
+                &luogo,
             )
         }
     };
@@ -650,9 +684,18 @@ pub fn esegui_progetto(dir: impl AsRef<Path>) -> Result<Rapporto, CorsaError> {
         let file = dir.join("periodi").join(format!("{}.toml", periodo.nome));
         ingressi.push(Ingresso::leggi(file, dir, "periodo"));
     }
-    let meteo: BTreeSet<&Path> = progetto.periodi.iter().map(|p| p.meteo.as_path()).collect();
-    for file in meteo {
+    let file_meteo: BTreeSet<&Path> = progetto.periodi.iter().map(|p| p.meteo.as_path()).collect();
+    // Read once per distinct file and not once per Corsa: an EPW is 8760 records
+    // and four Corse of a Progetto usually name the same one.
+    //
+    // A file that will not read is not fatal here. It is already an Ingresso,
+    // so the Giornale records that it was missing or unreadable, and the sun
+    // falls back to the time zone of the longitude — which the Giornale also
+    // says, in the same place as the zone itself.
+    let mut meteo: Vec<(&Path, Option<Epw>)> = Vec::new();
+    for file in file_meteo {
         ingressi.push(Ingresso::leggi(file, dir, "meteo"));
+        meteo.push((file, Epw::leggi(file).ok()));
     }
 
     let dir_corse = dir.join("corse");
@@ -680,8 +723,12 @@ pub fn esegui_progetto(dir: impl AsRef<Path>) -> Result<Rapporto, CorsaError> {
                 .expect("appena messo")
                 .2;
             let etichetta = format!("{} — {}", scenario.nome, periodo.nome);
+            let epw = meteo
+                .iter()
+                .find(|(file, _)| *file == periodo.meteo.as_path())
+                .and_then(|(_, epw)| epw.as_ref());
             corse.push(esegui(
-                &dir_corse, &progetto, scenario, periodo, raster, &ingressi, &etichetta,
+                &dir_corse, &progetto, scenario, periodo, raster, epw, &ingressi, &etichetta,
             )?);
         }
     }
