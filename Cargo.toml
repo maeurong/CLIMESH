@@ -13,4 +13,4 @@ toml = "0.8"
 ndarray = "0.16"
 # Gia' nell'albero via ndarray: diretta perche' il Motore nomina il suo pool.
 rayon = "1"
-solweig-ombre = { path = "vendor/solweig" }
+solweig-vendorato = { path = "vendor/solweig" }

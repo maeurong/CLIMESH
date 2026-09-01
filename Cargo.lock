@@ -15,7 +15,7 @@ dependencies = [
  "ndarray",
  "rayon",
  "serde",
- "solweig-ombre",
+ "solweig-vendorato",
  "toml",
 ]
 
@@ -230,10 +230,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "solweig-ombre"
+name = "solweig-vendorato"
 version = "0.1.0"
 dependencies = [
  "ndarray",
+ "rayon",
 ]
 
 [[package]]

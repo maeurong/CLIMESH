@@ -18,6 +18,38 @@ permissions:
   issues: write
 
 jobs:
+  # Il vendoring dichiara di essere "questo script piu' questo commit". Questo
+  # lavoro lo verifica invece di crederci: riesegue `estrai.py` sul commit
+  # pinnato e pretende che ne esca, byte per byte, quello che sta in
+  # `vendor/solweig/src`. Se qualcuno ha corretto a mano il codice di altri, la
+  # differenza si vede qui — ed e' il momento in cui serve saperlo, perche' e'
+  # una modifica non dichiarata che rendera' irriconciliabile l'aggiornamento.
+  riproducibile:
+    name: l'estrazione si rifa uguale
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Riesegui l'estrazione sul commit pinnato e confronta
+        run: |
+          set -euo pipefail
+          file=vendor/solweig/PROVENIENZA.toml
+          leggi() { grep -m1 "^$1 *=" "$file" | sed 's/.*= *"\(.*\)"/\1/'; }
+          upstream=$(leggi upstream)
+          commit=$(leggi commit)
+
+          git clone --filter=blob:none --quiet "https://github.com/$upstream" /tmp/monte
+          git -C /tmp/monte checkout --quiet "$commit"
+
+          python3 vendor/solweig/estrai.py /tmp/monte /tmp/rifatto
+
+          if diff -r --unified=3 vendor/solweig/src /tmp/rifatto; then
+            echo "L'estrazione si rifa identica."
+          else
+            echo "::error::vendor/solweig/src non e' quello che estrai.py produce dal commit $commit."
+            exit 1
+          fi
+
   upstream:
     name: has the kernel moved
     runs-on: ubuntu-latest

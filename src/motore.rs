@@ -99,7 +99,7 @@ pub fn ombre(
 
     let marcia = |strato: Option<&StratoDiChioma>| {
         pool_a_un_thread().install(|| {
-            solweig_ombre::shadowing::calculate_shadows_rust(
+            solweig_vendorato::shadowing::calculate_shadows_rust(
                 sole.azimut_gradi as f32,
                 sole.altezza_gradi as f32,
                 passo_m as f32,

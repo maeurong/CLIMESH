@@ -15,16 +15,27 @@ percorso_sorgente = "rust/src"
 autori = "Fredrik Lindberg (Univ. Göteborg), C. Sue B. Grimmond (Univ. Reading), UMEP Developers"
 
 [cosa_e_stato_preso]
-file = ["shadowing.rs"]
+file = ["shadowing.rs", "utci.rs"]
 nota = """
-Solo il percorso CPU delle ombre. Non il resto del nucleo: niente radiazione,
-niente sky view factor, niente temperatura media radiante, niente indici di
-comfort. Quelli arriveranno quando serviranno, e allora questo file cresce.
+Il percorso CPU delle ombre e il polinomio UTCI. Non il resto del nucleo:
+niente radiazione, niente sky view factor, niente temperatura media radiante,
+niente PET. Quelli arriveranno quando serviranno, e allora questo elenco
+cresce.
+
+`utci.rs` e' preso intero perche' e' aritmetica pura: 210 coefficienti del
+polinomio di sesto grado di Broede et al. piu' la pressione di vapore saturo.
+Ridigitarli sarebbe stato 210 modi di produrre un indice che non e' di nessuno,
+ed e' esattamente la ragione per cui il ticket sulla scelta dell'indice aveva
+scelto UTCI: ne esiste un solo polinomio autoritativo.
 """
 
 [cosa_e_stato_tolto]
-involucri_python = 9
+involucri_python = 10
 nota = """
+Da `utci.rs`: il solo `utci_grid`, che prende e restituisce array numpy. Il
+polinomio, la pressione di vapore saturo e `utci_single` restano.
+
+Da `shadowing.rs`:
 Gli import di `pyo3` e `numpy`, i sette involucri `#[pyfunction]`, la struct
 specchio `#[pyclass] ShadowingResult` che esiste solo per restituire array a
 Python, e la funzione di introspezione della GPU esposta a Python.
@@ -42,6 +53,19 @@ dentro il modulo `gpu` di monte.
 
 [modifiche_al_codice_rimasto]
 elementi_esposti = ["calculate_shadows_rust", "ShadowingResultRust"]
+attributi_tolti = ["utci_single"]
+nota_attributi = """
+`utci_single` porta `#[pyfunction]` ma non e' un involucro: il corpo converte
+l'umidita' relativa in pressione di vapore e chiama il polinomio, e Python
+compare soltanto nell'attributo. Gli si toglie l'attributo e si tiene il resto:
+una riga in meno, zero righe cambiate, che e' la trasformazione piu'
+conservativa disponibile.
+
+L'alternativa era riscrivere quelle otto righe dentro CLIMESH, e sarebbe stata
+peggiore: fisica vendorata fuori da `vendor/`, dove al prossimo aggiornamento
+nessuno la riconoscerebbe come tale. `estrai.py` si ferma con errore se a monte
+quell'elemento sparisce o smette di essere annotato.
+"""
 nota = """
 Una sola, e sono due parole: quei due elementi a monte sono `pub(crate)`, e da
 un crate esterno non si vedono. `pub(crate)` significa "visibile dentro il
@@ -75,7 +99,14 @@ orfano e cancella in silenzio l'elemento successivo.
 """
 
 [verificato_al_momento_della_presa]
-compila = "con la sola ndarray 0.16.1, zero righe che nominano Python"
+compila = """
+Con ndarray 0.16.1 e rayon, zero righe che nominano Python. Rayon si dichiara
+perche' `utci.rs` lo importa in cima al file e l'import resta anche quando
+l'unica funzione che lo usava e' l'involucro rimosso: si dichiara la dipendenza
+invece di cancellare la riga, cosi' il sorgente rimasto e' identico a monte.
+Rayon era gia' nel grafo per la feature di ndarray, quindi nel binario non
+entra niente di nuovo.
+"""
 usabile_da_fuori = """
 Verificato da un crate esterno che dipende da questa copia per percorso, non da
 un test interno: `pub(crate)` sarebbe stato visibile dall'interno e la prova non
@@ -86,7 +117,15 @@ Una chiamata su 50x50 con una torre al centro, in release: 47 ms a freddo, poi
 44, 45 e 11 ms. Il cancello dei 60 secondi chiede quattro Corse da 48 ore, e
 questo numero dice che il collo di bottiglia non sarà qui.
 """
-righe = "974 -> 683"
+righe = "shadowing.rs 974 -> 683, utci.rs 366 -> 297"
+utci = """
+Nell'ambiente di riferimento di UTCI — aria ferma a 0,5 m/s, temperatura media
+radiante uguale a quella dell'aria, pressione di vapore al riferimento — il
+polinomio restituisce la temperatura dell'aria entro 0,7 K, che e' la
+definizione dell'indice e non una coincidenza. La pressione di vapore saturo
+usa `ln(tk)`, come il Fortran ufficiale: la divergenza da `log1p` registrata in
+`research/mrt-indici-comfort.md` riguarda `pythermalcomfort`, non questa copia.
+"""
 geometria = """
 Torre di 10 m al centro di un dominio piano 21x21 a passo 1 m, sole a sud a 45
 gradi: l'ombra cade a nord, il lato a sud e il lato a ovest restano al sole. E
