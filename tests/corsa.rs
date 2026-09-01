@@ -498,8 +498,8 @@ fn un_giornale_che_e_un_collegamento_e_rifiutato() {
 
 use climesh::corsa;
 use climesh::dominio::{
-    Albero, Data, Edificio, FonteAltezza, Griglia, Periodo, Progetto, Provenienza, Rettangolo,
-    Scenario,
+    Albero, Data, Edificio, FonteAltezza, Griglia, Periodo, Progetto, Provenienza,
+    PuntoDiOsservazione, Rettangolo, Scenario,
 };
 
 /// A Progetto with one flat Scenario and a tower in the middle of it.
@@ -817,6 +817,115 @@ fn senza_file_meteo_il_fuso_torna_alla_longitudine_e_il_giornale_lo_dice() {
     let fonte = tabella["sole"]["fuso_da"].as_str().unwrap();
     assert!(fonte.contains("longitudine"), "{fonte}");
     assert!(fonte.contains("non si è potuto leggere"), "{fonte}");
+}
+
+fn punto(id: u32, posizione_m: (f64, f64)) -> PuntoDiOsservazione {
+    PuntoDiOsservazione {
+        id,
+        posizione_m,
+        etichetta: format!("punto {id}"),
+    }
+}
+
+#[test]
+fn ogni_punto_di_osservazione_porta_la_sua_serie_ora_per_ora() {
+    // The map answers "where" and the series answers "when". A courtyard that
+    // gains two hours of sun in the morning and loses two in the afternoon has
+    // the same daily mean as one where nothing changed, and only the series
+    // tells them apart.
+    let mut progetto = progetto_di_prova(6, vec![periodo("estate", 7, 15, 24)]);
+    progetto.punti = vec![punto(1, (0.5, 0.5)), punto(2, (5.5, 5.5))];
+    let (_, rapporto) = scrivi_ed_esegui("serie-dei-punti", &progetto);
+    let tabella = rileggi(&rapporto.corse[0].giornale);
+
+    assert_eq!(tabella["punti"]["dichiarati"].as_integer(), Some(2));
+    assert_eq!(tabella["punti"]["dentro_la_griglia"].as_integer(), Some(2));
+
+    let serie = tabella["serie"].as_array().unwrap();
+    assert_eq!(serie.len(), 2);
+    for (indice, una) in serie.iter().enumerate() {
+        assert_eq!(una["punto"].as_integer(), Some(indice as i64 + 1));
+        let valori = una["frazione_illuminata"].as_array().unwrap();
+        assert_eq!(valori.len(), 24, "una serie per ogni ora del Periodo");
+        assert!(
+            valori
+                .iter()
+                .all(|v| (0.0..=1.0).contains(&v.as_float().unwrap())),
+            "una frazione illuminata fuori da 0..1"
+        );
+    }
+
+    // A day has a night in it: some hour of the twenty-four is dark, in every
+    // cell. A series of all ones would mean the sun never set on that Punto.
+    let primo = serie[0]["frazione_illuminata"].as_array().unwrap();
+    assert!(primo.iter().any(|v| v.as_float() == Some(0.0)));
+    assert!(primo.iter().any(|v| v.as_float().unwrap() > 0.0));
+}
+
+#[test]
+fn la_serie_di_un_punto_somma_alle_ore_di_sole_della_sua_cella() {
+    // The two outputs are the same numbers seen twice, and this is what says
+    // so: if the series were read from another cell — a swapped row and column
+    // is the mistake this project is built to fear — the sums would part.
+    let mut progetto = progetto_di_prova(6, vec![periodo("estate", 7, 15, 12)]);
+    // Off the diagonal on purpose: on a cell where row and column are equal, a
+    // swap of the two would leave the answer right.
+    progetto.punti = vec![punto(1, (1.5, 4.5))];
+    let (_, rapporto) = scrivi_ed_esegui("serie-somma", &progetto);
+
+    let campi = rapporto.corse[0].campi.as_ref().unwrap();
+    let serie = &campi.serie[0];
+    let somma: f64 = serie.frazione_illuminata.iter().sum();
+    let dalla_mappa = f64::from(campi.ore_di_sole[[serie.riga, serie.colonna]]);
+    assert!(
+        (somma - dalla_mappa).abs() < 0.01,
+        "la serie somma {somma} e la mappa dice {dalla_mappa}"
+    );
+}
+
+#[test]
+fn un_punto_fuori_dalla_griglia_non_arriva_mai_a_una_corsa() {
+    // It is refused where a Progetto is written, so no Corsa ever has to decide
+    // what to do with it. The alternative — accept it and serve the nearest
+    // cell — would attribute a number to a place nobody asked about.
+    let dir = tempdir_di_prova("punto-fuori");
+    let mut progetto = progetto_di_prova(6, vec![periodo("estate", 7, 15, 2)]);
+    progetto.punti = vec![punto(1, (2.5, 2.5)), punto(2, (99.0, 99.0))];
+    let errore = climesh::progetto::scrivi(&dir, &progetto)
+        .unwrap_err()
+        .to_string();
+    assert!(errore.contains("punto di osservazione 2"), "{errore}");
+}
+
+#[test]
+fn un_punto_sul_bordo_lontano_e_fuori_come_ovunque_nel_progetto() {
+    // Half-open intervals: minimum included, maximum excluded, which is the
+    // coverage rule of the Derivazione. With the maximum included, a Punto at
+    // x = 6 on a Griglia of six cells passed the check and then had no cell —
+    // accepted by one rule, invisible to the other.
+    let dir = tempdir_di_prova("punto-sul-bordo");
+    let mut progetto = progetto_di_prova(6, vec![periodo("estate", 7, 15, 2)]);
+    progetto.punti = vec![punto(1, (6.0, 3.0))];
+    assert!(climesh::progetto::scrivi(&dir, &progetto).is_err());
+
+    // Just inside, it is accepted and it gets its series.
+    progetto.punti = vec![punto(1, (5.999, 3.0))];
+    let (_, rapporto) = scrivi_ed_esegui("punto-quasi-sul-bordo", &progetto);
+    let tabella = rileggi(&rapporto.corse[0].giornale);
+    assert_eq!(tabella["punti"]["dentro_la_griglia"].as_integer(), Some(1));
+    assert_eq!(
+        tabella["serie"].as_array().unwrap()[0]["colonna"].as_integer(),
+        Some(5)
+    );
+}
+
+#[test]
+fn un_progetto_senza_punti_dichiara_zero_e_non_tace() {
+    let progetto = progetto_di_prova(6, vec![periodo("estate", 7, 15, 2)]);
+    let (_, rapporto) = scrivi_ed_esegui("senza-punti", &progetto);
+    let tabella = rileggi(&rapporto.corse[0].giornale);
+    assert_eq!(tabella["punti"]["dichiarati"].as_integer(), Some(0));
+    assert!(tabella.get("serie").is_none(), "nessuna serie da scrivere");
 }
 
 #[test]

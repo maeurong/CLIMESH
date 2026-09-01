@@ -245,7 +245,7 @@ fn celle_coperte(griglia: &Griglia, r: &Rettangolo) -> Option<(Range<usize>, Ran
 }
 
 /// The cell a position falls in, `None` when it falls outside the Griglia.
-fn cella_della_posizione(griglia: &Griglia, (x_m, y_m): Posizione) -> Option<(usize, usize)> {
+pub fn cella_della_posizione(griglia: &Griglia, (x_m, y_m): Posizione) -> Option<(usize, usize)> {
     let indice = |m: f64, n: usize| {
         let i = agganciato(m / griglia.passo_m).floor();
         (i >= 0.0 && i < n as f64).then_some(i as usize)

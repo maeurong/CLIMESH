@@ -11,7 +11,7 @@
 use crate::derivazione::{
     self, DerivazioneError, Raster, RasterDiScenario, Stagione, StratoDiChioma,
 };
-use crate::dominio::{FonteAltezza, Griglia, Periodo, Progetto, Scenario};
+use crate::dominio::{FonteAltezza, Griglia, Periodo, Progetto, PuntoDiOsservazione, Scenario};
 use crate::giornale::{
     arrotonda, conta_provenienza, inviluppo, Giornale, GiornaleError, Impronta, Ingresso, Inviluppo,
 };
@@ -101,6 +101,26 @@ pub struct Campi {
     pub ore_di_sole: Raster,
     /// The same divided by the hours of the Periodo.
     pub frazione_illuminata_media: Raster,
+    /// One series per Punto di osservazione inside the Griglia, hour by hour.
+    ///
+    /// The map answers "where", the series answers "when", and a mitigation
+    /// study needs both: a courtyard that gains two hours of sun in the morning
+    /// and loses two in the afternoon has the same daily mean as one that
+    /// changed nothing.
+    pub serie: Vec<SerieDiPunto>,
+}
+
+/// The hour-by-hour history of one Punto di osservazione.
+#[derive(Debug, Clone, Serialize)]
+pub struct SerieDiPunto {
+    pub punto: u32,
+    pub etichetta: String,
+    /// The cell the Punto falls in, row zero northernmost as everywhere else.
+    pub riga: usize,
+    pub colonna: usize,
+    /// The lit fraction, one value per hour of the Periodo, in order from the
+    /// first hour.
+    pub frazione_illuminata: Vec<f64>,
 }
 
 /// One Corsa, done or failed.
@@ -214,6 +234,13 @@ struct ScelteCitate {
     rettangoli_degeneri: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
     terreno_sostituito: Option<usize>,
+}
+
+#[derive(Serialize)]
+struct PuntiCitati {
+    dichiarati: usize,
+    dentro_la_griglia: usize,
+    nota: &'static str,
 }
 
 #[derive(Serialize)]
@@ -340,9 +367,28 @@ fn marcia(
     strati: &[StratoDiChioma],
     griglia: &Griglia,
     periodo: &Periodo,
+    punti: &[PuntoDiOsservazione],
     luogo: &Luogo,
 ) -> Result<Marcia, CorsaError> {
     let mut ore_di_sole = Raster::zeros(modello_di_superficie.dim());
+    // A Punto with no cell gets no series rather than the series of the nearest
+    // cell: a number attributed to a place nobody asked about is worse than no
+    // number. `progetto::valida` refuses such a Punto at both the write and the
+    // read, so this should never drop one — and the Giornale reports both counts
+    // precisely so that "should never" is checked rather than trusted.
+    let mut serie: Vec<SerieDiPunto> = punti
+        .iter()
+        .filter_map(|punto| {
+            let (riga, colonna) = derivazione::cella_della_posizione(griglia, punto.posizione_m)?;
+            Some(SerieDiPunto {
+                punto: punto.id,
+                etichetta: punto.etichetta.clone(),
+                riga,
+                colonna,
+                frazione_illuminata: Vec::with_capacity(periodo.ore as usize),
+            })
+        })
+        .collect();
     let mut tempo_motore = Duration::ZERO;
     let (mut ore_verificate, mut ore_notturne) = (0usize, 0usize);
     let (mut scarto_massimo, mut scarto_somma) = (0.0f64, 0.0f64);
@@ -377,6 +423,10 @@ fn marcia(
                 scarto_massimo = scarto_massimo.max(scarto);
             }
         }
+        for una in &mut serie {
+            una.frazione_illuminata
+                .push(arrotonda(f64::from(illuminata[[una.riga, una.colonna]])));
+        }
         ore_di_sole += &illuminata;
     }
 
@@ -385,6 +435,7 @@ fn marcia(
         campi: Campi {
             ore_di_sole,
             frazione_illuminata_media,
+            serie,
         },
         verifica: VerificaOmbra {
             ore_verificate,
@@ -636,6 +687,7 @@ pub fn esegui(
                 &raster.strati_di_chioma,
                 &progetto.griglia,
                 periodo,
+                &progetto.punti,
                 &luogo,
             )
         }
@@ -644,6 +696,21 @@ pub fn esegui(
     let (campi, errore, tempo_motore) = match esito {
         Ok(fatto) => {
             giornale.annota("campo", &inviluppi(&fatto.campi, raster, periodo.ore))?;
+            // The Punti left out are named by their count and not by silence: a
+            // Progetto with three Punti and two series has lost one somewhere.
+            giornale.annota(
+                "punti",
+                &PuntiCitati {
+                    dichiarati: progetto.punti.len(),
+                    dentro_la_griglia: fatto.campi.serie.len(),
+                    nota: "una serie per Punto di osservazione, ora per ora. Un Punto \
+                           fuori dalla Griglia il Progetto lo rifiuta già quando lo scrive \
+                           e quando lo rilegge, quindi i due conteggi devono coincidere: \
+                           se non coincidono, la regola che accetta un Punto e quella che \
+                           gli trova la cella non concordano più",
+                },
+            )?;
+            giornale.annota("serie", &fatto.campi.serie)?;
             giornale.annota("verifica_ombra", &fatto.verifica)?;
             (Some(fatto.campi), None, fatto.tempo_motore)
         }

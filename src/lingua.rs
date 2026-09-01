@@ -105,6 +105,9 @@ pub struct Messaggi {
     pub nessuna_bandiera: &'static str,
     pub campi: &'static str,
     pub campo_senza_dato: &'static str,
+    pub punti: &'static str,
+    /// The label of a Punto, its hours in the sun, and the hours of the Periodo.
+    pub punto_ore_di_sole: fn(&str, f64, usize) -> String,
 
     pub errore: &'static str,
 }
@@ -151,6 +154,8 @@ pub const ITALIANO: Messaggi = Messaggi {
     nessuna_bandiera: "nessuna bandiera alzata",
     campi: "campi:",
     campo_senza_dato: "tutto senza dato",
+    punti: "punti di osservazione:",
+    punto_ore_di_sole: |etichetta, ore, su| format!("  {etichetta}: {ore:.1} h di sole su {su}"),
 
     errore: "errore:",
 };
@@ -197,6 +202,8 @@ pub const INGLESE: Messaggi = Messaggi {
     nessuna_bandiera: "no flag raised",
     campi: "fields:",
     campo_senza_dato: "no data at all",
+    punti: "observation points:",
+    punto_ore_di_sole: |etichetta, ore, su| format!("  {etichetta}: {ore:.1} h of sun out of {su}"),
 
     errore: "error:",
 };

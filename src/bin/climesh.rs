@@ -269,6 +269,31 @@ fn riassunto(tabella: &toml::Table, m: &Messaggi) -> String {
         (m.verifiche_con_bandiera)(con_bandiera)
     });
 
+    let serie = tabella
+        .get("serie")
+        .and_then(|s| s.as_array())
+        .map(|a| a.as_slice())
+        .unwrap_or_default();
+    if !serie.is_empty() {
+        righe.push(m.punti.to_owned());
+        for una in serie {
+            let etichetta = una.get("etichetta").and_then(|v| v.as_str()).unwrap_or("—");
+            let ore: Vec<f64> = una
+                .get("frazione_illuminata")
+                .and_then(|v| v.as_array())
+                .map(|a| a.iter().filter_map(|v| v.as_float()).collect())
+                .unwrap_or_default();
+            // The sum of the hourly lit fractions, which is the hours of sun of
+            // that cell: the same number the map carries, read the other way
+            // round.
+            righe.push((m.punto_ore_di_sole)(
+                etichetta,
+                ore.iter().sum(),
+                ore.len(),
+            ));
+        }
+    }
+
     if !campi.is_empty() {
         righe.push(m.campi.to_owned());
         for campo in campi {

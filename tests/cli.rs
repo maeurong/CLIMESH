@@ -111,7 +111,11 @@ fn scrivi_progetto(dir: &Path) {
             origine: (12.56, 43.07),
             rotazione_gradi: 0.0,
         },
-        punti: vec![],
+        punti: vec![PuntoDiOsservazione {
+            id: 1,
+            posizione_m: (0.5, 0.5),
+            etichetta: "angolo".into(),
+        }],
         scenari: vec![Scenario {
             nome: "stato-di-fatto".into(),
             derivato_da: None,
@@ -136,7 +140,10 @@ fn scrivi_progetto(dir: &Path) {
         periodi: vec![Periodo {
             nome: "estate".into(),
             meteo: epw,
-            ore: 2,
+            // Long enough to contain a midday: a Periodo of two hours from
+            // midnight is all night, and every number it produces is zero —
+            // which a test can pass without ever touching the sun.
+            ore: 14,
             direzione_vento_gradi: Some(45.0),
             inizio: Data {
                 anno: 2021,
@@ -319,13 +326,24 @@ fn esegui_e_interroga_lavorano_sullo_stesso_progetto() {
     assert!(detto.contains("citazione:"), "{detto}");
     assert!(detto.contains("esito: riuscita"), "{detto}");
     assert!(detto.contains("ore di sole"), "{detto}");
+    // The observation point is the other half of the answer: the map says
+    // where, the series says when, and the summary shows both.
+    assert!(detto.contains("punti di osservazione:"), "{detto}");
+    assert!(detto.contains("angolo:"), "{detto}");
+    assert!(detto.contains("h di sole su 14"), "{detto}");
+    assert!(
+        !detto.contains("0.0 h di sole"),
+        "un Periodo che contiene mezzogiorno deve avere del sole: {detto}"
+    );
 
     let inglese = climesh(&["--lingua", "en", "interroga", giornale]);
-    assert!(
-        uscita(&inglese).contains("outcome: riuscita"),
-        "{}",
-        uscita(&inglese)
-    );
+    let detto = uscita(&inglese);
+    // The Giornale's own words — «riuscita» — are not translated: they are what
+    // the file records, and a summary that reworded them would show something
+    // other than what is written.
+    assert!(detto.contains("outcome: riuscita"), "{detto}");
+    assert!(detto.contains("observation points:"), "{detto}");
+    assert!(detto.contains("h of sun out of 14"), "{detto}");
 }
 
 #[test]

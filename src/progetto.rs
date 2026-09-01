@@ -183,7 +183,17 @@ fn valida(p: &Progetto) -> Result<(), ProgettoError> {
     }
     let est_x = p.griglia.nx as f64 * p.griglia.passo_m;
     let est_y = p.griglia.ny as f64 * p.griglia.passo_m;
-    let dentro = |(x, y): Posizione| x >= 0.0 && y >= 0.0 && x <= est_x && y <= est_y;
+    // A **position** falls in a cell, and the coverage rule of
+    // `src/derivazione.rs` is half-open: minimum included, maximum excluded. A
+    // Punto exactly on the far edge used to pass this check and then have no
+    // cell at all — accepted by one rule and invisible to the other, which is
+    // the shape of defect this project exists to refuse.
+    let dentro = |(x, y): Posizione| x >= 0.0 && y >= 0.0 && x < est_x && y < est_y;
+    // A **rectangle** is bounded by its maximum, not placed at it: an impronta
+    // that covers the last cell ends exactly on the edge, and it is inside.
+    let rettangolo_dentro = |r: &Rettangolo| {
+        r.x_min_m >= 0.0 && r.y_min_m >= 0.0 && r.x_max_m <= est_x && r.y_max_m <= est_y
+    };
     for punto in &p.punti {
         if !dentro(punto.posizione_m) {
             return Err(ProgettoError::FuoriGriglia(format!(
@@ -219,7 +229,7 @@ fn valida(p: &Progetto) -> Result<(), ProgettoError> {
             .chain(s.superfici.iter().map(|x| ("una superficie", &x.impronta)));
         for (cosa, impronta) in impronte {
             for r in impronta {
-                if !dentro((r.x_min_m, r.y_min_m)) || !dentro((r.x_max_m, r.y_max_m)) {
+                if !rettangolo_dentro(r) {
                     return Err(ProgettoError::FuoriGriglia(format!(
                         "scenario {}: l'impronta di {cosa}",
                         s.nome
