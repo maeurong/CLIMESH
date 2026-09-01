@@ -58,6 +58,11 @@ percorso, quindi si usa `cargo fmt -p climesh`. Riformattarlo o correggerne gli
 avvisi renderebbe irriconciliabile il prossimo aggiornamento, e l'unica modifica
 ammessa è quella dichiarata in `vendor/solweig/PROVENIENZA.toml`.
 
+**E non si modifica a mano.** L'intera cartella `vendor/solweig/src` è prodotto di
+`estrai.py`, `lib.rs` compreso, e il lavoro `Vendor check` riesegue lo script sul
+commit pinnato e confronta byte per byte. Una correzione fatta a mano fallisce lì.
+Si cambia lo script, mai il file.
+
 ## Vincoli che non si negoziano
 
 **Velocità.** Il caso di riferimento completo — 50 × 50 celle a 1 m, 48 ore, due
@@ -80,8 +85,12 @@ AA, e una mappa termica è un'immagine di dati: ogni campo calcolato deve avere
 una vista tabellare alternativa.
 
 **Le stringhe non si annidano nel codice.** Interfaccia in italiano e inglese dal
-primo giorno. I termini tecnici del dominio restano in inglese in entrambe le
-lingue: si dice *sky view factor*, non "fattore di vista del cielo".
+primo giorno. Ogni messaggio sta in [`src/lingua.rs`](src/lingua.rs), in un unico
+struct con due istanze costanti: un messaggio aggiunto a una lingua e dimenticato
+nell'altra non compila. I termini tecnici del dominio restano in inglese in
+entrambe le lingue — si dice *sky view factor*, non "fattore di vista del cielo" —
+e i nomi dei comandi non si traducono affatto, perché uno script scritto su una
+macchina deve girare su un'altra.
 
 ## Il caso di riferimento
 
