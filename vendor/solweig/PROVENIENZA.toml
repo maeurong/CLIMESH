@@ -15,12 +15,18 @@ percorso_sorgente = "rust/src"
 autori = "Fredrik Lindberg (Univ. Göteborg), C. Sue B. Grimmond (Univ. Reading), UMEP Developers"
 
 [cosa_e_stato_preso]
-file = ["shadowing.rs", "utci.rs"]
+file = ["shadowing.rs", "utci.rs", "skyview.rs"]
 nota = """
-Il percorso CPU delle ombre e il polinomio UTCI. Non il resto del nucleo:
-niente radiazione, niente sky view factor, niente temperatura media radiante,
-niente PET. Quelli arriveranno quando serviranno, e allora questo elenco
-cresce.
+Il percorso CPU delle ombre, il polinomio UTCI e il calcolo dello sky view
+factor. Non il resto del nucleo: niente radiazione, niente temperatura media
+radiante, niente PET. Quelli arriveranno quando serviranno, e allora questo
+elenco cresce.
+
+`skyview.rs` e' il primo file che ha chiesto una classe di trasformazione
+nuova, descritta piu' sotto sotto `sostituzioni`: a monte il percorso Rust
+porta `PyResult` nelle firme, perche' `create_patches` rifiuta un'opzione di
+suddivisione del cielo sconosciuta e perche' il calcolo si puo' annullare fra
+un patch e l'altro.
 
 `utci.rs` e' preso intero perche' e' aritmetica pura: 210 coefficienti del
 polinomio di sesto grado di Broede et al. piu' la pressione di vapore saturo.
@@ -34,6 +40,18 @@ involucri_python = 10
 nota = """
 Da `utci.rs`: il solo `utci_grid`, che prende e restituisce array numpy. Il
 polinomio, la pressione di vapore saturo e `utci_single` restano.
+
+Da `skyview.rs`: la struct specchio `#[pyclass] SvfResult`, l'involucro
+`#[pyfunction] calculate_svf`, la struct `#[pyclass] SkyviewRunner` con i suoi
+`#[pymethods]` — che esistono per esporre a Python l'avanzamento e
+l'annullamento — piu' due elementi che nessun attributo marca e che quindi lo
+script nomina uno per uno: `svf_intermediate_to_py`, che converte il risultato
+in array numpy, e l'`impl Default for SkyviewRunner`, che senza la sua struct
+non compilerebbe.
+
+Il calcolo, `calculate_svf_inner`, prende `Array2<f32>` e restituisce
+`SvfIntermediate`, una struct Rust: e' la stessa forma di
+`calculate_shadows_rust`, e per la stessa ragione resta.
 
 Da `shadowing.rs`:
 Gli import di `pyo3` e `numpy`, i sette involucri `#[pyfunction]`, la struct
@@ -52,7 +70,12 @@ dentro il modulo `gpu` di monte.
 """
 
 [modifiche_al_codice_rimasto]
-elementi_esposti = ["calculate_shadows_rust", "ShadowingResultRust"]
+elementi_esposti = [
+    "calculate_shadows_rust",
+    "ShadowingResultRust",
+    "calculate_svf_inner",
+    "crop_svf_intermediate",
+]
 attributi_tolti = ["utci_single"]
 nota_attributi = """
 `utci_single` porta `#[pyfunction]` ma non e' un involucro: il corpo converte
@@ -66,8 +89,33 @@ peggiore: fisica vendorata fuori da `vendor/`, dove al prossimo aggiornamento
 nessuno la riconoscerebbe come tale. `estrai.py` si ferma con errore se a monte
 quell'elemento sparisce o smette di essere annotato.
 """
+sostituzioni = { "skyview.rs" = { firme = 3, costruzioni_di_errore = 11 } }
+nota_sostituzioni = """
+La classe di trasformazione nuova, e l'unica che cambia una riga invece di
+toglierla: `-> PyResult<T>` diventa `-> Result<T, String>`, e ogni
+`pyo3::exceptions::Py…Error::new_err` diventa `String::from`.
+
+Si sostituisce il **costruttore** e non la costruzione intera. E' una scelta:
+cosi' l'argomento resta identico, parentesi comprese, e la stessa riga di regola
+vale per un letterale e per un `format!`, dentro e fuori dal percorso GPU. Il
+prezzo e' un `String::from(format!(…))` che un umano non scriverebbe; il premio
+e' che non c'e' niente da bilanciare, e quindi niente che possa sbagliare
+silenziosamente al prossimo aggiornamento.
+
+Le undici costruzioni non sono tutte vive: tre stanno sul percorso CPU —
+l'opzione di patch sconosciuta, la finestra di ritaglio non valida,
+l'annullamento fra un patch e l'altro — e le altre otto sono dentro
+`#[cfg(feature = "gpu")]`, che questo manifesto non dichiara. Si sostituiscono
+lo stesso, perche' una regola con un ritaglio di regione e' una regola che
+qualcuno dovra' rileggere; e perche' se un giorno la feature si accendesse,
+`pyo3` non ci sarebbe comunque.
+
+`crop_svf_intermediate` non ha oggi nessun chiamante in CLIMESH: e' esposto
+perche' tagliarlo sarebbe una modifica al codice rimasto, e questo file dichiara
+che non ce ne sono.
+"""
 nota = """
-Una sola, e sono due parole: quei due elementi a monte sono `pub(crate)`, e da
+Una sola classe oltre a quella: quei due elementi di `shadowing.rs` a monte sono `pub(crate)`, e da
 un crate esterno non si vedono. `pub(crate)` significa "visibile dentro il
 crate", quindi un test scritto dentro la copia vendorata li raggiunge e uno
 scritto fuori no — è esattamente l'errore che ci è costato un giro, e la
@@ -117,7 +165,7 @@ Una chiamata su 50x50 con una torre al centro, in release: 47 ms a freddo, poi
 44, 45 e 11 ms. Il cancello dei 60 secondi chiede quattro Corse da 48 ore, e
 questo numero dice che il collo di bottiglia non sarà qui.
 """
-righe = "shadowing.rs 974 -> 683, utci.rs 366 -> 297"
+righe = "shadowing.rs 974 -> 683, utci.rs 366 -> 297, skyview.rs 1103 -> 870"
 utci = """
 Nell'ambiente di riferimento di UTCI — aria ferma a 0,5 m/s, temperatura media
 radiante uguale a quella dell'aria, pressione di vapore al riferimento — il
@@ -125,6 +173,38 @@ polinomio restituisce la temperatura dell'aria entro 0,7 K, che e' la
 definizione dell'indice e non una coincidenza. La pressione di vapore saturo
 usa `ln(tk)`, come il Fortran ufficiale: la divergenza da `log1p` registrata in
 `research/mrt-indici-comfort.md` riguarda `pythermalcomfort`, non questa copia.
+"""
+sky_view_factor = """
+Su un dominio piano senza ostacoli vale 1 ovunque, entro pochi ulp di f32. Con
+una torre al centro, la cella ai suoi piedi vede meno cielo dell'angolo del
+dominio.
+
+La proprieta' da conoscere prima di leggere una mappa: **la chioma ombreggia a
+corona, non sopra di se'**. Il nucleo mette una cella all'ombra della
+vegetazione dove il raggio attraversa il guscio fra la cima del tronco e la cima
+della chioma, e la lascia libera dove il raggio passa sotto il tronco. Una
+chioma larga una cella non toglie cielo ne' a se stessa ne' alla cella accanto:
+la corona comincia a due celle. Su una chioma vera, che copre molte celle, sono
+le celle vicine a fare il lavoro — un blocco 5x5 alto 10 m toglie il 15 per
+cento del cielo alla sua cella centrale. E' la geometria dell'implementazione di
+riferimento e non un difetto da riparare, ma somiglia a un difetto abbastanza da
+meritare un test che la fissi.
+
+Sul caso di riferimento, in estate: gli edifici lasciano lo 0,9189 del cielo, le
+chiome dello stato di fatto portano la media a 0,6276 e quelle degli interventi
+a 0,4291. In inverno, con le latifoglie a trasmissivita' 0,5, 0,7064 e 0,5934.
+"""
+tempo_sky_view_factor = """
+Da 32 a 63 ms per Corsa sul caso di riferimento, 50x50 celle: uno strato di
+chioma d'estate, due d'inverno, un passaggio sui 153 patch del cielo per strato.
+Le quattro Corse complete passano da 0,25 a 0,47 s contro un budget di 60.
+
+**Questo cambia una premessa della spec.** La misura su cui era stata decisa la
+cache dello sky view factor — 29-36 s su sola CPU, collo di bottiglia del caso
+completo — veniva dal percorso Python con il pool rayon predefinito. Con il pool
+a un thread e un dominio di 2500 celle il costo e' quattro ordini di grandezza
+piu' basso, e una cache per geometria risparmierebbe 0,19 s su 60. Non si
+costruisce finche' un dominio piu' grande non la chiede.
 """
 geometria = """
 Torre di 10 m al centro di un dominio piano 21x21 a passo 1 m, sole a sud a 45

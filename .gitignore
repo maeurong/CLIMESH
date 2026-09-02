@@ -8,3 +8,4 @@ materiale università/
 casi/bastia/progetto/corse/
 vendor/solweig/target/
 vendor/solweig/Cargo.lock
+vendor/solweig/__pycache__/
