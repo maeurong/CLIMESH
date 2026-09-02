@@ -9,7 +9,7 @@ use climesh::derivazione::{
     Raster, StratoDiChioma, TRASMISSIVITA_CON_FOGLIE, TRASMISSIVITA_SENZA_FOGLIE,
 };
 use climesh::dominio::Data;
-use climesh::motore::{ombre, versione, ALTEZZA_MINIMA_GRADI};
+use climesh::motore::{ombre, sky_view_factor, versione, SkyViewFactor, ALTEZZA_MINIMA_GRADI};
 use climesh::sole::{posizione, PosizioneSolare};
 
 /// Bastia Umbra, the reference case: the coordinates read from the model, not
@@ -517,4 +517,266 @@ fn nel_caso_di_riferimento_i_due_scenari_non_danno_piu_la_stessa_ombra() {
             sole_totale(&fatto)
         );
     }
+}
+
+// --- Sky view factor -------------------------------------------------------
+//
+// The fraction of the sky hemisphere a cell can see. Unlike a shadow it does
+// not depend on the sun, so it is a property of the Scenario and not of the
+// hour, and it is the first quantity of the radiative chain CLIMESH can report
+// on its own.
+
+fn cielo(dsm: &Raster, strati: &[StratoDiChioma]) -> SkyViewFactor {
+    sky_view_factor(dsm, 1.0, strati).expect("il sky view factor del dominio di prova")
+}
+
+fn media(campo: &Raster) -> f64 {
+    campo.iter().map(|&v| f64::from(v)).sum::<f64>() / campo.len() as f64
+}
+
+#[test]
+fn un_dominio_piatto_vede_tutto_il_cielo() {
+    let visibile = cielo(&Raster::zeros((21, 21)), &[]);
+    assert!(
+        visibile.senza_chiome.iter().all(|&v| v > 0.99),
+        "cielo tolto dal nulla su un dominio piatto: {}",
+        visibile.senza_chiome
+    );
+    // The defence this test exists for: with no vegetation the kernel leaves
+    // its `svf_veg` at the zero it was allocated with — it never runs the pass
+    // that fills it — and the published combination `svf - (1 - svf_veg) * (1 -
+    // psi)` would then subtract a whole hemisphere that no tree is blocking.
+    // Without a Strato di chioma the two fields have to be the same field.
+    assert_eq!(
+        visibile.con_le_chiome, visibile.senza_chiome,
+        "senza chiome i due campi devono coincidere"
+    );
+}
+
+#[test]
+fn una_torre_toglie_cielo_alle_celle_ai_suoi_piedi() {
+    let lato = 21;
+    let c = lato / 2;
+    let visibile = cielo(&torre(lato, 0.0), &[]);
+    assert!(
+        visibile.senza_chiome[[c, c + 1]] < visibile.senza_chiome[[0, 0]] - 0.05,
+        "la cella ai piedi della torre vede quanto l'angolo: {} contro {}",
+        visibile.senza_chiome[[c, c + 1]],
+        visibile.senza_chiome[[0, 0]]
+    );
+}
+
+#[test]
+fn il_cielo_visibile_non_esce_dall_intervallo() {
+    let lato = 21;
+    let strati = [chioma_al_centro(
+        "chiome",
+        TRASMISSIVITA_CON_FOGLIE,
+        lato,
+        10.0,
+    )];
+    let visibile = cielo(&torre(lato, 0.0), &strati);
+    for campo in [&visibile.senza_chiome, &visibile.con_le_chiome] {
+        assert!(
+            campo.iter().all(|&v| (0.0..=1.0).contains(&v)),
+            "un sky view factor fuori da [0, 1]: {campo}"
+        );
+    }
+}
+
+#[test]
+fn una_chioma_non_cambia_il_cielo_degli_edifici() {
+    // The two fields answer two questions, and mixing them would make the
+    // vegetation look like masonry. Buildings and terrain are what
+    // `senza_chiome` counts, and a tree is neither.
+    let lato = 21;
+    let dsm = torre(lato, 0.0);
+    let strati = [chioma_al_centro(
+        "chiome",
+        TRASMISSIVITA_CON_FOGLIE,
+        lato,
+        10.0,
+    )];
+    assert_eq!(
+        cielo(&dsm, &strati).senza_chiome,
+        cielo(&dsm, &[]).senza_chiome,
+        "una chioma ha cambiato il cielo che gli edifici lasciano"
+    );
+}
+
+/// A canopy layer with a square crown of side `2 * raggio + 1` at the centre.
+///
+/// A crown of one cell is not a tree: the kernel shades the ring where the ray
+/// crosses the shell between the trunk top and the canopy top, so a single cell
+/// takes no sky from itself and none from its neighbour either. Every test that
+/// wants a canopy to take away sky needs a crown wide enough to cover itself.
+fn bosco(
+    nome: &'static str,
+    trasmissivita: f32,
+    lato: usize,
+    raggio: usize,
+    chioma: f32,
+) -> StratoDiChioma {
+    let c = lato / 2;
+    let mut chiome = Raster::from_elem((lato, lato), f32::NAN);
+    let mut zona_tronco = Raster::from_elem((lato, lato), f32::NAN);
+    for riga in c - raggio..=c + raggio {
+        for colonna in c - raggio..=c + raggio {
+            chiome[[riga, colonna]] = chioma;
+            zona_tronco[[riga, colonna]] = chioma / 2.0;
+        }
+    }
+    StratoDiChioma {
+        nome,
+        trasmissivita,
+        chiome,
+        zona_tronco,
+    }
+}
+
+#[test]
+fn una_chioma_ombreggia_a_corona_e_non_sopra_di_se() {
+    // The reference implementation's vegetation shadow is a shell, not a solid:
+    // a cell is in canopy shade where the ray crosses the crown between the
+    // trunk top and the canopy top, and passes freely under the trunk top. A
+    // cell directly beneath an isolated crown therefore loses no sky at all,
+    // and neither does the cell beside it — the ring starts further out.
+    //
+    // This is upstream's geometry and not a defect to repair. It is pinned here
+    // because it looks like one: the obvious reading of "there is a tree over
+    // this cell" is that the cell sees less sky, and on a real crown, which
+    // covers many cells, it does. On one cell it does not, and a future reader
+    // who finds a zero there needs to know it was measured and expected.
+    let lato = 21;
+    let c = lato / 2;
+    let strati = [chioma_al_centro(
+        "chiome",
+        TRASMISSIVITA_CON_FOGLIE,
+        lato,
+        10.0,
+    )];
+    let visibile = cielo(&Raster::zeros((lato, lato)), &strati);
+    let detrazione =
+        |d: usize| visibile.senza_chiome[[c, c + d]] - visibile.con_le_chiome[[c, c + d]];
+    // The patch weights sum to one to within a few ulp of f32, so "took away
+    // nothing" is a tolerance and not a bit pattern.
+    assert!(
+        detrazione(0) < 1e-6,
+        "una chioma isolata si toglie il cielo da sola: {}",
+        detrazione(0)
+    );
+    assert!(
+        detrazione(1) < 1e-6,
+        "la corona comincia gia' alla cella accanto: {}",
+        detrazione(1)
+    );
+    assert!(
+        detrazione(3) > 0.01,
+        "la corona non toglie cielo a tre celle: {}",
+        detrazione(3)
+    );
+}
+
+#[test]
+fn una_chioma_toglie_cielo_in_proporzione_a_quanto_non_lascia_passare() {
+    // `svfbuveg = svf - (1 - svf_veg) * (1 - psi)` is upstream's own formula,
+    // and the term it subtracts is linear in `1 - psi`. The same crown with two
+    // transmissivities therefore has to take away sky in the ratio of the two
+    // opacities — which is what tells a canopy apart from a wall, and a
+    // deciduous winter apart from a deciduous summer.
+    let lato = 21;
+    let c = lato / 2;
+    let piatto = Raster::zeros((lato, lato));
+    let sotto = |trasmissivita| {
+        let visibile = cielo(&piatto, &[bosco("chiome", trasmissivita, lato, 2, 10.0)]);
+        f64::from(visibile.senza_chiome[[c, c]] - visibile.con_le_chiome[[c, c]])
+    };
+
+    let con_foglie = sotto(TRASMISSIVITA_CON_FOGLIE);
+    let senza_foglie = sotto(TRASMISSIVITA_SENZA_FOGLIE);
+    assert!(
+        con_foglie > 0.05,
+        "una chioma sopra la testa non toglie cielo: {con_foglie}"
+    );
+    let atteso =
+        (1.0 - f64::from(TRASMISSIVITA_SENZA_FOGLIE)) / (1.0 - f64::from(TRASMISSIVITA_CON_FOGLIE));
+    assert!(
+        (senza_foglie / con_foglie - atteso).abs() < 1e-3,
+        "il rapporto fra le due detrazioni e' {}, atteso {atteso}",
+        senza_foglie / con_foglie
+    );
+}
+
+#[test]
+fn un_secondo_strato_toglie_altro_cielo_e_non_ne_restituisce() {
+    // A Periodo invernale carries two layers, evergreen and leafless, and each
+    // has to be counted: a second layer that changed nothing would mean the
+    // deciduous trees had quietly left the calculation, and one that gave sky
+    // back would mean the deductions were being combined the wrong way round.
+    let lato = 21;
+    let piatto = Raster::zeros((lato, lato));
+    let primo = bosco("chiome", TRASMISSIVITA_CON_FOGLIE, lato, 2, 10.0);
+
+    let mut secondo = bosco("spogliate", TRASMISSIVITA_SENZA_FOGLIE, lato, 2, 10.0);
+    // Displaced to the north-west corner, so the two crowns do not overlap and
+    // the second layer's deduction is its own.
+    let mut chiome = Raster::from_elem((lato, lato), f32::NAN);
+    let mut zona_tronco = Raster::from_elem((lato, lato), f32::NAN);
+    for riga in 1..6 {
+        for colonna in 1..6 {
+            chiome[[riga, colonna]] = 10.0;
+            zona_tronco[[riga, colonna]] = 5.0;
+        }
+    }
+    secondo.chiome = chiome;
+    secondo.zona_tronco = zona_tronco;
+
+    let uno = cielo(&piatto, std::slice::from_ref(&primo));
+    let due = cielo(&piatto, &[primo, secondo]);
+    assert!(
+        due.con_le_chiome
+            .iter()
+            .zip(uno.con_le_chiome.iter())
+            .all(|(&d, &u)| d <= u),
+        "un secondo strato ha restituito cielo invece di toglierne"
+    );
+    assert!(
+        due.con_le_chiome[[3, 3]] < uno.con_le_chiome[[3, 3]] - 0.05,
+        "il secondo strato non toglie cielo sotto di se': {} contro {}",
+        due.con_le_chiome[[3, 3]],
+        uno.con_le_chiome[[3, 3]]
+    );
+}
+
+#[test]
+fn nel_caso_di_riferimento_lo_scenario_piantumato_vede_meno_cielo() {
+    let progetto = climesh::progetto::leggi("casi/bastia/progetto").unwrap();
+    let periodo = &progetto.periodi[0];
+    let campo = |nome: &str| {
+        let scenario = progetto
+            .scenari
+            .iter()
+            .find(|s| s.nome == nome)
+            .expect("il caso di riferimento porta questo Scenario");
+        let raster = climesh::derivazione::deriva(&progetto.griglia, scenario, periodo).unwrap();
+        sky_view_factor(
+            &raster.modello_di_superficie,
+            progetto.griglia.passo_m,
+            &raster.strati_di_chioma,
+        )
+        .unwrap()
+    };
+    let fatto = campo("stato-di-fatto");
+    let interventi = campo("interventi");
+    assert_eq!(
+        media(&fatto.senza_chiome),
+        media(&interventi.senza_chiome),
+        "i due Scenari hanno gli stessi edifici: il cielo che lasciano è lo stesso"
+    );
+    assert!(
+        media(&interventi.con_le_chiome) < media(&fatto.con_le_chiome),
+        "lo Scenario con più alberi vede più cielo: {} contro {}",
+        media(&interventi.con_le_chiome),
+        media(&fatto.con_le_chiome)
+    );
 }

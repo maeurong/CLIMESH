@@ -1013,3 +1013,70 @@ fn una_verifica_mai_eseguita_alza_la_bandiera() {
         "zero ore verificate deve alzare la bandiera, non lasciarla bassa"
     );
 }
+
+#[test]
+fn il_giornale_riporta_il_cielo_visibile_con_e_senza_le_chiome() {
+    // A sky view factor does not depend on the hour, so it is the one field of
+    // the radiative chain a Corsa can report today without a Motore that
+    // computes radiation. Two fields and not one: masonry is permanent and a
+    // tree is a decision, and a study that cannot tell them apart cannot argue
+    // for the planting.
+    let mut progetto = progetto_di_prova(9, vec![periodo("estate", 7, 15, 4)]);
+    progetto.scenari[0].alberi = vec![albero_di_prova("QURO", (2.5, 2.5))];
+    let (_, rapporto) = scrivi_ed_esegui("cielo-visibile", &progetto);
+    let tabella = rileggi(&rapporto.corse[0].giornale);
+
+    let campi = tabella["campo"].as_array().unwrap();
+    let cercato = |nome: &str| {
+        campi
+            .iter()
+            .find(|c| c["campo"].as_str() == Some(nome))
+            .unwrap_or_else(|| panic!("il Giornale non riporta il campo «{nome}»"))
+    };
+    for nome in ["sky view factor", "sky view factor con le chiome"] {
+        let campo = cercato(nome);
+        let valore = |chiave: &str| campo[chiave].as_float().unwrap();
+        assert!(
+            (0.0..=1.0).contains(&valore("minimo")) && (0.0..=1.0).contains(&valore("massimo")),
+            "«{nome}» esce da [0, 1]: {} … {}",
+            valore("minimo"),
+            valore("massimo")
+        );
+        assert_eq!(
+            campo["fuori_intervallo"].as_bool(),
+            Some(false),
+            "«{nome}» alza la bandiera su un Progetto che non ha niente di strano"
+        );
+    }
+    assert!(
+        cercato("sky view factor con le chiome")["media"].as_float()
+            < cercato("sky view factor")["media"].as_float(),
+        "un albero non toglie cielo a nessuno"
+    );
+}
+
+#[test]
+fn ogni_punto_di_osservazione_porta_il_suo_sky_view_factor() {
+    // Read from the map at the Punto's own cell, so a swapped row and column
+    // parts the two numbers — the same defence the hourly series carries, on
+    // the field where a mistake would be hardest to see, because a sky view
+    // factor has no night to give it away.
+    let mut progetto = progetto_di_prova(9, vec![periodo("estate", 7, 15, 4)]);
+    progetto.scenari[0].alberi = vec![albero_di_prova("QURO", (2.5, 2.5))];
+    progetto.punti = vec![punto(1, (1.5, 4.5))];
+    let (_, rapporto) = scrivi_ed_esegui("cielo-dei-punti", &progetto);
+
+    let campi = rapporto.corse[0].campi.as_ref().unwrap();
+    let serie = &campi.serie[0];
+    let dalla_mappa = f64::from(campi.sky_view_factor.con_le_chiome[[serie.riga, serie.colonna]]);
+    assert!(
+        (serie.sky_view_factor - dalla_mappa).abs() < 0.01,
+        "il Punto dice {} e la mappa dice {dalla_mappa}",
+        serie.sky_view_factor
+    );
+    assert!(
+        (0.0..=1.0).contains(&serie.sky_view_factor),
+        "un sky view factor fuori da [0, 1]: {}",
+        serie.sky_view_factor
+    );
+}

@@ -57,16 +57,17 @@ il [caso di riferimento](casi/bastia/) estratto e versionato; il Progetto su
 disco con il suo modello a oggetti; la Derivazione da oggetti a raster; il
 [motore radiativo vendorato](vendor/solweig/) e collegato; l'ombra degli
 Edifici e quella degli Alberi, con le chiome che attenuano invece di spegnere;
-il lettore dei file meteo EPW; l'indice di comfort UTCI; il Giornale della
-Corsa; e la riga di comando, in italiano e in inglese.
+lo **sky view factor**, con e senza le chiome; il lettore dei file meteo EPW;
+l'indice di comfort UTCI; il Giornale della Corsa; e la riga di comando, in
+italiano e in inglese.
 
-**Il caso di riferimento completo gira in un quarto di secondo**, contro un
-budget di sessanta: due Scenari per due Periodi, 50 × 50 celle a un metro,
-48 ore, su sola CPU.
+**Il caso di riferimento completo gira in mezzo secondo**, contro un budget di
+sessanta: due Scenari per due Periodi, 50 × 50 celle a un metro, 48 ore, su sola
+CPU.
 
-Non esiste ancora **la parte centrale della catena radiativa**: sky view factor,
-le quattro componenti di radiazione, e quindi la temperatura media radiante. UTCI
-è in casa ma non ha ancora niente da cui partire. Perché quel pezzo sia più duro
+Non esiste ancora **la parte centrale della catena radiativa**: le quattro
+componenti di radiazione, e quindi la temperatura media radiante. UTCI è in casa
+ma non ha ancora niente da cui partire. Perché quel pezzo sia più duro
 degli altri, e cosa si fa, sta nell'[ADR 0003](docs/adr/0003-catena-radiativa-e-cucitura-a-monte.md).
 
 Non esistono ancora nemmeno la pagina nel browser e la validazione contro le

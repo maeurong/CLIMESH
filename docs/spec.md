@@ -135,9 +135,14 @@ sull'oggetto Albero e la Derivazione lavora per pixel. È la ragione concreta pe
 cui la regola dell'ADR 0001 esiste, e il Giornale registra quante piante sono
 state escluse.
 
-**La cache è per Scenario, non per Corsa.** Lo sky view factor dipende solo dalla
-geometria: sul caso di riferimento va calcolato due volte, non quattro. È la
-differenza fra rispettare il budget dei 60 secondi su sola CPU e sforarlo.
+**Lo sky view factor dipende solo dalla geometria**, non dall'ora: si calcola una
+volta per Corsa e vale per tutte le sue ore. Questa spec prevedeva di metterlo in
+cache per Scenario, e diceva che era la differenza fra rispettare il budget dei
+60 secondi e sforarlo. **Misurato, non lo è**: 32-63 ms per Corsa sul caso di
+riferimento, contro i 29-36 s che avevano motivato la cache e che venivano dal
+percorso Python con il pool rayon predefinito. La cache non è stata costruita, e
+non si costruisce finché un dominio più grande non la chiede — vedi
+[ADR 0003](adr/0003-catena-radiativa-e-cucitura-a-monte.md).
 
 ## 6. Il Motore
 

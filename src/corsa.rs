@@ -16,7 +16,7 @@ use crate::giornale::{
     arrotonda, conta_provenienza, inviluppo, Giornale, GiornaleError, Impronta, Ingresso, Inviluppo,
 };
 use crate::meteo::Epw;
-use crate::motore;
+use crate::motore::{self, SkyViewFactor};
 use crate::progetto::{self, ProgettoError};
 use crate::sole::{self, PosizioneSolare};
 use serde::Serialize;
@@ -64,6 +64,11 @@ pub enum CorsaError {
     Derivazione(DerivazioneError),
     Progetto(ProgettoError),
     Giornale(GiornaleError),
+    /// The Motore refused the geometry it was handed. Today the only way in is
+    /// a sky patch division it does not have, which is a constant of this
+    /// program and so should never reach a user — the variant exists so that a
+    /// future one does not have to panic to be reported.
+    Motore(String),
 }
 
 impl fmt::Display for CorsaError {
@@ -83,6 +88,7 @@ impl fmt::Display for CorsaError {
             Self::Derivazione(e) => write!(f, "derivazione: {e}"),
             Self::Progetto(e) => write!(f, "progetto: {e}"),
             Self::Giornale(e) => write!(f, "giornale: {e}"),
+            Self::Motore(e) => write!(f, "motore: {e}"),
         }
     }
 }
@@ -101,6 +107,12 @@ pub struct Campi {
     pub ore_di_sole: Raster,
     /// The same divided by the hours of the Periodo.
     pub frazione_illuminata_media: Raster,
+    /// How much of the sky each cell sees, with and without the canopies.
+    ///
+    /// Not per hour: a sky view factor is geometry, so one per Corsa answers
+    /// for every hour of the Periodo. It is also the first quantity of the
+    /// radiative chain this program can report on its own.
+    pub sky_view_factor: SkyViewFactor,
     /// One series per Punto di osservazione inside the Griglia, hour by hour.
     ///
     /// The map answers "where", the series answers "when", and a mitigation
@@ -121,6 +133,9 @@ pub struct SerieDiPunto {
     /// The lit fraction, one value per hour of the Periodo, in order from the
     /// first hour.
     pub frazione_illuminata: Vec<f64>,
+    /// How much of the sky this cell sees, canopies included. One number and
+    /// not a series: it does not change with the hour.
+    pub sky_view_factor: f64,
 }
 
 /// One Corsa, done or failed.
@@ -376,6 +391,16 @@ fn marcia(
     // number. `progetto::valida` refuses such a Punto at both the write and the
     // read, so this should never drop one — and the Giornale reports both counts
     // precisely so that "should never" is checked rather than trusted.
+    let mut tempo_motore = Duration::ZERO;
+    // Once, before the hours: geometry does not change with the sun. Inside the
+    // Motore's clock because it is the Motore doing it — on the reference case
+    // it costs about as much as a dozen hours of shadow, and a reader comparing
+    // the two needs to see it counted.
+    let inizio = Instant::now();
+    let sky_view_factor = motore::sky_view_factor(modello_di_superficie, griglia.passo_m, strati)
+        .map_err(CorsaError::Motore)?;
+    tempo_motore += inizio.elapsed();
+
     let mut serie: Vec<SerieDiPunto> = punti
         .iter()
         .filter_map(|punto| {
@@ -386,10 +411,12 @@ fn marcia(
                 riga,
                 colonna,
                 frazione_illuminata: Vec::with_capacity(periodo.ore as usize),
+                sky_view_factor: arrotonda(f64::from(
+                    sky_view_factor.con_le_chiome[[riga, colonna]],
+                )),
             })
         })
         .collect();
-    let mut tempo_motore = Duration::ZERO;
     let (mut ore_verificate, mut ore_notturne) = (0usize, 0usize);
     let (mut scarto_massimo, mut scarto_somma) = (0.0f64, 0.0f64);
     let mut notte_tutta_in_ombra = true;
@@ -435,6 +462,7 @@ fn marcia(
         campi: Campi {
             ore_di_sole,
             frazione_illuminata_media,
+            sky_view_factor,
             serie,
         },
         verifica: VerificaOmbra {
@@ -508,6 +536,26 @@ fn inviluppi(campi: &Campi, raster: &RasterDiScenario, ore: u32) -> Vec<Invilupp
         "Somma oraria della frazione illuminata, non un conteggio di ore intere: \
          un'ora sotto una chioma vale quanto la chioma lascia passare, e una cella \
          all'ombra di un edificio vale zero.",
+    ));
+    campi_citati.push(inviluppo(
+        "sky view factor",
+        "adimensionale",
+        campi.sky_view_factor.senza_chiome.iter().copied(),
+        (0.0, 1.0),
+        "Frazione della volta celeste che la cella vede, per come la lasciano \
+         edifici e terreno. Non dipende dall'ora: è geometria, e vale per tutto \
+         il Periodo.",
+    ));
+    campi_citati.push(inviluppo(
+        "sky view factor con le chiome",
+        "adimensionale",
+        campi.sky_view_factor.con_le_chiome.iter().copied(),
+        (0.0, 1.0),
+        "Lo stesso, meno quello che ogni Strato di chioma toglie, pesato per la \
+         sua trasmissività. Due strati che coprono la stessa porzione di cielo la \
+         contano due volte, perché il Motore dice se una cella vede il cielo \
+         attraverso la vegetazione, mai attraverso quale: il campo è troncato a \
+         zero e mai negativo.",
     ));
     campi_citati.push(inviluppo(
         "frazione illuminata media",

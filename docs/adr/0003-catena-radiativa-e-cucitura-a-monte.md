@@ -79,3 +79,46 @@ di CLIMESH sia confrontabile con un numero di SOLWEIG andava resa vera almeno pe
 **Se a monte accettasse la porta nativa**, questo ADR si chiude e ADR 0002 va riletto: il
 vendoring resterebbe la forma, ma con una porta d'ingresso costruita apposta la distanza dal
 fork si accorcia, e la scelta andrebbe rimotivata invece che ereditata.
+
+## Aggiornamento, 2026-09-02: `skyview.rs` è dentro
+
+Il primo passo è fatto, e ha corretto due numeri di questo ADR.
+
+**Le firme erano quattro, e restano tre.** `svf_intermediate_to_py` ne portava
+una, e sparisce con l'estrazione: converte il risultato in array numpy e non è
+marcata da nessun attributo, quindi `estrai.py` la nomina invece di
+riconoscerla. Insieme a lei se ne va un `impl Default` che senza la sua struct
+non compilerebbe.
+
+**Le costruzioni di errore erano due sul percorso CPU, e sono tre.** Oltre alle
+due `PyValueError` — opzione di patch sconosciuta, finestra di ritaglio non
+valida — c'è una `PyInterruptedError` per l'annullamento fra un patch e l'altro,
+che questo ADR non aveva contato. E altre otto stanno dietro
+`#[cfg(feature = "gpu")]`: undici in tutto nel testo del file.
+
+Le otto spente si sostituiscono lo stesso. Una regola con un ritaglio di regione
+è una regola che qualcuno dovrà rileggere, e se un giorno la feature si
+accendesse `pyo3` non ci sarebbe comunque. La sostituzione è quindi sul
+**costruttore** e non sulla costruzione: `pyo3::exceptions::Py…Error::new_err`
+diventa `String::from`, l'argomento resta identico parentesi comprese, e la
+stessa regola vale per un letterale e per un `format!`. Dettagli e conteggi
+attesi in [`PROVENIENZA.toml`](../../vendor/solweig/PROVENIENZA.toml).
+
+**Una premessa della spec è caduta.** [La spec](../spec.md) mette in cache lo
+sky view factor per Scenario, e dice che è la differenza fra rispettare il
+budget dei 60 secondi e sforarlo. Quel giudizio veniva dai 29-36 s misurati sul
+percorso Python in [issue #2](https://github.com/maeurong/CLIMESH/issues/2). Con
+il pool a un thread che [ADR 0002](0002-vendoring-del-motore.md) ha già motivato,
+sul dominio di 2500 celle del caso di riferimento il calcolo costa **da 32 a 63
+ms per Corsa**, e le quattro Corse complete passano da 0,25 a 0,47 s. La cache
+risparmierebbe 0,19 s su 60. Non si costruisce.
+
+**Quello che l'utente ha adesso** è un campo in più nel Giornale, in due versioni
+— quello che lasciano edifici e terreno, e quello che resta tolte le chiome,
+ciascuna pesata per la sua trasmissività secondo la formula di monte
+`svf - (1 - svf_veg) * (1 - psi)` — più il valore in ogni Punto di osservazione.
+Sul caso di riferimento, d'estate, i tre Punti passano dal 66, 60 e 44 per cento
+di cielo visibile al 41, 39 e 25 dopo la piantumazione.
+
+Resta vero tutto il resto: **il passo fuso non ha ancora una porta d'ingresso**,
+e la richiesta a monte va aperta.

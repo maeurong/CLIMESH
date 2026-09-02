@@ -285,11 +285,17 @@ fn riassunto(tabella: &toml::Table, m: &Messaggi) -> String {
                 .unwrap_or_default();
             // The sum of the hourly lit fractions, which is the hours of sun of
             // that cell: the same number the map carries, read the other way
-            // round.
-            righe.push((m.punto_ore_di_sole)(
+            // round. The sky view factor beside it does not change with the
+            // hour, so it is one number and not a sum.
+            let cielo = una
+                .get("sky_view_factor")
+                .and_then(|v| v.as_float())
+                .unwrap_or(f64::NAN);
+            righe.push((m.punto_sole_e_cielo)(
                 etichetta,
                 ore.iter().sum(),
                 ore.len(),
+                cielo * 100.0,
             ));
         }
     }

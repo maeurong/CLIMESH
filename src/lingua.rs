@@ -106,8 +106,9 @@ pub struct Messaggi {
     pub campi: &'static str,
     pub campo_senza_dato: &'static str,
     pub punti: &'static str,
-    /// The label of a Punto, its hours in the sun, and the hours of the Periodo.
-    pub punto_ore_di_sole: fn(&str, f64, usize) -> String,
+    /// The label of a Punto, its hours in the sun, the hours of the Periodo,
+    /// and the per cent of the sky it sees.
+    pub punto_sole_e_cielo: fn(&str, f64, usize, f64) -> String,
 
     pub errore: &'static str,
 }
@@ -155,7 +156,9 @@ pub const ITALIANO: Messaggi = Messaggi {
     campi: "campi:",
     campo_senza_dato: "tutto senza dato",
     punti: "punti di osservazione:",
-    punto_ore_di_sole: |etichetta, ore, su| format!("  {etichetta}: {ore:.1} h di sole su {su}"),
+    punto_sole_e_cielo: |etichetta, ore, su, cielo| {
+        format!("  {etichetta}: {ore:.1} h di sole su {su}, vede il {cielo:.0}% del cielo")
+    },
 
     errore: "errore:",
 };
@@ -203,7 +206,9 @@ pub const INGLESE: Messaggi = Messaggi {
     campi: "fields:",
     campo_senza_dato: "no data at all",
     punti: "observation points:",
-    punto_ore_di_sole: |etichetta, ore, su| format!("  {etichetta}: {ore:.1} h of sun out of {su}"),
+    punto_sole_e_cielo: |etichetta, ore, su, cielo| {
+        format!("  {etichetta}: {ore:.1} h of sun out of {su}, sees {cielo:.0}% of the sky")
+    },
 
     errore: "error:",
 };

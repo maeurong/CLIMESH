@@ -149,6 +149,126 @@ pub fn ombre(
     illuminata
 }
 
+/// How much of the sky hemisphere a cell can see, with and without the canopies.
+///
+/// Two fields and not one because they answer two questions, and a mitigation
+/// study needs both: masonry is permanent and a tree is a decision.
+#[derive(Debug, Clone, PartialEq)]
+pub struct SkyViewFactor {
+    /// What buildings and terrain leave. 1 on open flat ground. `svf` upstream.
+    pub senza_chiome: Raster,
+    /// The same, less what every canopy layer takes away, each weighted by its
+    /// own transmissivity. `svfbuveg` upstream.
+    pub con_le_chiome: Raster,
+}
+
+/// The sky is divided into 153 patches: option 2 of the kernel, and the number
+/// SOLWEIG's own callers pass.
+///
+/// A finer division (option 3 or 4) costs a march per patch and buys a
+/// resolution the rest of the chain does not use.
+const PATCH_DEL_CIELO: u8 = 2;
+
+/// The sky view factor of every cell of the surface model.
+///
+/// Unlike a shadow this does not depend on the sun: it is a property of the
+/// Scenario, computed once and good for every hour of every Periodo. Which is
+/// the reason it is worth caching, and the reason the reference case computes
+/// it twice and not four times.
+///
+/// Every canopy layer costs one pass over the whole sky, because the kernel
+/// reports whether a cell's view of a patch is blocked by vegetation, never by
+/// which vegetation — the same reason [`ombre`] marches the layers one at a
+/// time. The building field that comes back is the same on every pass, so the
+/// first one's is kept and the rest discarded.
+pub fn sky_view_factor(
+    modello_di_superficie: &Raster,
+    passo_m: f64,
+    strati: &[StratoDiChioma],
+) -> Result<SkyViewFactor, String> {
+    let (minimo, massimo) = modello_di_superficie.iter().fold(
+        (f32::INFINITY, f32::NEG_INFINITY),
+        |(minimo, massimo), &quota| (minimo.min(quota), massimo.max(quota)),
+    );
+    let cima_delle_chiome = strati
+        .iter()
+        .flat_map(|strato| strato.chiome.iter())
+        .copied()
+        .filter(|quota| quota.is_finite())
+        .fold(f32::NEG_INFINITY, f32::max);
+    let rilievo = massimo.max(cima_delle_chiome) - minimo;
+
+    let passata = |strato: Option<&StratoDiChioma>| {
+        pool_a_un_thread().install(|| {
+            solweig_vendorato::skyview::calculate_svf_inner(
+                modello_di_superficie.to_owned(),
+                strato.map_or_else(
+                    || Array2::zeros(modello_di_superficie.dim()),
+                    |s| s.chiome.to_owned(),
+                ),
+                strato.map_or_else(
+                    || Array2::zeros(modello_di_superficie.dim()),
+                    |s| s.zona_tronco.to_owned(),
+                ),
+                passo_m as f32,
+                strato.is_some(),
+                rilievo,
+                PATCH_DEL_CIELO,
+                // No floor on the patch elevation and no cap on the march: the
+                // kernel's own default of 3 degrees sits below the lowest patch
+                // of option 2, which is at 6, so it never truncates a patch that
+                // counts. Zero means uncapped, and the domains this program
+                // works on are two hundred metres across.
+                None,
+                None,
+                None,
+                0.0,
+            )
+        })
+    };
+
+    let Some((primo, resto)) = strati.split_first() else {
+        // With no vegetation the kernel never runs the pass that fills
+        // `svf_veg`: it comes back as the zeros it was allocated with, and the
+        // published combination would subtract a hemisphere no tree is
+        // blocking. Without a canopy the two fields are the same field.
+        let cielo = passata(None)?.svf;
+        return Ok(SkyViewFactor {
+            con_le_chiome: cielo.clone(),
+            senza_chiome: cielo,
+        });
+    };
+
+    let esito = passata(Some(primo))?;
+    let senza_chiome = esito.svf;
+    let mut con_le_chiome = senza_chiome.clone();
+    con_le_chiome -= &detrazione(&esito.svf_veg, primo.trasmissivita);
+    for strato in resto {
+        con_le_chiome -= &detrazione(&passata(Some(strato))?.svf_veg, strato.trasmissivita);
+    }
+    // Two layers can block the same patch of the same cell, and their two
+    // deductions then count that patch twice. Clamping is the honest floor: a
+    // negative sky view factor is not a number, and the alternative — tracking
+    // which patch each layer took — is a joint occlusion the kernel does not
+    // report.
+    con_le_chiome.mapv_inplace(|v| v.max(0.0));
+    Ok(SkyViewFactor {
+        senza_chiome,
+        con_le_chiome,
+    })
+}
+
+/// The sky one canopy layer takes away: nothing where it blocks nothing, and
+/// what it blocks weighted by how little it lets through.
+///
+/// `svf - (1 - svf_veg) * (1 - psi)` is upstream's own formula, in
+/// `pysrc/solweig/components/svf_resolution.py`; this is the term it subtracts.
+/// `svf_veg` comes back already cleared of the sky the buildings were blocking,
+/// so the two deductions do not overlap.
+fn detrazione(svf_veg: &Raster, trasmissivita: f32) -> Raster {
+    svf_veg.mapv(|visibile| (1.0 - visibile) * (1.0 - trasmissivita))
+}
+
 /// What one canopy layer leaves of the beam: 1 where it casts nothing, its
 /// transmissivity where it does.
 ///
