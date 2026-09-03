@@ -120,5 +120,15 @@ ciascuna pesata per la sua trasmissività secondo la formula di monte
 Sul caso di riferimento, d'estate, i tre Punti passano dal 66, 60 e 44 per cento
 di cielo visibile al 41, 39 e 25 dopo la piantumazione.
 
-Resta vero tutto il resto: **il passo fuso non ha ancora una porta d'ingresso**,
-e la richiesta a monte va aperta.
+Resta vero tutto il resto: **il passo fuso non ha ancora una porta d'ingresso**.
+
+## Aggiornamento, 2026-09-03: la richiesta è aperta
+
+[UMEP-dev/solweig#14](https://github.com/UMEP-dev/solweig/issues/14), aperta da
+Mario. Chiede quattro cose in ordine di costo crescente, e dichiara che la prima
+— dare un nome alla chiusura di `compute_timestep` — è l'unica di cui abbiamo
+bisogno. Le altre tre servirebbero a dipendere dal crate invece di vendorarlo, e
+il testo dice esplicitamente che senza la quarta, che è cara, le altre due non
+comprano niente.
+
+Il ripiego di questo ADR resta il piano se la risposta è no o non arriva.
