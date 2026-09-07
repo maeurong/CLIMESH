@@ -1,0 +1,18 @@
+# Measurement rig for wayfinder ticket #24. Not part of the CLIMESH package:
+# its own workspace so `cargo` at the repository root ignores it, and its own
+# `target/` so a research build never touches the release binary being timed.
+[package]
+name = "costo-catena-piena"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+climesh = { path = "../.." }
+solweig-vendorato = { path = "../../vendor/solweig" }
+ndarray = "0.16"
+
+[profile.release]
+debug = false

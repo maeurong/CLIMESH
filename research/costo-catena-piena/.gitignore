@@ -1,0 +1,4 @@
+# Prodotti dell'esecuzione, non del repository: il programma Rust li rifà.
+target/
+raster/
+Cargo.lock
