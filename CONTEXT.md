@@ -62,6 +62,14 @@ _Avoid_: rasterizzazione, preprocessing, conversione
 Un raster di chiome, con la trasmissività che le accomuna: quanta radiazione diretta lasciano passare. La Derivazione ne produce uno per stagione con foglie e due nella stagione senza — i sempreverdi, ancora opachi, e le chiome spoglie — perché il Motore risponde se una cella sta all'ombra di *una* chioma, mai di *quale*: due trasmissività chiedono due strati.
 _Avoid_: layer, CDSM, canopy raster
 
+**Trasmissività lungo il raggio**:
+Quanta radiazione diretta arriva a una cella attraverso le chiome che il raggio del sole attraversa in quell'ora: il prodotto delle trasmissività degli Strati di chioma incontrati, uno per ogni cella. Cambia ogni ora con il sole. La Derivazione la produce dalle ombre, e il Motore la consuma al posto di un valore unico per tutta la Griglia.
+_Avoid_: psi, psi del fascio, trasmissività efficace
+
+**Trasmissività verso il cielo**:
+Quanta radiazione diffusa dalla volta celeste arriva a una cella attraverso le chiome che la coprono, pesata su quanta volta ciascuno Strato di chioma le toglie. Non dipende dall'ora, quindi è una proprietà dello Scenario. Dove nessuna chioma copre la cella vale uno.
+_Avoid_: psi del cielo, trasmissività statica
+
 **Sky view factor**:
 Quanta parte della volta celeste una cella vede. Resta in inglese, come ogni termine tecnico del dominio. Il Giornale ne riporta due: quello che lasciano edifici e terreno, e quello che resta tolto ciò che ogni Strato di chioma copre, pesato per la sua trasmissività. Non dipende dall'ora, quindi è una proprietà dello Scenario e non della Corsa.
 _Avoid_: fattore di vista del cielo, SVF esteso, apertura del cielo
