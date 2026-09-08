@@ -66,6 +66,10 @@ _Avoid_: layer, CDSM, canopy raster
 Quanta parte della volta celeste una cella vede. Resta in inglese, come ogni termine tecnico del dominio. Il Giornale ne riporta due: quello che lasciano edifici e terreno, e quello che resta tolto ciò che ogni Strato di chioma copre, pesato per la sua trasmissività. Non dipende dall'ora, quindi è una proprietà dello Scenario e non della Corsa.
 _Avoid_: fattore di vista del cielo, SVF esteso, apertura del cielo
 
+**Modello di cielo**:
+Come il Motore tratta la volta celeste come sorgente di radiazione. Con `anisotropo` il cielo è diviso in patch, ciascuna con la propria luminosità e la propria copertura da edifici e chiome; con `isotropo` è una sorgente uniforme e conta solo lo Sky view factor. È una scelta di modellazione dell'utente, vale per l'intero Progetto e il Giornale la registra. Il predefinito è `anisotropo`.
+_Avoid_: cielo Perez, use_anisotropic, opzione cielo
+
 **Motore**:
 Il nucleo di calcolo radiativo riusato da `UMEP-dev/solweig`, che dai raster e dal meteo produce ombre, radiazione, temperatura media radiante e indici di comfort.
 _Avoid_: solver, kernel, backend
